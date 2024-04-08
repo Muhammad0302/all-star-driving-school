@@ -15,6 +15,9 @@ import * as Yup from 'yup'
 import Link from 'next/link'
 import getAccountsHandler from 'lib/accountsServer'
 import hashPassword from 'lib/utils/hashPassword'
+import { login } from 'services/authenticate'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 interface ISignInForm {
   email: string
@@ -83,9 +86,6 @@ export default function Signin() {
       setDisplayFormStatus(true)
     }
   }
-  const handleLogin = () => {
-    router.push('/')
-  }
 
   return (
     <div>
@@ -115,11 +115,41 @@ export default function Signin() {
           email: '',
           password: '',
         }}
-        onSubmit={(values: ISignInForm, actions) => {
-          loginUser(values, actions.resetForm)
-          setTimeout(() => {
-            actions.setSubmitting(false)
-          }, 500)
+        onSubmit={async (values: ISignInForm, actions) => {
+          try {
+            const res = await login(values.email, values.password)
+            console.log('Login api response', res)
+            toast.success('Login Successfully', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'colored',
+              transition: Bounce,
+            })
+            console.log('The user info is:', res)
+            const { email, token, username, id } = res.user
+            // Store the user data in local storage after stringifying
+            localStorage.setItem('userData', JSON.stringify({ email, token, username, id }))
+            setTimeout(() => {
+              router.push('/')
+            }, 2000)
+          } catch (error: any) {
+            toast.error('Email or password incorrect', {
+              position: 'top-right',
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: 'colored',
+              transition: Bounce,
+            })
+          }
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email().required('Enter email'),
@@ -222,38 +252,6 @@ export default function Signin() {
                   }}
                 />
               </FormControl>
-              {/* <FormControl
-                fullWidth
-                sx={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                }}
-              >
-                <Box
-                  sx={{
-                    width: '57%',
-                    display: 'flex',
-                    justifyContent: 'flex-end',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Link href='/password' style={{ textDecoration: 'none', color: 'inherit' }}>
-                    <Button
-                      sx={{
-                        fontFamily: 'Hind Guntur',
-                        textTransform: 'capitalize',
-                        fontWeight: '500',
-                        fontSize: '18px',
-                        color: '#f23d4d',
-                        lineHeight: '34px',
-                      }}
-                    >
-                      Forget password
-                    </Button>
-                  </Link>
-                </Box>
-              </FormControl> */}
 
               <Box
                 sx={{
@@ -278,7 +276,6 @@ export default function Signin() {
                       background: '#e01527',
                     },
                   }}
-                  onClick={handleLogin}
                 >
                   Sign In
                 </Button>
@@ -310,6 +307,20 @@ export default function Signin() {
                   </span>
                 </Typography> */}
               </Box>
+
+              <ToastContainer
+                position='top-right'
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme='colored'
+                transition={Bounce} // Specify Bounce as the transition prop value
+              />
             </Form>
           )
         }}

@@ -13,6 +13,8 @@ import {
 
 import { IconListCheck, IconMail, IconUser } from '@tabler/icons-react'
 import { useRouter } from 'next/navigation'
+import { UserInfo } from '../../util/getUserInfo'
+
 const Profile = () => {
   const [anchorEl2, setAnchorEl2] = useState(null)
   const router = useRouter()
@@ -23,9 +25,10 @@ const Profile = () => {
     setAnchorEl2(null)
   }
   const handleClickLogout = () => {
+    localStorage.removeItem('userData')
     router.push('/signin')
   }
-
+  const userInfo = UserInfo()
   return (
     <Box>
       <IconButton
@@ -62,13 +65,13 @@ const Profile = () => {
           <ListItemIcon>
             <IconUser width={20} />
           </ListItemIcon>
-          <ListItemText>allstardriving59</ListItemText>
+          <ListItemText>{userInfo?.username}</ListItemText>
         </MenuItem>
         <MenuItem>
           <ListItemIcon>
             <IconMail width={20} />
           </ListItemIcon>
-          <ListItemText>driving@gmail.com</ListItemText>
+          <ListItemText>{userInfo?.email}</ListItemText>
         </MenuItem>
 
         <Box mt={1} py={1} px={2}>

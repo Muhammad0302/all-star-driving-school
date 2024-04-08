@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { AppBar, styled, Toolbar, Typography } from '@mui/material'
 import Profile from './Profile'
+
 const Navbar = () => {
   // const router = usePathname()
   const StyledToolbar = styled(Toolbar)({
