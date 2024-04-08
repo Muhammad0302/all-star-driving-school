@@ -68,17 +68,6 @@ export default function Signin() {
   const loginUser = async (data: ISignInForm, resetForm: Function) => {
     try {
       console.log(data)
-
-      // GRAPHQL Login
-
-      // await passwordClient.login({
-      //   user: {
-      //     email
-      //   },
-      //   password: hashPassword(password)
-      // });
-
-      // API call integration will be here. Handle success / error response accordingly.
       if (data) {
         setFormStatus(formStatusProps.success)
         resetForm({})
@@ -134,11 +123,7 @@ export default function Signin() {
         }}
         validationSchema={Yup.object().shape({
           email: Yup.string().email().required('Enter email'),
-          password: Yup.string()
-            // .matches(
-            //     /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*()]).{8,20}\S$/
-            // )
-            .required('Please enter password'),
+          password: Yup.string().required('Please enter password'),
         })}
       >
         {(props: FormikProps<ISignInForm>) => {
@@ -237,7 +222,7 @@ export default function Signin() {
                   }}
                 />
               </FormControl>
-              <FormControl
+              {/* <FormControl
                 fullWidth
                 sx={{
                   display: 'flex',
@@ -268,7 +253,7 @@ export default function Signin() {
                     </Button>
                   </Link>
                 </Box>
-              </FormControl>
+              </FormControl> */}
 
               <Box
                 sx={{
@@ -298,7 +283,7 @@ export default function Signin() {
                   Sign In
                 </Button>
 
-                <Typography
+                {/* <Typography
                   sx={{
                     fontFamily: 'Roboto',
                     fontWeight: '500',
@@ -323,7 +308,7 @@ export default function Signin() {
                       Click here.
                     </Link>
                   </span>
-                </Typography>
+                </Typography> */}
               </Box>
             </Form>
           )

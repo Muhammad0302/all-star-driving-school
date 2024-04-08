@@ -1,24 +1,40 @@
 import React from 'react'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
-import { Grid, TextField, Button } from '@mui/material'
+import { Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
 import { useRouter } from 'next/navigation'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 const validationSchema = yup.object({
-  id: yup.string().required('ID is required'),
-  name: yup.string().required('Name is required'),
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
   phoneNumber: yup.string().required('Phone Number is required'),
-  driverLicenseNo: yup.string().required('Driver License No is required'),
-  DILicenseNo: yup.string().required('DI License No is required'),
+  address: yup.string().required('Address is required'),
+  dob: yup.date().required('Date of Birth is required'),
+  gender: yup.string().required('Gender is required'),
+  drivingLicenseNo: yup.string().required('Driving License No is required'),
+  diNumber: yup.string().required('DI Number is required'),
+  hiring: yup.string().required('Hiring is required'),
 })
+
 const AddInstructor = () => {
   const router = useRouter()
+
   const formik = useFormik({
     initialValues: {
-      id: '',
-      name: '',
+      firstName: '',
+      lastName: '',
+      email: '',
       phoneNumber: '',
-      driverLicenseNo: '',
-      DILicenseNo: '',
+      address: '',
+      dob: '',
+      gender: '',
+      drivingLicenseNo: '',
+      diNumber: '',
+      hiring: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -26,7 +42,7 @@ const AddInstructor = () => {
       router.push('/')
     },
   })
-  // added here ..
+
   return (
     <div className='mt-[3.5rem]'>
       <form onSubmit={formik.handleSubmit}>
@@ -37,24 +53,49 @@ const AddInstructor = () => {
         >
           <Grid item xs={12} sm={6}>
             <TextField
-              id='name'
-              name='name'
-              label='Name'
+              id='firstName'
+              name='firstName'
+              label='First Name'
               variant='outlined'
               fullWidth
-              value={formik.values.name}
+              value={formik.values.firstName}
               onChange={formik.handleChange}
-              error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
+              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              helperText={formik.touched.firstName && formik.errors.firstName}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
             />
           </Grid>
-
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='lastName'
+              name='lastName'
+              label='Last Name'
+              variant='outlined'
+              fullWidth
+              value={formik.values.lastName}
+              onChange={formik.handleChange}
+              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+              helperText={formik.touched.lastName && formik.errors.lastName}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='email'
+              name='email'
+              label='Email'
+              variant='outlined'
+              fullWidth
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && formik.errors.email}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
+            />
+          </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
               id='phoneNumber'
@@ -67,59 +108,100 @@ const AddInstructor = () => {
               onChange={formik.handleChange}
               error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
               helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              id='driverLicenseNo'
-              name='driverLicenseNo'
-              label='Driver License No'
+              id='address'
+              name='address'
+              label='Address'
               variant='outlined'
               fullWidth
-              type='text'
-              value={formik.values.driverLicenseNo}
+              value={formik.values.address}
               onChange={formik.handleChange}
-              onKeyDown={(event) => {
-                event.stopPropagation()
-              }}
-              error={formik.touched.driverLicenseNo && Boolean(formik.errors.driverLicenseNo)}
-              helperText={formik.touched.driverLicenseNo && formik.errors.driverLicenseNo}
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
+              error={formik.touched.address && Boolean(formik.errors.address)}
+              helperText={formik.touched.address && formik.errors.address}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={3}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DatePicker']}>
+                <DatePicker label='Date of Birth' format='DD/MM/YYYY' />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='gender'
+              name='gender'
+              label='Gender'
+              variant='outlined'
+              fullWidth
+              value={formik.values.gender}
+              onChange={formik.handleChange}
+              error={formik.touched.gender && Boolean(formik.errors.gender)}
+              helperText={formik.touched.gender && formik.errors.gender}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              id='DILicenseNo'
-              name='DILicenseNo'
-              label='DI License No'
+              id='drivingLicenseNo'
+              name='drivingLicenseNo'
+              label='Driving License No'
               variant='outlined'
               fullWidth
-              type='text'
-              value={formik.values.DILicenseNo}
+              value={formik.values.drivingLicenseNo}
               onChange={formik.handleChange}
-              onKeyDown={(event) => {
-                event.stopPropagation()
-              }}
-              error={formik.touched.DILicenseNo && Boolean(formik.errors.DILicenseNo)}
-              helperText={formik.touched.DILicenseNo && formik.errors.DILicenseNo}
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
+              error={formik.touched.drivingLicenseNo && Boolean(formik.errors.drivingLicenseNo)}
+              helperText={formik.touched.drivingLicenseNo && formik.errors.drivingLicenseNo}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
             />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='diNumber'
+              name='diNumber'
+              label='DI Number'
+              variant='outlined'
+              fullWidth
+              value={formik.values.diNumber}
+              onChange={formik.handleChange}
+              error={formik.touched.diNumber && Boolean(formik.errors.diNumber)}
+              helperText={formik.touched.diNumber && formik.errors.diNumber}
+              sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              InputLabelProps={{ focused: false }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel
+                id='hiring-label'
+                error={formik.touched.hiring && Boolean(formik.errors.hiring)}
+              >
+                Hiring
+              </InputLabel>
+              <Select
+                labelId='hiring-label'
+                id='hiring'
+                value={formik.values.hiring}
+                onChange={formik.handleChange}
+                error={formik.touched.hiring && Boolean(formik.errors.hiring)}
+                sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              >
+                <MenuItem value='hourly'>Hourly</MenuItem>
+                <MenuItem value='daily'>Daily</MenuItem>
+                <MenuItem value='monthly'>Monthly</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
 
           <Grid item xs={12} container justifyContent='flex-end'>
@@ -130,9 +212,7 @@ const AddInstructor = () => {
                 marginLeft: 'auto',
                 background: '#f23d4d',
                 color: 'black',
-                '&:hover': {
-                  background: '#e01527',
-                },
+                '&:hover': { background: '#e01527' },
               }}
             >
               Submit

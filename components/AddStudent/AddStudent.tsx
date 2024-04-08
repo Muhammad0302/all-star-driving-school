@@ -14,43 +14,47 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import './styles.css'
+
 const validationSchema = yup.object({
-  name: yup.string().required('Name is required'),
-  studentId: yup.string().required('Student Id is required'),
-  address: yup.string().required('Address is required'),
-  phoneNumber: yup.string().required('Phone Number is required'),
-  licenseNumber: yup.string().required('License Number is required'),
-  licenseIssueDate: yup.string(),
-  licenseExpiryDate: yup.string(),
-  courseExpiryDate: yup.string(),
-  totalPaymentsReceived: yup.string().required('Total Payments Received is required'),
-  mtoCertification: yup.string().required('MTO Certification is required'),
-  score: yup.string().required('Score is required'),
   registration_for: yup.string().required('Registration type is required'),
+  firstName: yup.string().required('First Name is required'),
+  lastName: yup.string().required('Last Name is required'),
+  email: yup.string().email('Invalid email').required('Email is required'),
+  phoneNumber: yup.string().required('Phone Number is required'),
+  address: yup.string().required('Address is required'),
+  dob: yup.date().required('Date of Birth is required'),
+  gender: yup.string().required('Gender is required'),
+  licenseNumber: yup.string().required('License Number is required'),
+  licenseIssueDate: yup.date().required('License Issue Date is required'),
+  licenseExpiryDate: yup.date().required('License Expiry Date is required'),
+  courseStartDate: yup.date().required('Course Start Date is required'),
 })
+
 const AddStudent = () => {
   const router = useRouter()
+
   const formik = useFormik({
     initialValues: {
-      name: '',
-      studentId: '',
-      address: '',
-      phoneNumber: '',
-      licenseNumber: '',
-      licenseIssueDate: '',
-      licenseExpiryDate: '',
-      courseExpiryDate: '',
-      totalPaymentsReceived: '',
-      mtoCertification: '',
-      score: '',
       registration_for: '',
+      firstName: '',
+      lastName: '',
+      email: '',
+      phoneNumber: '',
+      address: '',
+      dob: null,
+      gender: '',
+      licenseNumber: '',
+      licenseIssueDate: null,
+      licenseExpiryDate: null,
+      courseStartDate: null,
     },
     validationSchema: validationSchema,
-    onSubmit: async (values: any) => {
+    onSubmit: async (values) => {
       console.log(values)
       router.push('/students')
     },
   })
+
   return (
     <div className='mt-[3.5rem]'>
       <form onSubmit={formik.handleSubmit}>
@@ -60,40 +64,38 @@ const AddStudent = () => {
           sx={{ marginTop: '5px !important', paddingLeft: '6rem', paddingRight: '6rem' }}
         >
           <Grid item xs={12} sm={6}>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel
-                  id='demo-simple-select-label'
-                  error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
-                >
-                  Register For
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={formik.values.registration_for}
-                  label='Student Name'
-                  onChange={(e) => {
-                    formik.setFieldValue('registration_for', e.target.value)
-                  }}
-                >
-                  <MenuItem value={'biden'}>Register For Onsite</MenuItem>
-                  <MenuItem value={'ahmad'}>Register For Online</MenuItem>
-                </Select>
-
-                {!!(formik.touched.registration_for && formik.errors.registration_for) && (
-                  <FormHelperText sx={{ color: '#d32f2f' }}>
-                    {formik.errors.registration_for as string}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Box>
+            <FormControl fullWidth>
+              <InputLabel id='registration-for-label'>Register For</InputLabel>
+              <Select
+                labelId='registration-for-label'
+                id='registration-for'
+                value={formik.values.registration_for}
+                onChange={formik.handleChange}
+                error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
+              >
+                <MenuItem value='online'>Online</MenuItem>
+                <MenuItem value='onsite'>Onsite</MenuItem>
+              </Select>
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
             <TextField
-              id='name'
-              name='name'
-              label='Name'
+              id='firstName'
+              name='firstName'
+              label='First Name'
+              variant='outlined'
+              fullWidth
+              value={formik.values.firstName}
+              onChange={formik.handleChange}
+              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              helperText={formik.touched.firstName && formik.errors.firstName}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='firstName'
+              name='firstName'
+              label='First Name'
               variant='outlined'
               fullWidth
               sx={{
@@ -102,18 +104,18 @@ const AddStudent = () => {
               InputLabelProps={{
                 focused: false,
               }}
-              value={formik.values.name}
+              value={formik.values.firstName}
               onChange={formik.handleChange}
-              error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && (formik.errors.name as any)}
+              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+              helperText={formik.touched.firstName && (formik.errors.firstName as any)}
             />
           </Grid>
 
           <Grid item xs={12} sm={6}>
             <TextField
-              id='address'
-              name='address'
-              label='Address'
+              id='lastName'
+              name='lastName'
+              label='Last Name'
               variant='outlined'
               fullWidth
               sx={{
@@ -122,10 +124,30 @@ const AddStudent = () => {
               InputLabelProps={{
                 focused: false,
               }}
-              value={formik.values.address}
+              value={formik.values.lastName}
               onChange={formik.handleChange}
-              error={formik.touched.address && Boolean(formik.errors.address)}
-              helperText={formik.touched.address && (formik.errors.address as any)}
+              error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+              helperText={formik.touched.lastName && (formik.errors.lastName as any)}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='email'
+              name='email'
+              label='Email'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              error={formik.touched.email && Boolean(formik.errors.email)}
+              helperText={formik.touched.email && (formik.errors.email as any)}
             />
           </Grid>
 
@@ -151,6 +173,25 @@ const AddStudent = () => {
 
           <Grid item xs={12} sm={6}>
             <TextField
+              id='address'
+              name='address'
+              label='Address'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              value={formik.values.address}
+              onChange={formik.handleChange}
+              error={formik.touched.address && Boolean(formik.errors.address)}
+              helperText={formik.touched.address && (formik.errors.address as any)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
               id='licenseNumber'
               name='licenseNumber'
               label='License Number'
@@ -169,70 +210,20 @@ const AddStudent = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id='totalPaymentsReceived'
-              name='totalPaymentsReceived'
-              label='Total Payments Received'
-              variant='outlined'
-              fullWidth
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
-              value={formik.values.totalPaymentsReceived}
-              onChange={formik.handleChange}
-              error={
-                formik.touched.totalPaymentsReceived && Boolean(formik.errors.totalPaymentsReceived)
-              }
-              helperText={
-                formik.touched.totalPaymentsReceived && (formik.errors.totalPaymentsReceived as any)
-              }
-            />
+          <Grid item xs={12} sm={3}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DatePicker']}>
+                <DatePicker label='Date of Birth' format='DD/MM/YYYY' />
+              </DemoContainer>
+            </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id='mtoCertification'
-              name='mtoCertification'
-              label='MTO Certification'
-              variant='outlined'
-              fullWidth
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
-              value={formik.values.mtoCertification}
-              onChange={formik.handleChange}
-              error={formik.touched.mtoCertification && Boolean(formik.errors.mtoCertification)}
-              helperText={
-                formik.touched.mtoCertification && (formik.errors.mtoCertification as any)
-              }
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id='score'
-              name='score'
-              label='Score%'
-              variant='outlined'
-              fullWidth
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
-              value={formik.values.score}
-              onChange={formik.handleChange}
-              error={formik.touched.score && Boolean(formik.errors.score)}
-              helperText={(formik.touched.score && formik.errors.score) as any}
-            />
+          <Grid item xs={12} sm={3}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DatePicker']}>
+                <DatePicker label='Course Start Date' format='DD/MM/YYYY' />
+              </DemoContainer>
+            </LocalizationProvider>
           </Grid>
 
           <Grid item xs={12} sm={3}>
@@ -242,6 +233,7 @@ const AddStudent = () => {
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
+
           <Grid item xs={12} sm={3}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker']}>
@@ -249,19 +241,26 @@ const AddStudent = () => {
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={3}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker label='Course Start Date' format='DD/MM/YYYY' />
-              </DemoContainer>
-            </LocalizationProvider>
-          </Grid>
 
+          <Grid item xs={12} sm={3}>
+            <FormControl fullWidth>
+              <InputLabel id='gender-label'>Gender</InputLabel>
+              <Select
+                labelId='gender-label'
+                id='gender'
+                value={formik.values.gender}
+                onChange={(e) => formik.setFieldValue('gender', e.target.value)}
+                label='Gender'
+              >
+                <MenuItem value='male'>Male</MenuItem>
+                <MenuItem value='female'>Female</MenuItem>
+                <MenuItem value='other'>Other</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
           <Grid item xs={12} container justifyContent='flex-end'>
             <Button
               type='submit'
-              // onClick={() => setError(true)}
-              // disabled={loading}
               variant='contained'
               color='primary'
               sx={{
