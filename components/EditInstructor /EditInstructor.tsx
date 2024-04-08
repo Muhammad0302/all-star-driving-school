@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import { Grid, TextField, Button, FormControl, InputLabel, Select, MenuItem } from '@mui/material'
@@ -8,7 +8,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
-import { addInstructor } from 'services/room'
+import { addInstructor, getInstructorById, editInstructor } from 'services/room'
 import 'react-toastify/dist/ReactToastify.css'
 import dayjs from 'dayjs'
 const validationSchema = yup.object({
@@ -24,7 +24,9 @@ const validationSchema = yup.object({
   hiring: yup.string().required('Hiring is required'),
 })
 
-const AddInstructor = () => {
+const EditInstructor = ({ params }: any) => {
+  console.log('The instructor id is:', params)
+  const [instructors, setInstructors] = useState([])
   const router = useRouter()
 
   const formik = useFormik({
@@ -55,9 +57,9 @@ const AddInstructor = () => {
         DI_number: values.diNumber,
       }
       try {
-        const res = await addInstructor(data)
-        console.log('Add Instructor api response', res)
-        toast.success('Instructor added Successfully', {
+        const res = await editInstructor(data, params.instructorid)
+        console.log('Edit instructor api response', res)
+        toast.success('Instructor updated successfully', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -72,7 +74,7 @@ const AddInstructor = () => {
           router.push('/instructors')
         }, 2000)
       } catch (error: any) {
-        toast.error('Error while registering instructor', {
+        toast.error('Error while updating instructor', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -86,6 +88,45 @@ const AddInstructor = () => {
       }
     },
   })
+
+  useEffect(() => {
+    const fetchRoomData = async () => {
+      try {
+        const res = await getInstructorById(params.instructorid)
+        console.log('The instructor data is:', res)
+        const instructor = res.instructor
+        const parsedDob = dayjs(instructor.dob)
+        instructor.firstName = instructor.firstName
+        instructor.lastName = instructor.lastName
+        instructor.email = instructor.email
+        instructor.phoneNumber = instructor.phone_number
+
+        instructor.address = instructor.address
+        instructor.dob = parsedDob
+        instructor.gender = instructor.gender
+
+        instructor.drivingLicenseNo = instructor.driver_licence_number
+        instructor.diNumber = instructor.DI_number
+        instructor.hiring = instructor.hiringOn
+
+        setInstructors(instructor)
+      } catch (error) {
+        console.error('Error fetching instructor data:', error)
+      }
+    }
+
+    fetchRoomData()
+  }, [params.instructorid])
+
+  useEffect(() => {
+    if (instructors) {
+      // @ts-ignore
+
+      formik.setValues(instructors)
+    }
+  }, [instructors])
+
+  console.log('The room data is:', formik)
 
   return (
     <div className='mt-[3.5rem]'>
@@ -282,22 +323,22 @@ const AddInstructor = () => {
             </Button>
           </Grid>
         </Grid>
+        <ToastContainer
+          position='top-right'
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme='colored'
+          transition={Bounce} // Specify Bounce as the transition prop value
+        />
       </form>
-      <ToastContainer
-        position='top-right'
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme='colored'
-        transition={Bounce} // Specify Bounce as the transition prop value
-      />
     </div>
   )
 }
 
-export default AddInstructor
+export default EditInstructor

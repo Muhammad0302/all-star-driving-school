@@ -8,9 +8,13 @@ const config = {
   },
 }
 // Make the addRoom request
-const addRoom = async (data: any): Promise<any> => {
+const addInstructor = async (data: any): Promise<any> => {
   try {
-    const response: AxiosResponse = await axios.post(`${getBaseUrl()}/room/addRoom`, data, config)
+    const response: AxiosResponse = await axios.post(
+      `${getBaseUrl()}/instructor/addinstructor`,
+      data,
+      config,
+    )
     return response.data // Return the response data
   } catch (error: any) {
     // Handle addRoom error
@@ -45,6 +49,19 @@ const deletInstructor = async (id: any): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
+const getInstructorById = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/instructor/getsingleinstructor/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
 const getRoomById = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
@@ -58,10 +75,10 @@ const getRoomById = async (id: any): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
-const editRoom = async (data: any, id: string): Promise<any> => {
+const editInstructor = async (data: any, id: string): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.put(
-      `${getBaseUrl()}/room/updateRoom/${id}`,
+      `${getBaseUrl()}/instructor/updateinstructor/${id}`,
       data,
       config,
     )
@@ -73,4 +90,11 @@ const editRoom = async (data: any, id: string): Promise<any> => {
   }
 }
 
-export { addRoom, getAllInstructors, deletInstructor, getRoomById, editRoom }
+export {
+  addInstructor,
+  getAllInstructors,
+  deletInstructor,
+  getRoomById,
+  editInstructor,
+  getInstructorById,
+}

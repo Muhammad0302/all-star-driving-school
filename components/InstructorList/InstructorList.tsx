@@ -36,21 +36,19 @@ const InstructorList = () => {
     try {
       const response = await getAllInstructors()
       console.log('The response of get all instructor is', response)
-      // const instructors: any = response.instructors
-      // console.log('The all room data is:', instructors)
-      // const AllRooms: any = instructors.map((instructor) => {
-      //   return {
-      //     ID: instructor?._id,
-      //     name: instructor?.name,
-      //     RoomNumber: instructor?.room_no,
-      //     noOfBeds: instructor?.no_of_bed,
-      //     Capacity: instructor?.capacity,
-      //     availability: instructor?.status,
-      //     PriceperNight: instructor?.price_per_night,
-      //     Amenities: instructor?.amenities,
-      //   }
-      // })
-      // setInstructorData(AllRooms)
+      const instructors: any = response.instructors
+      const AllInstructors: any = instructors.map((instructor: any) => {
+        return {
+          ID: instructor?._id,
+          Name: `${instructor?.firstName} ${instructor?.lastName}`,
+          Phone: instructor?.phone_number,
+          Email: instructor?.email,
+          Address: instructor?.address,
+          DriverLicense: instructor?.driver_licence_number,
+          DILicense: instructor?.DI_number,
+        }
+      })
+      setInstructorData(AllInstructors)
     } catch (error: any) {
       console.error('Error fetching instructor data:', error.message)
     }
@@ -62,8 +60,8 @@ const InstructorList = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-  const handleAddInstructor = () => {
-    router.push('/addinstructor')
+  const handleEditInstructor = (data: any) => {
+    router.push(`/editintructor/${data[0]}`)
   }
 
   const handleDelete = async (data: any) => {
@@ -72,7 +70,7 @@ const InstructorList = () => {
     try {
       const res = await deletInstructor(data[0])
       console.log('Delete api response', res)
-      toast.success('Room deleted Successfully', {
+      toast.success('Instructor deleted Successfully', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -85,7 +83,7 @@ const InstructorList = () => {
       })
       setCounter(counter + 1)
     } catch (error: any) {
-      toast.error('Error while deleting room', {
+      toast.error('Error while deleting instructor', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -129,6 +127,7 @@ const InstructorList = () => {
       options: {
         filter: true,
         sort: true,
+        display: false,
       },
     },
     {
@@ -147,7 +146,22 @@ const InstructorList = () => {
         sort: false,
       },
     },
-
+    {
+      name: 'Email',
+      label: 'Email',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'Address',
+      label: 'Address',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
     {
       name: 'DriverLicense',
       label: 'Driver License No',
@@ -189,7 +203,7 @@ const InstructorList = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <MenuItem onClick={handleAddInstructor}>
+                  <MenuItem onClick={() => handleEditInstructor(tableMeta.rowData)}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
@@ -243,7 +257,7 @@ const InstructorList = () => {
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
           Instructors list
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={instructorData} columns={columns} options={options} />
         <PayModal open={openModal} handleClose={handleCloseFunc} />
       </Box>
       <ToastContainer
