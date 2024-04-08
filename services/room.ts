@@ -18,9 +18,12 @@ const addRoom = async (data: any): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
-const getAllRooms = async (): Promise<any> => {
+const getAllInstructors = async (): Promise<any> => {
   try {
-    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/room/getAllRooms`, config)
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/instructor/getallinstructors`,
+      config,
+    )
     return response.data // Return the response data
   } catch (error: any) {
     // Handle addRoom error
@@ -29,10 +32,10 @@ const getAllRooms = async (): Promise<any> => {
   }
 }
 
-const deletRoom = async (id: any): Promise<any> => {
+const deletInstructor = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.delete(
-      `${getBaseUrl()}/room/deleteRoom/${id}`,
+      `${getBaseUrl()}/instructor/deleteinstructor/${id}`,
       config,
     )
     return response.data // Return the response data
@@ -70,4 +73,4 @@ const editRoom = async (data: any, id: string): Promise<any> => {
   }
 }
 
-export { addRoom, getAllRooms, deletRoom, getRoomById, editRoom }
+export { addRoom, getAllInstructors, deletInstructor, getRoomById, editRoom }

@@ -1,8 +1,21 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import { fetchDashboardData } from 'services/dashboard'
 import './styles.css'
+interface DashboardData {
+  totalStudents: number
+  totalInstructors: number
+  totalRevenue: number
+}
 const FeatureInfo = () => {
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  useEffect(() => {
+    fetchDashboardData()
+      .then((data) => setDashboardData(data))
+      .catch((error) => console.error('Error fetching dashboard data:', error.message))
+  }, [])
+  console.log('The dashboard data is:', dashboardData)
   return (
     <>
       <div className='featured'>
@@ -21,7 +34,7 @@ const FeatureInfo = () => {
             </svg>
 
             <div className='flex flex-col ml-[0.6rem]'>
-              <span className='featuredCount'>900</span>
+              <span className='featuredCount'>{dashboardData?.totalInstructors}</span>
               <span className='featureSubTitle'>Total Instructors</span>
             </div>
           </div>
@@ -41,7 +54,7 @@ const FeatureInfo = () => {
             </svg>
 
             <div className='flex flex-col ml-[0.6rem]'>
-              <span className='featuredCount'>2300</span>
+              <span className='featuredCount'>{dashboardData?.totalStudents}</span>
               <span className='featureSubTitle'>Total Students</span>
             </div>
           </div>
@@ -56,7 +69,7 @@ const FeatureInfo = () => {
             </svg>
 
             <div className='flex flex-col ml-[0.6rem]'>
-              <span className='featuredCount'>$19000</span>
+              <span className='featuredCount'>{dashboardData?.totalRevenue}</span>
               <span className='featureSubTitle'>Instructor Payouts Total</span>
             </div>
           </div>

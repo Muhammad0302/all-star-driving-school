@@ -8,12 +8,18 @@ import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getAllInstructors, deletInstructor } from 'services/room'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import './styles.css'
 import PayModal from './PayModal'
 const InstructorList = () => {
+  const [counter, setCounter] = useState(0)
   const [openModal, setOpenModal] = useState(false)
+  const [instructorData, setInstructorData] = useState([])
   const handleOpen = () => setOpenModal(true)
   const handleCloseFunc = () => setOpenModal(false)
   const router = useRouter()
@@ -25,12 +31,74 @@ const InstructorList = () => {
     setAnchorEl(event.currentTarget)
     setActiveRow(index)
   }
+
+  const fetchRoomsData = async () => {
+    try {
+      const response = await getAllInstructors()
+      console.log('The response of get all instructor is', response)
+      // const instructors: any = response.instructors
+      // console.log('The all room data is:', instructors)
+      // const AllRooms: any = instructors.map((instructor) => {
+      //   return {
+      //     ID: instructor?._id,
+      //     name: instructor?.name,
+      //     RoomNumber: instructor?.room_no,
+      //     noOfBeds: instructor?.no_of_bed,
+      //     Capacity: instructor?.capacity,
+      //     availability: instructor?.status,
+      //     PriceperNight: instructor?.price_per_night,
+      //     Amenities: instructor?.amenities,
+      //   }
+      // })
+      // setInstructorData(AllRooms)
+    } catch (error: any) {
+      console.error('Error fetching instructor data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchRoomsData()
+  }, [counter])
+
   const handleClose = () => {
     setAnchorEl(null)
   }
   const handleAddInstructor = () => {
     router.push('/addinstructor')
   }
+
+  const handleDelete = async (data: any) => {
+    handleClose()
+    console.log('The data is:', data)
+    try {
+      const res = await deletInstructor(data[0])
+      console.log('Delete api response', res)
+      toast.success('Room deleted Successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error: any) {
+      toast.error('Error while deleting room', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
   const data = [
     [1, 'John Doe', '123-456-7890', 'G7231-45532-25122', 'DI-67890'],
     [2, 'Jane Smith', '987-654-3210', 'G7231-45532-25122', 'DI-09876'],
@@ -124,9 +192,7 @@ const InstructorList = () => {
                   <MenuItem onClick={handleAddInstructor}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem
-                  // onClick={() => handleDelete(tableMeta.rowData[0])}
-                  >
+                  <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
                   <MenuItem
@@ -180,6 +246,19 @@ const InstructorList = () => {
         <MUIDataTable title={''} data={data} columns={columns} options={options} />
         <PayModal open={openModal} handleClose={handleCloseFunc} />
       </Box>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </>
   )
 }
