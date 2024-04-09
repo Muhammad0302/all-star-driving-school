@@ -1,5 +1,5 @@
 import { TextField, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -11,13 +11,18 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { getAllStudents, deletStudent } from 'services/room'
 import HistoryIcon from '@mui/icons-material/History'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 import ViewDetail from './ViewDetail'
 import PaymentHistory from './PaymentHistory'
 const StudentList = () => {
+  const [studentData, setStudentData] = useState([])
+  const [counter, setCounter] = useState(0)
   const [studentStatus, setStudentStatus] = useState('')
   const [anchorEl, setAnchorEl] = useState(null)
   const [openModal, setOpenModal] = useState(false)
@@ -39,6 +44,66 @@ const StudentList = () => {
   const handleAddStudent = () => {
     router.push('/addstudent')
   }
+
+  const fetchStudentsData = async () => {
+    try {
+      const response = await getAllStudents()
+      console.log('The response of get all student is', response)
+      const students: any = response.students
+      const AllStudents: any = students.map((student: any) => {
+        return {
+          ID: student?._id,
+          Name: `${student?.firstName} ${student?.lastName}`,
+          PhoneNumber: student?.phone_number,
+          Email: student?.email,
+          Address: student?.address,
+          Dob: student?.dob,
+          LicenseNumber: student?.licence_no,
+          StudentID: student?.supportive_id,
+        }
+      })
+      setStudentData(AllStudents)
+    } catch (error: any) {
+      console.error('Error fetching student data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchStudentsData()
+  }, [counter])
+
+  const handleDelete = async (data: any) => {
+    handleClose()
+    console.log('The data is:', data)
+    try {
+      const res = await deletStudent(data[0])
+      console.log('Delete api response', res)
+      toast.success('Student deleted Successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error: any) {
+      toast.error('Error while deleting student', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
   const data = [
     [
       'I24/12/1',
@@ -372,11 +437,20 @@ const StudentList = () => {
 
   const columns = [
     {
-      name: 'Id',
-      label: 'Id',
+      name: 'ID',
+      label: 'ID',
       options: {
         filter: true,
         sort: true,
+        display: false,
+      },
+    },
+    {
+      name: 'StudentID',
+      label: 'Student ID',
+      options: {
+        filter: true,
+        sort: false,
       },
     },
     {
@@ -404,8 +478,16 @@ const StudentList = () => {
       },
     },
     {
-      name: 'No of Lesson',
-      label: 'No of Lesson',
+      name: 'Email',
+      label: 'Email',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'Dob',
+      label: 'Dob',
       options: {
         filter: true,
         sort: false,
@@ -414,38 +496,6 @@ const StudentList = () => {
     {
       name: 'LicenseNumber',
       label: 'License Number',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'TotalPaymentsReceived',
-      label: 'Total Payments Received',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Test Taken',
-      label: 'Test Taken',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'ScorePercentage',
-      label: 'Score%',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'OutstandingDues',
-      label: 'Outstanding Dues',
       options: {
         filter: true,
         sort: false,
@@ -479,9 +529,7 @@ const StudentList = () => {
                   <MenuItem onClick={handleAddStudent}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem
-                  // onClick={() => handleDelete(tableMeta.rowData[0])}
-                  >
+                  <MenuItem onClick={() => handleDelete(tableMeta.rowData[0])}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
                   <MenuItem
@@ -585,7 +633,7 @@ const StudentList = () => {
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
           Student list
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={studentData} columns={columns} options={options} />
         <ViewDetail open={openModal} handleClose={handleCloseFunc} />
         <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
       </Box>

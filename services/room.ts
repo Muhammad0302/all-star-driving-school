@@ -93,6 +93,34 @@ const addStudent = async (data: any): Promise<any> => {
   }
 }
 
+const getAllStudents = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/student/getAllStudents`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const deletStudent = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.delete(
+      `${getBaseUrl()}/student/deleteStudent/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -100,4 +128,6 @@ export {
   editInstructor,
   getInstructorById,
   addStudent,
+  getAllStudents,
+  deletStudent,
 }
