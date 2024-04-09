@@ -62,19 +62,7 @@ const getInstructorById = async (id: any): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
-const getRoomById = async (id: any): Promise<any> => {
-  try {
-    const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/room/getroombyid/${id}`,
-      config,
-    )
-    return response.data // Return the response data
-  } catch (error: any) {
-    // Handle addRoom error
-    console.error('getting room error:', error.message)
-    throw error // Throw the error to be caught by the caller
-  }
-}
+
 const editInstructor = async (data: any, id: string): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.put(
@@ -90,11 +78,26 @@ const editInstructor = async (data: any, id: string): Promise<any> => {
   }
 }
 
+const addStudent = async (data: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${getBaseUrl()}/student/addStudent`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('add room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
   deletInstructor,
-  getRoomById,
   editInstructor,
   getInstructorById,
+  addStudent,
 }

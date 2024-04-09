@@ -13,6 +13,10 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
+import { addStudent } from 'services/room'
+import dayjs from 'dayjs'
+import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
 import './styles.css'
 
 const validationSchema = yup.object({
@@ -50,8 +54,50 @@ const AddStudent = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log(values)
-      router.push('/students')
+      const data = {
+        supportive_id: values.registration_for,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        phone_number: values.phoneNumber,
+        email: values.email,
+        address: values.address,
+        dob: values.dob,
+        gender: values.gender,
+        licence_no: values.licenseNumber,
+        licence_issue_date: values.licenseIssueDate,
+        licence_expiry_date: values.licenseExpiryDate,
+        course_start_date: values.courseStartDate,
+      }
+      try {
+        const res = await addStudent(data)
+        console.log('Add Student api response', res)
+        toast.success('Student added Successfully', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+        setTimeout(() => {
+          router.push('/students')
+        }, 2000)
+      } catch (error: any) {
+        toast.error('Error while registering student', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+      }
     },
   })
 
@@ -70,7 +116,9 @@ const AddStudent = () => {
                 labelId='registration-for-label'
                 id='registration-for'
                 value={formik.values.registration_for}
-                onChange={formik.handleChange}
+                onChange={(e) => {
+                  formik.setFieldValue('registration_for', e.target.value)
+                }}
                 error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
               >
                 <MenuItem value='online'>Online</MenuItem>
@@ -78,19 +126,7 @@ const AddStudent = () => {
               </Select>
             </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id='firstName'
-              name='firstName'
-              label='First Name'
-              variant='outlined'
-              fullWidth
-              value={formik.values.firstName}
-              onChange={formik.handleChange}
-              error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-              helperText={formik.touched.firstName && formik.errors.firstName}
-            />
-          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               id='firstName'
@@ -210,34 +246,62 @@ const AddStudent = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} style={{ marginTop: '-8px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker']}>
-                <DatePicker label='Date of Birth' format='DD/MM/YYYY' />
+                <DatePicker
+                  label='Date of Birth'
+                  format='DD/MM/YYYY'
+                  value={formik.values.dob}
+                  onChange={(newDate) => {
+                    formik.setFieldValue('dob', dayjs(newDate).format('YYYY-MM-DD'))
+                  }}
+                />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} style={{ marginTop: '-8px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker']}>
-                <DatePicker label='Course Start Date' format='DD/MM/YYYY' />
+                <DatePicker
+                  label='Course Start Date'
+                  format='DD/MM/YYYY'
+                  value={formik.values.courseStartDate}
+                  onChange={(newDate) => {
+                    formik.setFieldValue('courseStartDate', dayjs(newDate).format('YYYY-MM-DD'))
+                  }}
+                />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} style={{ marginTop: '-8px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker']}>
-                <DatePicker label='License Issue Date' format='DD/MM/YYYY' />
+                <DatePicker
+                  label='License Issue Date'
+                  format='DD/MM/YYYY'
+                  value={formik.values.licenseIssueDate}
+                  onChange={(newDate) => {
+                    formik.setFieldValue('licenseIssueDate', dayjs(newDate).format('YYYY-MM-DD'))
+                  }}
+                />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={3} style={{ marginTop: '-8px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DemoContainer components={['DatePicker']}>
-                <DatePicker label='License Expiry Date' format='DD/MM/YYYY' />
+                <DatePicker
+                  label='License Expiry Date'
+                  format='DD/MM/YYYY'
+                  value={formik.values.licenseExpiryDate}
+                  onChange={(newDate) => {
+                    formik.setFieldValue('licenseExpiryDate', dayjs(newDate).format('YYYY-MM-DD'))
+                  }}
+                />
               </DemoContainer>
             </LocalizationProvider>
           </Grid>
@@ -277,6 +341,19 @@ const AddStudent = () => {
           </Grid>
         </Grid>
       </form>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </div>
   )
 }
