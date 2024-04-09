@@ -41,8 +41,8 @@ const StudentList = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-  const handleAddStudent = () => {
-    router.push('/addstudent')
+  const handleEditStudent = (data: any) => {
+    router.push(`/editstudent/${data}`)
   }
 
   const fetchStudentsData = async () => {
@@ -75,7 +75,7 @@ const StudentList = () => {
     handleClose()
     console.log('The data is:', data)
     try {
-      const res = await deletStudent(data[0])
+      const res = await deletStudent(data)
       console.log('Delete api response', res)
       toast.success('Student deleted Successfully', {
         position: 'top-right',
@@ -526,7 +526,7 @@ const StudentList = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <MenuItem onClick={handleAddStudent}>
+                  <MenuItem onClick={() => handleEditStudent(tableMeta.rowData[0])}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData[0])}>
@@ -637,6 +637,19 @@ const StudentList = () => {
         <ViewDetail open={openModal} handleClose={handleCloseFunc} />
         <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
       </Box>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </>
   )
 }

@@ -1,0 +1,21 @@
+.css-z3c6am-MuiFormControl-root-MuiTextField-root {
+  width: 100% !important;
+}
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+  /* border: 1px solid red !important;
+  border-radius: 5px !important; */
+  border-color: #f23d4d !important;
+}
+.css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border-color: #f23d4d !important;
+}
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: grey !important;
+  border-color: #f23d4d !important;
+}
+.Mui-focused.MuiOutlinedInput-notchedOutline {
+  border-color: #f23d4d !important;
+}
+.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root {
+  border-radius: 4px !important;
+}
