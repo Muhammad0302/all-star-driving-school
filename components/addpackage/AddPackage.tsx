@@ -3,7 +3,9 @@ import * as yup from 'yup'
 import { useFormik } from 'formik'
 import { Grid, TextField, Button } from '@mui/material'
 import { useRouter } from 'next/navigation'
-
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import { addPackage } from 'services/room'
+import 'react-toastify/dist/ReactToastify.css'
 const validationSchema = yup.object({
   name: yup.string().required('Name is required'),
   price: yup.string().required('Price is required'),
@@ -22,7 +24,41 @@ const AddPackage = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log(values)
-      router.push('/')
+      const data = {
+        name: values.name,
+        price: values.price,
+        no_of_lesson: values.noOfLesson,
+      }
+      try {
+        const res = await addPackage(data)
+        console.log('Add Package api response', res)
+        toast.success('Package added Successfully', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+        setTimeout(() => {
+          router.push('/packages')
+        }, 2000)
+      } catch (error: any) {
+        toast.error('Error while adding package', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+      }
     },
   })
 
@@ -112,6 +148,19 @@ const AddPackage = () => {
           </Grid>
         </Grid>
       </form>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </div>
   )
 }

@@ -96,15 +96,15 @@ const Sidebar = () => {
 
             <Link href='/stdsasigndtoinstrs' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
-                key='stdsasigndtoinstrs'
+                key='assignpackage'
                 disablePadding
-                sx={{ backgroundColor: activeTab === 'stdsasigndtoinstrs' ? '#f23d4d' : '' }}
+                sx={{ backgroundColor: activeTab === 'assignpackage' ? '#f23d4d' : '' }}
               >
-                <ListItemButton onClick={() => handleSiderNavigation('stdsasigndtoinstrs')}>
+                <ListItemButton onClick={() => handleSiderNavigation('assignpackage')}>
                   <ListItemIcon>
                     <AssignmentIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Students Assigned to Instructors' />
+                  <ListItemText primary='Assign Package' />
                 </ListItemButton>
               </ListItem>
             </Link>
