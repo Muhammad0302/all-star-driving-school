@@ -51,7 +51,7 @@ const EditInstructor = ({ params }: any) => {
         email: values.email,
         address: values.address,
         dob: values.dob,
-        hiringOn: values.hiring,
+        hired_as: values.hiring,
         gender: values.gender,
         driver_licence_number: values.drivingLicenseNo,
         DI_number: values.diNumber,
@@ -107,7 +107,7 @@ const EditInstructor = ({ params }: any) => {
 
         instructor.drivingLicenseNo = instructor.driver_licence_number
         instructor.diNumber = instructor.DI_number
-        instructor.hiring = instructor.hiringOn
+        instructor.hiring = instructor.hired_as
 
         setInstructors(instructor)
       } catch (error) {

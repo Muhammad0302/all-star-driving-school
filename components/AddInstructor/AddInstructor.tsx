@@ -49,7 +49,7 @@ const AddInstructor = () => {
         email: values.email,
         address: values.address,
         dob: values.dob,
-        hiringOn: values.hiring,
+        hired_as: values.hiring,
         gender: values.gender,
         driver_licence_number: values.drivingLicenseNo,
         DI_number: values.diNumber,
