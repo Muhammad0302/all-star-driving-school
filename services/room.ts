@@ -251,6 +251,56 @@ const deletAssignPackage = async (id: any): Promise<any> => {
   }
 }
 
+const getPackageByStdId = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/packageAssigToStud/getPackageByStdId/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const addLessonCompletion = async (data: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.post(`${getBaseUrl()}/lesson/add`, data, config)
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('add student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const getAllCompletedLesson = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/lesson/get`, config)
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const deleteCompletedLesson = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.delete(
+      `${getBaseUrl()}/lesson/delete/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -270,4 +320,8 @@ export {
   assignPackage,
   getAllAssignPackage,
   deletAssignPackage,
+  getPackageByStdId,
+  addLessonCompletion,
+  getAllCompletedLesson,
+  deleteCompletedLesson,
 }

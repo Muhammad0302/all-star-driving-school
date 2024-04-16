@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import { Grid, TextField, Button } from '@mui/material'
@@ -8,18 +8,30 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import {
+  getAllInstructors,
+  getAllStudents,
+  getPackageByStdId,
+  addLessonCompletion,
+} from 'services/room'
 import FormHelperText from '@mui/material/FormHelperText'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 const validationSchema = yup.object({
   instructorName: yup.string().required('Instructor Name is required'),
-  studentName: yup.string().required('Student Name is required'),
-  package: yup.string().required('Package is required'),
+  studentName: yup.string().required('Student is required'),
+  // package: yup.string().required('Package is required'),
   noOfLessonsCompleted: yup.string().required('Lessons Completed is required'),
   roadTestCompleted: yup.string().required('Road test is required'),
+  totalLesson: yup.string(),
 })
 const AddLessonCompletion = () => {
   const [roadTest, setRoadTest] = React.useState('')
-
+  const [students, setStudents] = useState([])
+  const [studentId, setStudentId] = useState(null)
+  const [instructors, setInstructors] = useState([])
+  const [instructorId, setInstructorId] = useState(null)
   const handleChange = (event: SelectChangeEvent) => {
     setRoadTest(event.target.value as string)
   }
@@ -27,19 +39,94 @@ const AddLessonCompletion = () => {
   const router = useRouter()
   const formik = useFormik({
     initialValues: {
-      instructorName: '',
-
+      totalLesson: '',
       studentName: '',
-      package: '',
+      instructorName: '',
       noOfLessonsCompleted: '',
       roadTestCompleted: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log(values)
-      router.push('/stdsintrslssncompleted')
+      // router.push('/stdsintrslssncompleted')
+
+      const data = {
+        instruct_id: instructorId,
+        std_id: studentId,
+        no_of_lesson_compeleted: values.noOfLessonsCompleted,
+        road_test_completion: values.roadTestCompleted,
+        total_lesson: values.totalLesson,
+      }
+      try {
+        const res = await addLessonCompletion(data)
+        console.log('lesson completion api response', res)
+        toast.success('Added lesson completion successfully', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+        setTimeout(() => {
+          router.push('/stdsintrslssncompleted')
+        }, 2000)
+      } catch (error: any) {
+        toast.error('Error while completing lesson', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+      }
     },
   })
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const res = await getAllStudents()
+        const students = res.students
+        setStudents(students)
+      } catch (error) {
+        console.error('Error fetching students data:', error)
+      }
+    }
+    const fetchInstructorData = async () => {
+      try {
+        const res = await getAllInstructors()
+        const instructor = res.instructors
+        setInstructors(instructor)
+      } catch (error) {
+        console.error('Error fetching instructor data:', error)
+      }
+    }
+    fetchStudentData()
+    fetchInstructorData()
+  }, [])
+  useEffect(() => {
+    const fetchPackageByStdId = async () => {
+      try {
+        const res = await getPackageByStdId(studentId)
+        console.log('The package data is:', res)
+        const packags = res.packageAssigToStud[0]
+
+        formik.setFieldValue('totalLesson', packags.package_id.no_of_lesson)
+      } catch (error) {
+        console.error('Error fetching students data:', error)
+      }
+    }
+    fetchPackageByStdId()
+  }, [studentId])
+
   // added here ..
   return (
     <div className='mt-[3.5rem]'>
@@ -56,7 +143,7 @@ const AddLessonCompletion = () => {
                   id='demo-simple-select-label'
                   error={formik.touched.instructorName && Boolean(formik.errors.instructorName)}
                 >
-                  Instructor Name
+                  Instructor
                 </InputLabel>
                 <Select
                   labelId='demo-simple-select-label'
@@ -65,21 +152,23 @@ const AddLessonCompletion = () => {
                   label='Instructor Name'
                   onChange={(e) => {
                     formik.setFieldValue('instructorName', e.target.value)
+                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
+
+                    const selectedInstructor: any = instructors.find(
+                      (instructor: any) =>
+                        instructor.firstName === selectedFirstName &&
+                        instructor.lastName === selectedLastName,
+                    )
+                    if (selectedInstructor) {
+                      setInstructorId(selectedInstructor._id)
+                    }
                   }}
                 >
-                  <MenuItem value={'scarlett'}>Scarlett</MenuItem>
-                  <MenuItem value={'lucas'}>Lucas</MenuItem>
-                  <MenuItem value={'ella'}>Ella</MenuItem>
-                  <MenuItem value={'nathan'}>Nathan</MenuItem>
-                  <MenuItem value={'grace'}>Grace</MenuItem>
-                  <MenuItem value={'austin'}>Austin</MenuItem>
-                  <MenuItem value={'madison'}>Madison</MenuItem>
-                  <MenuItem value={'carter'}>Carter</MenuItem>
-                  <MenuItem value={'aubrey'}>Aubrey</MenuItem>
-                  <MenuItem value={'sebastian'}>Sebastian</MenuItem>
-                  <MenuItem value={'claire'}>Claire</MenuItem>
-                  <MenuItem value={'gabriel'}>Gabriel</MenuItem>
-                  <MenuItem value={'zoey'}>Zoey</MenuItem>
+                  {instructors?.map((instructor: any, index) => (
+                    <MenuItem key={index} value={`${instructor.firstName} ${instructor.lastName}`}>
+                      {`${instructor.firstName} ${instructor.lastName}`}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {formik.touched.instructorName && Boolean(formik.errors.instructorName) && (
                   <FormHelperText sx={{ color: '#d32f2f' }}>
@@ -97,7 +186,7 @@ const AddLessonCompletion = () => {
                   id='demo-simple-select-label'
                   error={formik.touched.studentName && Boolean(formik.errors.studentName)}
                 >
-                  Student Name
+                  Student
                 </InputLabel>
                 <Select
                   labelId='demo-simple-select-label'
@@ -106,21 +195,23 @@ const AddLessonCompletion = () => {
                   label='Student Name'
                   onChange={(e) => {
                     formik.setFieldValue('studentName', e.target.value)
+                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
+
+                    const selectedStudent: any = students.find(
+                      (student: any) =>
+                        student.firstName === selectedFirstName &&
+                        student.lastName === selectedLastName,
+                    )
+                    if (selectedStudent) {
+                      setStudentId(selectedStudent._id)
+                    }
                   }}
                 >
-                  <MenuItem value={'biden'}>Biden</MenuItem>
-                  <MenuItem value={'ahmad'}>Ahmad</MenuItem>
-                  <MenuItem value={'max'}>Max</MenuItem>
-                  <MenuItem value={'verma'}>Verma</MenuItem>
-                  <MenuItem value={'john'}>John</MenuItem>
-                  <MenuItem value={'emma'}>Emma</MenuItem>
-                  <MenuItem value={'david'}>David</MenuItem>
-                  <MenuItem value={'olivia'}>Olivia</MenuItem>
-                  <MenuItem value={'william'}>William</MenuItem>
-                  <MenuItem value={'sophia'}>Sophia</MenuItem>
-                  <MenuItem value={'jackson'}>Jackson</MenuItem>
-                  <MenuItem value={'mia'}>Mia</MenuItem>
-                  <MenuItem value={'ethan'}>Ethan</MenuItem>
+                  {students?.map((student: any, index) => (
+                    <MenuItem key={index} value={`${student.firstName} ${student.lastName}`}>
+                      {`${student.firstName} ${student.lastName}`}
+                    </MenuItem>
+                  ))}
                 </Select>
                 {formik.touched.studentName && Boolean(formik.errors.studentName) && (
                   <FormHelperText sx={{ color: '#d32f2f' }}>
@@ -130,7 +221,7 @@ const AddLessonCompletion = () => {
               </FormControl>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -180,6 +271,26 @@ const AddLessonCompletion = () => {
                 )}
               </FormControl>
             </Box>
+          </Grid> */}
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='totalLesson'
+              name='totalLesson'
+              label='Total no of Lesson'
+              variant='outlined'
+              fullWidth
+              value={formik.values.totalLesson}
+              onChange={formik.handleChange}
+              error={formik.touched.totalLesson && Boolean(formik.errors.totalLesson)}
+              helperText={formik.touched.totalLesson && formik.errors.totalLesson}
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+            />
           </Grid>
 
           <Grid item xs={12} sm={6}>
@@ -253,6 +364,19 @@ const AddLessonCompletion = () => {
           </Grid>
         </Grid>
       </form>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </div>
   )
 }

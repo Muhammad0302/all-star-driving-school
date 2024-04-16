@@ -1,18 +1,22 @@
 import { TextField, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
+import { getAllCompletedLesson, deleteCompletedLesson } from 'services/room'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const StdsIntrsLssnCompleted = () => {
   const router = useRouter()
   const [anchorEl, setAnchorEl] = useState(null)
-
+  const [lessons, setLessons] = useState([])
+  const [counter, setCounter] = useState(0)
   const open = Boolean(anchorEl)
   const [activeRow, setActiveRow] = useState(null)
   const handleClick = (event: any, index: any) => {
@@ -48,7 +52,75 @@ const StdsIntrsLssnCompleted = () => {
     ['Instructor 20', 'E24/12/20', 'Samuel Lee', '$19.50', '$19.75', '$20.00', '55', 'No'],
   ]
 
+  const handleDelete = async (data: any) => {
+    handleClose()
+    console.log('The data is:', data)
+    try {
+      const res = await deleteCompletedLesson(data[0])
+      console.log('Delete api response', res)
+      toast.success('Lesson deleted Successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error: any) {
+      toast.error('Error while deleting lessons', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
+  const fetchLeesonData = async () => {
+    try {
+      const response = await getAllCompletedLesson()
+      console.log('The response of get all lesson is', response)
+      const lessons: any = response.lessons
+
+      const AllLessons: any = lessons.map((lesson: any) => {
+        return {
+          ID: lesson?._id,
+          InstructorName: `${lesson?.instruct_id?.firstName} ${lesson?.instruct_id?.lastName}`,
+          StudentID: lesson?.std_id.supportive_id,
+          StudentName: `${lesson?.std_id?.firstName} ${lesson?.std_id?.lastName}`,
+          LessonsCompleted: lesson?.no_of_lesson_compeleted,
+          RoadTestCompleted: lesson?.road_test_completion,
+          totalnooflesson: lesson?.total_lesson,
+        }
+      })
+      setLessons(AllLessons)
+    } catch (error: any) {
+      console.error('Error fetching lesson data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchLeesonData()
+  }, [counter])
+
   const columns = [
+    {
+      name: 'ID',
+      label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
     {
       name: 'InstructorName',
       label: 'Instructor Name',
@@ -74,14 +146,13 @@ const StdsIntrsLssnCompleted = () => {
       },
     },
     {
-      name: 'Package',
-      label: 'Package',
+      name: 'totalnooflesson',
+      label: 'Total no of Lessons',
       options: {
         filter: true,
         sort: false,
       },
     },
-
     {
       name: 'LessonsCompleted',
       label: 'Lessons Completed',
@@ -126,9 +197,7 @@ const StdsIntrsLssnCompleted = () => {
                   <MenuItem onClick={handleAddLessonCompletion}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem
-                  // onClick={() => handleDelete(tableMeta.rowData[0])}
-                  >
+                  <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
                 </Menu>
@@ -168,8 +237,21 @@ const StdsIntrsLssnCompleted = () => {
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
           Students/Instructors Lessons Completion List
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={lessons} columns={columns} options={options} />
       </Box>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </>
   )
 }
