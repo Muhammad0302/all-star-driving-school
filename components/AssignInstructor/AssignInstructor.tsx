@@ -10,15 +10,17 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import { getAllInstructors, getAllStudents, getAllPackages } from 'services/room'
-
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import { assignPackage } from 'services/room'
+import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 const validationSchema = yup.object({
   studentName: yup.string().required('Student is required'),
   instructorName: yup.string().required('Instructor is required'),
   packageName: yup.string().required('Package is required'),
-  Price: yup.string().required('Price is required'),
+  price: yup.string().required('Price is required'),
   payementType: yup.string(),
-  payementPlan: yup.string(),
+  payementPlan: yup.string().required('Payment plan is required'),
   advancePayment: yup.string(),
   remainingPrice: yup.string(),
 })
@@ -44,7 +46,47 @@ const AssignInstructor = () => {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log(values)
-      router.push('/stdsasigndtoinstrs')
+
+      const data = {
+        instructor_id: instructorId,
+        std_id: studentId,
+        package_id: packageId,
+        paymentPlan: values.payementPlan,
+        paymentType: values.payementType,
+        advance: values.advancePayment,
+        total: values.price,
+        remainingAmount: values.remainingPrice,
+      }
+      try {
+        const res = await assignPackage(data)
+        console.log('Assign package api response', res)
+        toast.success('Instructor and package assigned successfully', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+        setTimeout(() => {
+          router.push('/stdsasigndtoinstrs')
+        }, 2000)
+      } catch (error: any) {
+        toast.error('Error while assigning package', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+      }
     },
   })
 
@@ -316,6 +358,11 @@ const AssignInstructor = () => {
                 <MenuItem value='3'>3</MenuItem>
                 <MenuItem value='4'>4</MenuItem>
               </Select>
+              {formik.touched.payementPlan && Boolean(formik.errors.payementPlan) && (
+                <FormHelperText sx={{ color: '#d32f2f' }}>
+                  {formik.errors.payementPlan}
+                </FormHelperText>
+              )}
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -355,6 +402,19 @@ const AssignInstructor = () => {
           </Grid>
         </Grid>
       </form>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </div>
   )
 }

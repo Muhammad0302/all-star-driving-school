@@ -120,7 +120,7 @@ const StdsAsigndToInstrs = () => {
   const HeaderElements = () => {
     return (
       <Button type='button' sx={{ color: '#f23d4d' }} onClick={handleAssignInstructor}>
-        + Assign Instructor
+        + Assign Package
       </Button>
     )
   }

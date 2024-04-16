@@ -209,6 +209,20 @@ const addPackage = async (data: any): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
+const assignPackage = async (data: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${getBaseUrl()}/packageAssigToStud/add`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('add student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
 
 export {
   addInstructor,
@@ -226,4 +240,5 @@ export {
   getPackageById,
   deletPackage,
   addPackage,
+  assignPackage,
 }
