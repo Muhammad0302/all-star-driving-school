@@ -26,8 +26,11 @@ const Package = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-  const handleAddPackage = () => {
-    router.push('/addpackage')
+  const handleAddPackage = (data: any) => {
+    router.push('/editpackage')
+  }
+  const handleEditPackage = (data: any) => {
+    router.push(`/editpackage/${data[0]}`)
   }
   const data = [
     ['Package #1', '$589', '9 '],
@@ -140,7 +143,7 @@ const Package = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <MenuItem onClick={handleAddPackage}>
+                  <MenuItem onClick={() => handleEditPackage(tableMeta.rowData)}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>

@@ -126,7 +126,7 @@ const Sidebar = () => {
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link href='/pvtlssnasgndtoinstrs' style={{ textDecoration: 'none', color: 'inherit' }}>
+            {/* <Link href='/pvtlssnasgndtoinstrs' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='pvtlssnasgndtoinstrs'
                 disablePadding
@@ -139,7 +139,7 @@ const Sidebar = () => {
                   <ListItemText primary='Private Lessons Assigned to Instrs' />
                 </ListItemButton>
               </ListItem>
-            </Link>
+            </Link> */}
             <Link href='/payments' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='payments'
@@ -154,7 +154,7 @@ const Sidebar = () => {
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link href='/report' style={{ textDecoration: 'none', color: 'inherit' }}>
+            {/* <Link href='/report' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='report'
                 disablePadding
@@ -167,7 +167,7 @@ const Sidebar = () => {
                   <ListItemText primary='Instructors Payment' />
                 </ListItemButton>
               </ListItem>
-            </Link>
+            </Link> */}
             <Link href='/packages' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='Packages'

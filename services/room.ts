@@ -177,10 +177,7 @@ const editPackges = async (data: any, id: string): Promise<any> => {
 
 const getPackageById = async (id: any): Promise<any> => {
   try {
-    const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/package/getPackageById/${id}`,
-      config,
-    )
+    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/package/getById/${id}`, config)
     return response.data // Return the response data
   } catch (error: any) {
     // Handle addRoom error

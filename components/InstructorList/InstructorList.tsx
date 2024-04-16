@@ -209,14 +209,14 @@ const InstructorList = () => {
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
-                  <MenuItem
+                  {/* <MenuItem
                     onClick={() => {
                       handleOpen()
                       handleClose()
                     }}
                   >
                     <PaymentsOutlinedIcon sx={{ marginRight: '2px' }} /> Pay
-                  </MenuItem>
+                  </MenuItem> */}
                 </Menu>
               ) : (
                 ''
