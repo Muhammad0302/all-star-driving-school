@@ -74,6 +74,46 @@ const StdsAsigndToInstrs = () => {
       },
     },
     {
+      name: 'nooflesson',
+      label: 'No Of Lesson',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'totalPrice',
+      label: 'Total Price',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'advancePayment',
+      label: 'Advance Payment',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'remainingprice',
+      label: 'Remaining Price',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'paymentplan',
+      label: 'Payment Plan',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
       name: 'Actions',
       options: {
         sort: false,
