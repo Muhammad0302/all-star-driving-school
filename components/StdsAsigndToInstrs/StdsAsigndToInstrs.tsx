@@ -1,5 +1,5 @@
 import { TextField, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -7,12 +7,16 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getAllAssignPackage, deletAssignPackage } from 'services/room'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const StdsAsigndToInstrs = () => {
   const router = useRouter()
+  const [counter, setCounter] = useState(0)
   const [anchorEl, setAnchorEl] = useState(null)
-
+  const [studentList, setStudentList] = useState([])
   const open = Boolean(anchorEl)
   const [activeRow, setActiveRow] = useState(null)
   const handleClick = (event: any, index: any) => {
@@ -25,6 +29,7 @@ const StdsAsigndToInstrs = () => {
   const handleAssignInstructor = () => {
     router.push('/assigninstructor')
   }
+
   const data = [
     ['John Doe', 'E24/12/1', 'Emma Watson'],
     ['Jane Smith', 'E24/12/2', 'Ian Johnson'],
@@ -48,7 +53,76 @@ const StdsAsigndToInstrs = () => {
     ['Samuel Lee', 'E24/12/20', 'Sophia Smith'],
   ]
 
+  const fetchStudentsData = async () => {
+    try {
+      const response = await getAllAssignPackage()
+      console.log('The response is', response)
+      const instructors: any = response.packagesAssigToStuds
+      const Students: any = instructors.map((student: any) => {
+        return {
+          ID: student?._id,
+          InstructorName: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
+          StudentID: student?.std_id.supportive_id,
+          StudentName: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
+          nooflesson: student?.package_id.no_of_lesson,
+          totalPrice: student?.package_id.price,
+          advancePayment: student?.advance,
+          remainingprice: student?.remainingAmount,
+          paymentplan: student?.paymentPlan,
+        }
+      })
+      setStudentList(Students)
+    } catch (error: any) {
+      console.error('Error fetching data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchStudentsData()
+  }, [counter])
+
+  const handleDelete = async (data: any) => {
+    handleClose()
+    console.log('The data is:', data)
+    try {
+      const res = await deletAssignPackage(data[0])
+      console.log('Delete api response', res)
+      toast.success('Assign Package deleted Successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error: any) {
+      toast.error('Error while deleting assign package', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
   const columns = [
+    {
+      name: 'ID',
+      label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
     {
       name: 'InstructorName',
       label: 'Instructor Name',
@@ -141,9 +215,7 @@ const StdsAsigndToInstrs = () => {
                   <MenuItem onClick={handleAssignInstructor}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem
-                  // onClick={() => handleDelete(tableMeta.rowData[0])}
-                  >
+                  <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
                 </Menu>
@@ -181,10 +253,23 @@ const StdsAsigndToInstrs = () => {
     <>
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Students Assigned to Instructors List
+          Assign Packages to Students List
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={studentList} columns={columns} options={options} />
       </Box>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </>
   )
 }

@@ -237,6 +237,20 @@ const getAllAssignPackage = async (): Promise<any> => {
   }
 }
 
+const deletAssignPackage = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.delete(
+      `${getBaseUrl()}/packageAssigToStud/delete/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -255,4 +269,5 @@ export {
   addPackage,
   assignPackage,
   getAllAssignPackage,
+  deletAssignPackage,
 }
