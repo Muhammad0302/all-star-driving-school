@@ -692,7 +692,7 @@ const PaymentList = () => {
     <>
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Payment List
+          Students Payment list
         </div>
         <MUIDataTable title={''} data={paymentData} columns={columns} options={options} />
         <ViewDetail open={openModal} handleClose={handleCloseFunc} />
