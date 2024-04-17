@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { getAllInstructors, deletInstructor } from 'services/room'
@@ -96,6 +97,10 @@ const InstructorList = () => {
         transition: Bounce,
       })
     }
+  }
+
+  const handleViewStudent = () => {
+    router.push('insturctorstudents')
   }
 
   const data = [
@@ -220,11 +225,15 @@ const InstructorList = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
+                  {/* insturctorstudents */}
                   <MenuItem onClick={() => handleEditInstructor(tableMeta.rowData)}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
+                  </MenuItem>
+                  <MenuItem onClick={handleViewStudent}>
+                    <PeopleAltIcon /> View students
                   </MenuItem>
                   <MenuItem
                     onClick={() => {
