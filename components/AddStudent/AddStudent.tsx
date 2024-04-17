@@ -100,7 +100,12 @@ const AddStudent = () => {
       }
     },
   })
-
+  const formatLicenseNumber = (value: any) => {
+    // Remove any existing hyphens and limit input to 17 characters
+    const formattedValue = value.replace(/-/g, '').substr(0, 15)
+    // Add hyphens after the 5th and 11th characters
+    return formattedValue.replace(/(.{5})(.{1,6})/, '$1-$2').replace(/(.{11})(.{1,6})/, '$1-$2')
+  }
   return (
     <div className='mt-[3.5rem]'>
       <form onSubmit={formik.handleSubmit}>
@@ -240,7 +245,11 @@ const AddStudent = () => {
                 focused: false,
               }}
               value={formik.values.licenseNumber}
-              onChange={formik.handleChange}
+              // onChange={formik.handleChange}
+              onChange={(e) => {
+                const formattedValue = formatLicenseNumber(e.target.value)
+                formik.setFieldValue('licenseNumber', formattedValue)
+              }}
               error={formik.touched.licenseNumber && Boolean(formik.errors.licenseNumber)}
               helperText={formik.touched.licenseNumber && (formik.errors.licenseNumber as any)}
             />

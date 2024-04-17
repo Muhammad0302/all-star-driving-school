@@ -26,7 +26,12 @@ const validationSchema = yup.object({
 
 const AddInstructor = () => {
   const router = useRouter()
-
+  const formatLicenseNumber = (value: any) => {
+    // Remove any existing hyphens and limit input to 17 characters
+    const formattedValue = value.replace(/-/g, '').substr(0, 15)
+    // Add hyphens after the 5th and 11th characters
+    return formattedValue.replace(/(.{5})(.{1,6})/, '$1-$2').replace(/(.{11})(.{1,6})/, '$1-$2')
+  }
   const formik = useFormik({
     initialValues: {
       firstName: '',
@@ -220,7 +225,11 @@ const AddInstructor = () => {
               variant='outlined'
               fullWidth
               value={formik.values.drivingLicenseNo}
-              onChange={formik.handleChange}
+              // onChange={formik.handleChange}
+              onChange={(e) => {
+                const formattedValue = formatLicenseNumber(e.target.value)
+                formik.setFieldValue('drivingLicenseNo', formattedValue)
+              }}
               error={formik.touched.drivingLicenseNo && Boolean(formik.errors.drivingLicenseNo)}
               helperText={formik.touched.drivingLicenseNo && formik.errors.drivingLicenseNo}
               sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
@@ -235,7 +244,11 @@ const AddInstructor = () => {
               variant='outlined'
               fullWidth
               value={formik.values.diNumber}
-              onChange={formik.handleChange}
+              // onChange={formik.handleChange}
+              onChange={(e) => {
+                const formattedValue = formatLicenseNumber(e.target.value)
+                formik.setFieldValue('diNumber', formattedValue)
+              }}
               error={formik.touched.diNumber && Boolean(formik.errors.diNumber)}
               helperText={formik.touched.diNumber && formik.errors.diNumber}
               sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
