@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import { Grid, TextField, Button } from '@mui/material'
@@ -11,32 +11,86 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { addPayment, getAllStudents } from 'services/room'
+import dayjs from 'dayjs'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import './styles.css'
 const validationSchema = yup.object({
-  studentName: yup.string().required('Student Name is required'),
+  studentName: yup.string().required('Student is required'),
   amount: yup.string().required('Amount is required'),
-  // paymentType: yup.string().required('Payment Type is required'),
-  paymentMethod: yup.string().required('Payment Method is required'),
+  payementType: yup.string().required('Payment type is required'),
   date: yup.string(),
 })
 const AddPayment = () => {
   const router = useRouter()
+  const [students, setStudents] = useState([])
+  const [studentId, setStudentId] = useState(null)
   const formik = useFormik({
     initialValues: {
       studentName: '',
       amount: '',
-      // paymentType: '',
-      paymentMethod: '',
+      payementType: '',
       date: null,
     },
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
       console.log(values)
-      router.push('/payments')
+      const data = {
+        std_id: studentId,
+        amount: values.amount,
+        payment_method: values.payementType,
+        date: values.date,
+      }
+      try {
+        const res = await addPayment(data)
+        console.log('Assign package api response', res)
+        toast.success('Payment added successfully', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+        setTimeout(() => {
+          router.push('/payments')
+        }, 2000)
+      } catch (error: any) {
+        toast.error('Error while adding payment', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+      }
     },
   })
+
+  useEffect(() => {
+    const fetchStudentData = async () => {
+      try {
+        const res = await getAllStudents()
+        console.log('The student data is:', res)
+        const students = res.students
+        setStudents(students)
+      } catch (error) {
+        console.error('Error fetching students data:', error)
+      }
+    }
+    fetchStudentData()
+  }, [])
+
   console.log('the formik values is:', formik.values)
   return (
     <div className='mt-[3.5rem]'>
@@ -53,7 +107,7 @@ const AddPayment = () => {
                   id='demo-simple-select-label'
                   error={formik.touched.studentName && Boolean(formik.errors.studentName)}
                 >
-                  Student Name
+                  Student
                 </InputLabel>
                 <Select
                   labelId='demo-simple-select-label'
@@ -62,26 +116,27 @@ const AddPayment = () => {
                   label='Student Name'
                   onChange={(e) => {
                     formik.setFieldValue('studentName', e.target.value)
+                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
+
+                    const selectedStudent: any = students.find(
+                      (student: any) =>
+                        student.firstName === selectedFirstName &&
+                        student.lastName === selectedLastName,
+                    )
+                    if (selectedStudent) {
+                      setStudentId(selectedStudent._id)
+                    }
                   }}
                 >
-                  <MenuItem value={'biden'}>Biden</MenuItem>
-                  <MenuItem value={'ahmad'}>Ahmad</MenuItem>
-                  <MenuItem value={'max'}>Max</MenuItem>
-                  <MenuItem value={'verma'}>Verma</MenuItem>
-                  <MenuItem value={'john'}>John</MenuItem>
-                  <MenuItem value={'emma'}>Emma</MenuItem>
-                  <MenuItem value={'david'}>David</MenuItem>
-                  <MenuItem value={'olivia'}>Olivia</MenuItem>
-                  <MenuItem value={'william'}>William</MenuItem>
-                  <MenuItem value={'sophia'}>Sophia</MenuItem>
-                  <MenuItem value={'jackson'}>Jackson</MenuItem>
-                  <MenuItem value={'mia'}>Mia</MenuItem>
-                  <MenuItem value={'ethan'}>Ethan</MenuItem>
+                  {students?.map((student: any, index) => (
+                    <MenuItem key={index} value={`${student.firstName} ${student.lastName}`}>
+                      {`${student.firstName} ${student.lastName}`}
+                    </MenuItem>
+                  ))}
                 </Select>
-
-                {!!(formik.touched.studentName && formik.errors.studentName) && (
+                {formik.touched.studentName && Boolean(formik.errors.studentName) && (
                   <FormHelperText sx={{ color: '#d32f2f' }}>
-                    {formik.errors.studentName as string}
+                    {formik.errors.studentName}
                   </FormHelperText>
                 )}
               </FormControl>
@@ -112,39 +167,35 @@ const AddPayment = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6} sx={{}}>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel
-                  id='demo-simple-select-label'
-                  error={formik.touched.paymentMethod && Boolean(formik.errors.paymentMethod)}
-                >
-                  Payment Method
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={formik.values.paymentMethod}
-                  label='Payment Method'
-                  onChange={(e) => {
-                    formik.setFieldValue('paymentMethod', e.target.value)
-                  }}
-                >
-                  <MenuItem value={'cash'}>Cash</MenuItem>
-                  <MenuItem value={'e-transfer'}>E-Transfer</MenuItem>
-                  <MenuItem value={'credit-card'}>Credit Card</MenuItem>
-                  <MenuItem value={'paypal'}>PayPal</MenuItem>
-                  <MenuItem value={'cheque'}>Cheque</MenuItem>
-                  <MenuItem value={'bank-transfer'}>Bank Transfer</MenuItem>
-                </Select>
-
-                {!!(formik.touched.paymentMethod && formik.errors.paymentMethod) && (
-                  <FormHelperText sx={{ color: '#d32f2f' }}>
-                    {formik.errors.paymentMethod as string}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Box>
+          <Grid item xs={12} sm={6}>
+            <FormControl fullWidth>
+              <InputLabel
+                id='payementType-label'
+                error={formik.touched.payementType && Boolean(formik.errors.payementType)}
+              >
+                Payment Type
+              </InputLabel>
+              <Select
+                labelId='payementType-label'
+                id='payementType'
+                value={formik.values.payementType}
+                onChange={(e) => {
+                  formik.setFieldValue('payementType', e.target.value)
+                }}
+                error={formik.touched.payementType && Boolean(formik.errors.payementType)}
+                sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
+              >
+                <MenuItem value='cash'>Cash</MenuItem>
+                <MenuItem value='credit_card'>Credit Card</MenuItem>
+                <MenuItem value='debit_card'>Debit Card</MenuItem>
+                <MenuItem value='bank_transfer'>Bank Transfer</MenuItem>
+              </Select>
+              {formik.touched.payementType && Boolean(formik.errors.payementType) && (
+                <FormHelperText sx={{ color: '#d32f2f' }}>
+                  {formik.errors.payementType}
+                </FormHelperText>
+              )}
+            </FormControl>
           </Grid>
           <Grid item xs={12} sm={3} sx={{ marginTop: '0px' }}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -155,6 +206,9 @@ const AddPayment = () => {
                   onChange={(newDate) => {
                     formik.setFieldValue('date', newDate)
                   }}
+                  // onChange={(newDate) => {
+                  //   formik.setFieldValue('date', dayjs(newDate).format('YYYY-MM-DD'))
+                  // }}
                   // @ts-ignore
                   renderInput={(startProps: any) => <TextField {...startProps} />}
                   format='DD/MM/YYYY'
@@ -184,6 +238,19 @@ const AddPayment = () => {
           </Grid>
         </Grid>
       </form>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </div>
   )
 }

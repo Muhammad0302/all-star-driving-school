@@ -301,6 +301,61 @@ const deleteCompletedLesson = async (id: any): Promise<any> => {
   }
 }
 
+const addPayment = async (data: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${getBaseUrl()}/studnetPayment/add`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('add student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const getAllPayment = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/studnetPayment/get`, config)
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const deletePayment = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.delete(
+      `${getBaseUrl()}/studnetPayment/delete/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const editPayment = async (data: any, id: string): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.put(
+      `${getBaseUrl()}/studnetPayment/update/${id}`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('update package error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -324,4 +379,8 @@ export {
   addLessonCompletion,
   getAllCompletedLesson,
   deleteCompletedLesson,
+  addPayment,
+  getAllPayment,
+  deletePayment,
+  editPayment,
 }

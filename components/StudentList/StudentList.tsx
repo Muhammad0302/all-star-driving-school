@@ -532,7 +532,7 @@ const StudentList = () => {
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData[0])}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
-                  <MenuItem
+                  {/* <MenuItem
                     onClick={() => {
                       handleOpen()
                       handleClose()
@@ -547,7 +547,7 @@ const StudentList = () => {
                     }}
                   >
                     <HistoryIcon /> Payment History
-                  </MenuItem>
+                  </MenuItem> */}
                 </Menu>
               ) : (
                 ''

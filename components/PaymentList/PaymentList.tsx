@@ -1,5 +1,5 @@
 import { TextField, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -8,12 +8,22 @@ import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import PaymentHistory from './PaymentHistory'
+import HistoryIcon from '@mui/icons-material/History'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getAllPayment, deletePayment } from 'services/room'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 import ViewDetail from './ViewDetail'
 const PaymentList = () => {
   const router = useRouter()
+  const [counter, setCounter] = useState(0)
+  const [paymentData, setPaymentData] = useState([])
   const [openModal, setOpenModal] = useState(false)
+  const [openModalPmntHstry, setOpenModalPmntHstry] = useState(false)
+  const handleCloseFuncPmntHstry = () => setOpenModalPmntHstry(false)
+  const handleOpenPmntHstry = () => setOpenModalPmntHstry(true)
   const handleOpen = () => setOpenModal(true)
   const handleCloseFunc = () => setOpenModal(false)
   const [anchorEl, setAnchorEl] = useState(null)
@@ -392,7 +402,72 @@ const PaymentList = () => {
     ],
   ]
 
+  const fetchPaymentData = async () => {
+    try {
+      const response = await getAllPayment()
+      console.log('The response of get all payment is', response)
+      const payments: any = response.studentPayments
+      const AllPayments: any = payments.map((payment: any) => {
+        return {
+          ID: payment?._id,
+          StudentID: payment?.std_id.supportive_id,
+          StudentName: `${payment?.std_id?.firstName} ${payment?.std_id?.lastName}`,
+          TotalPayments: payment?.amount,
+          phoneNumber: payment?.std_id.phone_number,
+        }
+      })
+      setPaymentData(AllPayments)
+    } catch (error: any) {
+      console.error('Error fetching instructor data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchPaymentData()
+  }, [counter])
+
+  const handleDelete = async (data: any) => {
+    handleClose()
+    console.log('The data is:', data)
+    try {
+      const res = await deletePayment(data[0])
+      console.log('Delete api response', res)
+      toast.success('Payment deleted Successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error: any) {
+      toast.error('Error while deleting payment', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
   const columns = [
+    {
+      name: 'ID',
+      label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
     {
       name: 'StudentID',
       label: 'Student ID',
@@ -410,37 +485,46 @@ const PaymentList = () => {
       },
     },
     {
-      name: 'Payment1',
-      label: 'Payment1',
+      name: 'phoneNumber',
+      label: 'Phone Number',
       options: {
         filter: true,
         sort: false,
       },
     },
-    {
-      name: 'Payment2',
-      label: 'Payment2',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Payment3',
-      label: 'Payment3',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Payment4',
-      label: 'Payment4',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+
+    // {
+    //   name: 'Payment1',
+    //   label: 'Payment1',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'Payment2',
+    //   label: 'Payment2',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'Payment3',
+    //   label: 'Payment3',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'Payment4',
+    //   label: 'Payment4',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     // {
     //   name: 'Payment1Method',
     //   label: 'Payment1 Method',
@@ -473,22 +557,22 @@ const PaymentList = () => {
     //     sort: false,
     //   },
     // },
-    {
-      name: 'PaymentType',
-      label: 'Payment Type',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Payment1Date',
-      label: 'Payment1 Date',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: 'PaymentType',
+    //   label: 'Payment Type',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'Payment1Date',
+    //   label: 'Payment1 Date',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     // {
     //   name: 'Payment2Date',
     //   label: 'Payment2 Date',
@@ -550,16 +634,24 @@ const PaymentList = () => {
                   <MenuItem onClick={handleAddIssueBook}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem onClick={handleClose}>
+                  <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
-                  <MenuItem
+                  {/* <MenuItem
                     onClick={() => {
                       handleOpen()
                       handleClose()
                     }}
                   >
                     <RemoveRedEyeIcon /> View Detail
+                  </MenuItem> */}
+                  <MenuItem
+                    onClick={() => {
+                      handleOpenPmntHstry()
+                      handleClose()
+                    }}
+                  >
+                    <HistoryIcon /> Payment History
                   </MenuItem>
                 </Menu>
               ) : (
@@ -594,9 +686,23 @@ const PaymentList = () => {
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
           Payment List
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={paymentData} columns={columns} options={options} />
         <ViewDetail open={openModal} handleClose={handleCloseFunc} />
+        <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
       </Box>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce}
+      />
     </>
   )
 }
