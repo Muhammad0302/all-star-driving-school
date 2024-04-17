@@ -77,21 +77,21 @@ const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
                   </tr>
                   <tr className='font-medium'>
                     <td className='border py-2 text-center'>2</td>
-                    <td className='border py-2 text-center'>XYZ</td>
+                    <td className='border py-2 text-center'>Credit Card</td>
                     <td className='border py-2 text-center'>$250</td>
                     <td className='border py-2 text-center'>15/5/2024</td>
                     <td className='border py-2 text-center'>10:30am</td>
                   </tr>
                   <tr className='font-medium'>
                     <td className='border py-2 text-center'>3</td>
-                    <td className='border py-2 text-center'>ABC</td>
+                    <td className='border py-2 text-center'>Debit Card</td>
                     <td className='border py-2 text-center'>$400</td>
                     <td className='border py-2 text-center'>8/8/2024</td>
                     <td className='border py-2 text-center'>2:15pm</td>
                   </tr>
                   <tr className='font-medium'>
                     <td className='border py-2 text-center'>4</td>
-                    <td className='border py-2 text-center'>LMN</td>
+                    <td className='border py-2 text-center'>Bank Transfer</td>
                     <td className='border py-2 text-center'>$350</td>
                     <td className='border py-2 text-center'>12/11/2024</td>
                     <td className='border py-2 text-center'>6:00pm</td>

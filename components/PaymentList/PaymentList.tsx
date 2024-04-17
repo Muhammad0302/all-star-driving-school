@@ -414,6 +414,7 @@ const PaymentList = () => {
           StudentName: `${payment?.std_id?.firstName} ${payment?.std_id?.lastName}`,
           TotalPayments: payment?.amount,
           phoneNumber: payment?.std_id.phone_number,
+          PaymentPlan: 4,
         }
       })
       setPaymentData(AllPayments)
@@ -597,7 +598,14 @@ const PaymentList = () => {
     //     sort: false,
     //   },
     // },
-
+    {
+      name: 'PaymentPlan',
+      label: 'Payment Plan',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
     {
       name: 'TotalPayments',
       label: 'Total Payments',

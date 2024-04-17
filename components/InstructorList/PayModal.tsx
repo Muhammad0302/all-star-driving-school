@@ -49,6 +49,8 @@ const PayModal = ({ open, handleClose }: ViewDetailInput) => {
   const formik = useFormik({
     initialValues: {
       ChequeNo: '',
+      rate: '',
+      noOfLessonToPay: '',
       issueDate: null,
     },
     validationSchema: validationSchema,
@@ -78,14 +80,15 @@ const PayModal = ({ open, handleClose }: ViewDetailInput) => {
               sx={{ cursor: 'pointer', position: 'absolute', top: 15, right: 20 }}
               onClick={handleClose}
             />
-            <div className='container mx-auto mt-6'>
+            <div className='container flex justify-between mt-6'>
               <table className='w-full border-collapse'>
                 <thead>
                   <tr className='font-bold'>
-                    <th className='border  py-2'>ID</th>
                     <th className='border  py-2'>Name</th>
                     <th className='border  py-2'>Phone Number</th>
-                    <th className='border  py-2'>Rate</th>
+                    <th className='border  py-2'>Address</th>
+                    <th className='border  py-2'>Hire As</th>
+                    {/* <th className='border  py-2'>Rate</th> */}
                     <th className='border  py-2'>No of Lessons</th>
                     <th className='border  py-2'>Tax</th>
                     <th className='border  py-2'>Total Compensation</th>
@@ -93,10 +96,11 @@ const PayModal = ({ open, handleClose }: ViewDetailInput) => {
                 </thead>
                 <tbody>
                   <tr className='font-medium'>
-                    <td className='border  py-2 text-center'>E24/12/2</td>
                     <td className='border  py-2 text-center'>Jane Smith</td>
                     <td className='border  py-2 text-center'>123-456-7890</td>
-                    <td className='border  py-2 text-center'>$65</td>
+                    <td className='border  py-2 text-center'>Islamabad, i-11</td>
+                    <td className='border  py-2 text-center'>Daily</td>
+                    {/* <td className='border  py-2 text-center'>$65</td> */}
                     <td className='border  py-2 text-center'>19</td>
                     <td className='border  py-2 text-center'>25%</td>
                     <td className='border  py-2 text-center'>$926.25</td>
@@ -106,6 +110,55 @@ const PayModal = ({ open, handleClose }: ViewDetailInput) => {
             </div>
             <div className='mr-[2.3rem] ml-[2.3rem]'>
               <Grid container spacing={3} sx={{ marginTop: '8px !important' }}>
+                <Grid item xs={12} sm={3} sx={{ marginTop: '8px !important' }}>
+                  <TextField
+                    id='rate'
+                    name='rate'
+                    label='Rate'
+                    variant='outlined'
+                    fullWidth
+                    sx={{
+                      '& fieldset': { borderColor: '#f23d4d !important' },
+                    }}
+                    InputLabelProps={{
+                      focused: false,
+                    }}
+                    type='text'
+                    value={formik.values.rate}
+                    onChange={formik.handleChange}
+                    onKeyDown={(event) => {
+                      event.stopPropagation()
+                    }}
+                    error={formik.touched.rate && Boolean(formik.errors.rate)}
+                    helperText={formik.touched.rate && (formik.errors.rate as any)}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={3} sx={{ marginTop: '8px !important' }}>
+                  <TextField
+                    id='noOfLessonToPay'
+                    name='noOfLessonToPay'
+                    label='No of Lesson To Pay'
+                    variant='outlined'
+                    fullWidth
+                    sx={{
+                      '& fieldset': { borderColor: '#f23d4d !important' },
+                    }}
+                    InputLabelProps={{
+                      focused: false,
+                    }}
+                    type='text'
+                    value={formik.values.noOfLessonToPay}
+                    onChange={formik.handleChange}
+                    onKeyDown={(event) => {
+                      event.stopPropagation()
+                    }}
+                    error={formik.touched.noOfLessonToPay && Boolean(formik.errors.noOfLessonToPay)}
+                    helperText={
+                      formik.touched.noOfLessonToPay && (formik.errors.noOfLessonToPay as any)
+                    }
+                  />
+                </Grid>
                 <Grid item xs={12} sm={3} sx={{ marginTop: '8px !important' }}>
                   <TextField
                     id='ChequeNo'
@@ -144,7 +197,13 @@ const PayModal = ({ open, handleClose }: ViewDetailInput) => {
                     </DemoContainer>
                   </LocalizationProvider>
                 </Grid>
-                <Grid item xs={12} sm={4}></Grid>
+                <Grid item xs={12} sm={4} sx={{ marginTop: '24px' }}>
+                  <Typography>
+                    {' '}
+                    <span style={{ fontWeight: 'bolder' }}>Compensation:</span> &nbsp; &nbsp;$926.25
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6} sx={{ marginTop: '0px' }}></Grid>
                 <Grid
                   item
                   xs={2}
