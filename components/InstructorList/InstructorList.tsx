@@ -44,6 +44,7 @@ const InstructorList = () => {
           Phone: instructor?.phone_number,
           Email: instructor?.email,
           Address: instructor?.address,
+          hire_as: instructor?.hired_as,
           DriverLicense: instructor?.driver_licence_number,
           DILicense: instructor?.DI_number,
         }
@@ -157,6 +158,22 @@ const InstructorList = () => {
     {
       name: 'Address',
       label: 'Address',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'Address',
+      label: 'Address',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'hire_as',
+      label: 'Hire as',
       options: {
         filter: true,
         sort: false,
