@@ -1,85 +1,79 @@
-/* eslint-disable react/jsx-no-comment-textnodes */
 import { TextField, Box } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
-import InputLabel from '@mui/material/InputLabel'
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { getAllStudents, deletStudent } from 'services/room'
-import HistoryIcon from '@mui/icons-material/History'
-import { MUIDataTableOptions } from 'mui-datatables'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { getAllInstructors, deletInstructor } from 'services/room'
+import { MUIDataTableOptions } from 'mui-datatables'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import Link from 'next/link'
 import './styles.css'
-import ViewDetail from './ViewDetail'
-import PaymentHistory from './PaymentHistory'
-const InstructorStudent = () => {
-  const [studentData, setStudentData] = useState([])
+import PayModal from './PayModal'
+const StudentInstructor = () => {
   const [counter, setCounter] = useState(0)
-  const [studentStatus, setStudentStatus] = useState('')
-  const [anchorEl, setAnchorEl] = useState(null)
   const [openModal, setOpenModal] = useState(false)
-  const [openModalPmntHstry, setOpenModalPmntHstry] = useState(false)
-  const handleCloseFunc = () => setOpenModal(false)
-  const handleCloseFuncPmntHstry = () => setOpenModalPmntHstry(false)
+  const [instructorData, setInstructorData] = useState([])
   const handleOpen = () => setOpenModal(true)
-  const handleOpenPmntHstry = () => setOpenModalPmntHstry(true)
+  const handleCloseFunc = () => setOpenModal(false)
   const router = useRouter()
+  const [anchorEl, setAnchorEl] = useState(null)
+
   const open = Boolean(anchorEl)
   const [activeRow, setActiveRow] = useState(null)
   const handleClick = (event: any, index: any) => {
     setAnchorEl(event.currentTarget)
     setActiveRow(index)
   }
-  const handleClose = () => {
-    setAnchorEl(null)
-  }
-  const handleEditStudent = (data: any) => {
-    router.push(`/editstudent/${data}`)
-  }
 
-  const fetchStudentsData = async () => {
+  const fetchRoomsData = async () => {
     try {
-      const response = await getAllStudents()
-      console.log('The response of get all student is', response)
-      const students: any = response.students
-      const AllStudents: any = students.map((student: any) => {
+      const response = await getAllInstructors()
+      console.log('The response of get all instructor is', response)
+      const instructors: any = response.instructors
+      const AllInstructors: any = instructors.map((instructor: any) => {
         return {
-          ID: student?._id,
-          Name: `${student?.firstName} ${student?.lastName}`,
-          PhoneNumber: student?.phone_number,
-          Email: student?.email,
-          Address: student?.address,
-          Dob: student?.dob,
-          LicenseNumber: student?.licence_no,
-          StudentID: student?.supportive_id,
+          ID: instructor?._id,
+          Name: `${instructor?.firstName} ${instructor?.lastName}`,
+          Phone: instructor?.phone_number,
+          Email: instructor?.email,
+          Address: instructor?.address,
+          hire_as: instructor?.hired_as,
+          DriverLicense: instructor?.driver_licence_number,
+          DILicense: instructor?.DI_number,
         }
       })
-      setStudentData(AllStudents)
+      setInstructorData(AllInstructors)
     } catch (error: any) {
-      console.error('Error fetching student data:', error.message)
+      console.error('Error fetching instructor data:', error.message)
     }
   }
   useEffect(() => {
-    fetchStudentsData()
+    fetchRoomsData()
   }, [counter])
+
+  const handleClose = () => {
+    setAnchorEl(null)
+  }
+  const handleEditInstructor = (data: any) => {
+    router.push(`/editintructor/${data[0]}`)
+  }
 
   const handleDelete = async (data: any) => {
     handleClose()
     console.log('The data is:', data)
     try {
-      const res = await deletStudent(data)
+      const res = await deletInstructor(data[0])
       console.log('Delete api response', res)
-      toast.success('Student deleted Successfully', {
+      toast.success('Instructor deleted Successfully', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -92,7 +86,7 @@ const InstructorStudent = () => {
       })
       setCounter(counter + 1)
     } catch (error: any) {
-      toast.error('Error while deleting student', {
+      toast.error('Error while deleting instructor', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -106,13 +100,16 @@ const InstructorStudent = () => {
     }
   }
 
+  const handleViewStudent = () => {
+    router.push('insturctorstudents')
+  }
+
   const data = [
     [
-      'I24/12/1',
-      'Eva Johnson',
+      'John Doe',
       '890 Birch St',
       '888-5555',
-      '13',
+      '4',
       // 'G7231-45532-25122',
       '2021/08/12',
       '2026/08/19',
@@ -124,11 +121,10 @@ const InstructorStudent = () => {
       '$100.50',
     ],
     [
-      'E24/12/2',
-      'Michael Smith',
+      'Jane Smith',
       '123 Oak Ln',
       '777-1234',
-      '11',
+      '2',
       // 'G7231-45532-25122',
       '2021/09/15',
       '2025/09/23',
@@ -140,11 +136,10 @@ const InstructorStudent = () => {
       '$200.50',
     ],
     [
-      'I24/12/3',
-      'Sophia Brown',
+      'Alice Johnson',
       '456 Maple St',
       '999-9876',
-      '13',
+      '3',
       // 'G7231-45532-25122',
       '2021/11/05',
       '2026/11/15',
@@ -156,11 +151,10 @@ const InstructorStudent = () => {
       '$400.50',
     ],
     [
-      'E24/12/4',
-      'Daniel Wilson',
+      'Bob Williams',
       '789 Cedar St',
       '555-6789',
-      '8',
+      '2',
       // 'G7231-45532-25122',
       '2022/01/10',
       '2026/01/17',
@@ -173,11 +167,10 @@ const InstructorStudent = () => {
       '$200.50',
     ],
     [
-      'I24/12/5',
-      'Olivia Davis',
+      'Emily Davis',
       '234 Pine St',
       '333-4444',
-      '7',
+      '5',
       // 'G7231-45532-25122',
       '2022/02/20',
       '2027/02/29',
@@ -187,54 +180,6 @@ const InstructorStudent = () => {
       'No',
       '92%',
       '$400.50',
-    ],
-    [
-      'E24/12/6',
-      'Aiden Taylor',
-      '567 Oak Ln',
-      '777-5678',
-      '9',
-      // 'G7231-45532-25122',
-      '2022/03/12',
-      '2026/03/25',
-      // '2023/06/15',
-      // '2024/06/15',
-      '$700',
-      'Yes',
-      '88%',
-      '$28.50',
-    ],
-    [
-      'I24/12/7',
-      'Mia Evans',
-      '890 Cedar St',
-      '999-6789',
-      '10',
-      // 'G7231-45532-25122',
-      '2022/04/18',
-      '2027/04/27',
-      // '2024/07/01',
-      // '2025/07/01',
-      '$650',
-      'No',
-      '78%',
-      '$100.50',
-    ],
-    [
-      'E24/12/8',
-      'Liam Turner',
-      '123 Pine St',
-      '555-1111',
-      '12',
-      // 'G7231-45532-25122',
-      '2022/05/20',
-      '2027/05/28',
-      // '2024/08/01',
-      // '2025/08/01',
-      '$500',
-      'Yes',
-      '95%',
-      '$300.50',
     ],
   ]
 
@@ -248,14 +193,6 @@ const InstructorStudent = () => {
     //     display: false,
     //   },
     // },
-    {
-      name: 'StudentID',
-      label: 'Student ID',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
     {
       name: 'Name',
       label: 'Name',
@@ -304,7 +241,6 @@ const InstructorStudent = () => {
         sort: false,
       },
     },
-
     // {
     //   name: 'Actions',
     //   options: {
@@ -330,28 +266,24 @@ const InstructorStudent = () => {
     //                 'aria-labelledby': 'basic-button',
     //               }}
     //             >
-    //               <MenuItem onClick={() => handleEditStudent(tableMeta.rowData[0])}>
+    //               {/* insturctorstudents */}
+    //               <MenuItem onClick={() => handleEditInstructor(tableMeta.rowData)}>
     //                 <ModeEditOutlineOutlinedIcon /> Edit
     //               </MenuItem>
-    //               <MenuItem onClick={() => handleDelete(tableMeta.rowData[0])}>
+    //               <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
     //                 <DeleteOutlineOutlinedIcon /> Delete
     //               </MenuItem>
-    //               {/* <MenuItem
+    //               <MenuItem onClick={handleViewStudent}>
+    //                 <PeopleAltIcon /> View students
+    //               </MenuItem>
+    //               <MenuItem
     //                 onClick={() => {
     //                   handleOpen()
     //                   handleClose()
     //                 }}
     //               >
-    //                 <RemoveRedEyeIcon /> View Detail
+    //                 <PaymentsOutlinedIcon sx={{ marginRight: '2px' }} /> Pay
     //               </MenuItem>
-    //               <MenuItem
-    //                 onClick={() => {
-    //                   handleOpenPmntHstry()
-    //                   handleClose()
-    //                 }}
-    //               >
-    //                 <HistoryIcon /> Payment History
-    //               </MenuItem> */}
     //             </Menu>
     //           ) : (
     //             ''
@@ -362,83 +294,27 @@ const InstructorStudent = () => {
     //   },
     // },
   ]
-
-  const handleStudentStatus = (event: any) => {
-    setStudentStatus(event.target.value)
-  }
   const HeaderElements = () => {
     return (
-      <>
-        <Link href='/addstudent' style={{ textDecoration: 'none', color: 'inherit' }}>
-          <Button type='button' sx={{ color: '#f23d4d' }}>
-            + Add Student
-          </Button>
-        </Link>
-      </>
-    )
-  }
-  const FilterElements = () => {
-    return (
-      <React.Fragment>
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'left',
-            marginRight: '148px',
-          }}
-        >
-          <FormControl sx={{ m: 1, width: '218px' }} size='small'>
-            <InputLabel id='demo-select-small'>Select Student Status</InputLabel>
-            <Select
-              labelId='demo-select-small'
-              id='demo-select-small'
-              value={studentStatus}
-              label='Select Student Status'
-              onChange={handleStudentStatus}
-              MenuProps={{ PaperProps: { style: { maxHeight: '400px' } } }}
-            >
-              <MenuItem value=''>
-                <em>None</em>
-              </MenuItem>
-
-              <MenuItem value={'Completed Courses'}>Completed Courses</MenuItem>
-              <MenuItem value={'Expired Students'}>Expired Students</MenuItem>
-              <MenuItem value={'All Students'}>All Students</MenuItem>
-            </Select>
-          </FormControl>
-        </div>
-      </React.Fragment>
+      <Link href='/addinstructor' style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Button type='button' sx={{ color: '#f23d4d' }}>
+          + Add Instructor
+        </Button>
+      </Link>
     )
   }
 
   const options: MUIDataTableOptions = {
+    // filterType: 'checkbox' as const,
     // customToolbar: HeaderElements,
+    // headCells: {
+    //   style: {
+    //     fontWeight: 'bold !important',
+    //     color: 'black !important',
+    //   },
+    // },
     // print: false,
     // filter: false,
-
-    // filterType: 'checkbox',
-    // selectableRows: 'none',
-    // headCells: {
-    //   style: {
-    //     fontWeight: 'bold !important',
-    //     color: 'black !important',
-    //   },
-    // },
-
-    // headCells: {
-    //   style: {
-    //     fontWeight: 'bold !important',
-    //     color: 'black !important',
-    //   },
-    // },
-    // customToolbar: () => {
-    //   return (
-    //     <React.Fragment>
-    //       <HeaderElements />
-    //       <FilterElements />
-    //     </React.Fragment>
-    //   )
-    // },
     filterType: 'checkbox',
     selectableRows: 'none',
     print: false,
@@ -447,14 +323,13 @@ const InstructorStudent = () => {
 
   return (
     <>
+      {' '}
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Ahmad Lancaster Students
+          Ahmad Ali Instructors
         </div>
-
         <MUIDataTable title={''} data={data} columns={columns} options={options} />
-        <ViewDetail open={openModal} handleClose={handleCloseFunc} />
-        <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
+        <PayModal open={openModal} handleClose={handleCloseFunc} />
       </Box>
       <ToastContainer
         position='top-right'
@@ -473,4 +348,4 @@ const InstructorStudent = () => {
   )
 }
 
-export default InstructorStudent
+export default StudentInstructor

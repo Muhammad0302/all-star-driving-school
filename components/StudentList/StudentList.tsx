@@ -13,6 +13,7 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { getAllStudents, deletStudent } from 'services/room'
 import HistoryIcon from '@mui/icons-material/History'
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
@@ -435,6 +436,11 @@ const StudentList = () => {
     ],
   ]
 
+  const handleViewInstructor = () => {
+    handleClose()
+    router.push('studentinstructor')
+  }
+
   const columns = [
     {
       name: 'ID',
@@ -531,6 +537,9 @@ const StudentList = () => {
                   </MenuItem>
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData[0])}>
                     <DeleteOutlineOutlinedIcon /> Delete
+                  </MenuItem>
+                  <MenuItem onClick={handleViewInstructor}>
+                    <PeopleAltIcon /> View instructors
                   </MenuItem>
                   {/* <MenuItem
                     onClick={() => {

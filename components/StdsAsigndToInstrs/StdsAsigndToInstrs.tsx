@@ -253,7 +253,7 @@ const StdsAsigndToInstrs = () => {
     <>
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Assign Packages to Students List
+          Assign Instructor and Packages Students List
         </div>
         <MUIDataTable title={''} data={studentList} columns={columns} options={options} />
       </Box>

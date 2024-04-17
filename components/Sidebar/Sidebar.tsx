@@ -104,7 +104,7 @@ const Sidebar = () => {
                   <ListItemIcon>
                     <AssignmentIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Assign Package' />
+                  <ListItemText primary='Assign Instructor' />
                 </ListItemButton>
               </ListItem>
             </Link>
@@ -122,7 +122,7 @@ const Sidebar = () => {
                   <ListItemIcon>
                     <LibraryAddCheckIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Students/Instructors Lessons Completed' />
+                  <ListItemText primary='Lessons Completion' />
                 </ListItemButton>
               </ListItem>
             </Link>

@@ -1,0 +1,23 @@
+.MuiTableCell-head {
+  font-weight: bold !important;
+  color: black !important;
+}
+.tss-1akey0g-MUIDataTableHeadCell-data {
+  font-weight: bold !important;
+  color: black !important;
+}
+.tss-178gktx-MUIDataTableHeadCell-contentWrapper {
+  display: inline !important;
+}
+.tss-gm6zfk-MUIDataTableHeadCell-fixedHeader {
+  text-align: center !important;
+}
+.css-1ex1afd-MuiTableCell-root {
+  text-align: center !important;
+}
+.css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border-color: #f23d4d !important;
+}
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
+  color: grey !important;
+}

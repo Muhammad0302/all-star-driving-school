@@ -100,6 +100,7 @@ const InstructorList = () => {
   }
 
   const handleViewStudent = () => {
+    handleClose()
     router.push('insturctorstudents')
   }
 
