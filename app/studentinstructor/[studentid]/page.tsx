@@ -2,11 +2,11 @@
 
 import StudentInstructor from '@/components/StudentInstructor'
 
-export default function StudentInstructors() {
+export default function StudentInstructors({ params }: any) {
   return (
     <>
       <div className=' py-1 sm:py-12 h-screen'>
-        <StudentInstructor />
+        <StudentInstructor params={params} />
       </div>
     </>
   )

@@ -99,9 +99,9 @@ const InstructorList = () => {
     }
   }
 
-  const handleViewStudent = () => {
+  const handleViewStudent = (data: any) => {
     handleClose()
-    router.push('insturctorstudents')
+    router.push(`/insturctorstudents/${data[0]}`)
   }
 
   const data = [
@@ -233,7 +233,7 @@ const InstructorList = () => {
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
-                  <MenuItem onClick={handleViewStudent}>
+                  <MenuItem onClick={() => handleViewStudent(tableMeta.rowData)}>
                     <PeopleAltIcon /> View students
                   </MenuItem>
                   <MenuItem

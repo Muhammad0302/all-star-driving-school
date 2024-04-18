@@ -356,6 +356,34 @@ const editPayment = async (data: any, id: string): Promise<any> => {
   }
 }
 
+const getAllInstructorStudent = async (id: string): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/packageAssigToStud/getStudentsByInstructor/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const getAllStudentInstructor = async (id: string): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/packageAssigToStud/getInstructorsByStudent/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -383,4 +411,6 @@ export {
   getAllPayment,
   deletePayment,
   editPayment,
+  getAllInstructorStudent,
+  getAllStudentInstructor,
 }

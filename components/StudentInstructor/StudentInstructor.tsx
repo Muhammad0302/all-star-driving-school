@@ -11,17 +11,18 @@ import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getAllInstructors, deletInstructor } from 'services/room'
+import { getAllStudentInstructor, deletInstructor } from 'services/room'
 import { MUIDataTableOptions } from 'mui-datatables'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
 import './styles.css'
 import PayModal from './PayModal'
-const StudentInstructor = () => {
+const StudentInstructor = ({ params }: any) => {
   const [counter, setCounter] = useState(0)
   const [openModal, setOpenModal] = useState(false)
   const [instructorData, setInstructorData] = useState([])
+  const [studentData, setStudentData] = useState('')
   const handleOpen = () => setOpenModal(true)
   const handleCloseFunc = () => setOpenModal(false)
   const router = useRouter()
@@ -33,22 +34,25 @@ const StudentInstructor = () => {
     setAnchorEl(event.currentTarget)
     setActiveRow(index)
   }
-
+  // params.studentid
   const fetchRoomsData = async () => {
     try {
-      const response = await getAllInstructors()
+      const response = await getAllStudentInstructor(params.studentid)
       console.log('The response of get all instructor is', response)
+      const studentName = `${response.student?.firstName} ${response.student?.lastName}`
+      setStudentData(studentName)
       const instructors: any = response.instructors
       const AllInstructors: any = instructors.map((instructor: any) => {
+        const date = new Date(instructor?.instructor_id?.createdAt)
+        const formattedDate = date.toLocaleDateString('en-GB')
         return {
           ID: instructor?._id,
-          Name: `${instructor?.firstName} ${instructor?.lastName}`,
-          Phone: instructor?.phone_number,
-          Email: instructor?.email,
-          Address: instructor?.address,
-          hire_as: instructor?.hired_as,
-          DriverLicense: instructor?.driver_licence_number,
-          DILicense: instructor?.DI_number,
+          Name: `${instructor?.instructor_id?.firstName} ${instructor?.instructor_id?.lastName}`,
+          PhoneNumber: instructor?.instructor_id?.phone_number,
+          Address: instructor?.instructor_id?.address,
+          nooflesson: instructor.package_id.no_of_lesson,
+          startdate: formattedDate,
+          enddate: 'present',
         }
       })
       setInstructorData(AllInstructors)
@@ -184,15 +188,15 @@ const StudentInstructor = () => {
   ]
 
   const columns = [
-    // {
-    //   name: 'ID',
-    //   label: 'ID',
-    //   options: {
-    //     filter: true,
-    //     sort: true,
-    //     display: false,
-    //   },
-    // },
+    {
+      name: 'ID',
+      label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
     {
       name: 'Name',
       label: 'Name',
@@ -326,9 +330,9 @@ const StudentInstructor = () => {
       {' '}
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Ahmad Ali Instructors
+          {studentData} Instructors
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={instructorData} columns={columns} options={options} />
         <PayModal open={openModal} handleClose={handleCloseFunc} />
       </Box>
       <ToastContainer

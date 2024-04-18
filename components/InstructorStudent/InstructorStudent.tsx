@@ -12,7 +12,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { getAllStudents, deletStudent } from 'services/room'
+import { getAllInstructorStudent, deletStudent } from 'services/room'
 import HistoryIcon from '@mui/icons-material/History'
 import { MUIDataTableOptions } from 'mui-datatables'
 import Link from 'next/link'
@@ -22,8 +22,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 import ViewDetail from './ViewDetail'
 import PaymentHistory from './PaymentHistory'
-const InstructorStudent = () => {
+const InstructorStudent = ({ params }: any) => {
   const [studentData, setStudentData] = useState([])
+  const [instructorData, setInstructortData] = useState('')
   const [counter, setCounter] = useState(0)
   const [studentStatus, setStudentStatus] = useState('')
   const [anchorEl, setAnchorEl] = useState(null)
@@ -46,22 +47,28 @@ const InstructorStudent = () => {
   const handleEditStudent = (data: any) => {
     router.push(`/editstudent/${data}`)
   }
-
+  // params.instructorId
   const fetchStudentsData = async () => {
     try {
-      const response = await getAllStudents()
+      const response = await getAllInstructorStudent(params.instructorId)
       console.log('The response of get all student is', response)
+      const instructor = response.instructor
+      const instructorName = `${instructor?.firstName} ${instructor?.lastName}`
+      setInstructortData(instructorName)
       const students: any = response.students
       const AllStudents: any = students.map((student: any) => {
+        const date = new Date(student?.std_id?.createdAt)
+        const formattedDate = date.toLocaleDateString('en-GB')
         return {
           ID: student?._id,
-          Name: `${student?.firstName} ${student?.lastName}`,
-          PhoneNumber: student?.phone_number,
-          Email: student?.email,
-          Address: student?.address,
-          Dob: student?.dob,
-          LicenseNumber: student?.licence_no,
-          StudentID: student?.supportive_id,
+          StudentID: student?.std_id?.supportive_id,
+          Name: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
+          PhoneNumber: student?.std_id?.phone_number,
+          Email: student?.std_id?.email,
+          Address: student?.std_id?.address,
+          nooflesson: student.package_id.no_of_lesson,
+          startdate: formattedDate,
+          enddate: 'present',
         }
       })
       setStudentData(AllStudents)
@@ -449,10 +456,10 @@ const InstructorStudent = () => {
     <>
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Ahmad Lancaster Students
+          {instructorData} Students
         </div>
 
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={studentData} columns={columns} options={options} />
         <ViewDetail open={openModal} handleClose={handleCloseFunc} />
         <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
       </Box>
