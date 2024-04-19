@@ -21,6 +21,7 @@ const InstructorList = () => {
   const [counter, setCounter] = useState(0)
   const [openModal, setOpenModal] = useState(false)
   const [instructorData, setInstructorData] = useState([])
+  const [selectedRowData, setSelectedRowData] = useState(null)
   const handleOpen = () => setOpenModal(true)
   const handleCloseFunc = () => setOpenModal(false)
   const router = useRouter()
@@ -48,6 +49,7 @@ const InstructorList = () => {
           hire_as: instructor?.hired_as,
           DriverLicense: instructor?.driver_licence_number,
           DILicense: instructor?.DI_number,
+          no_of_lesson: instructor.no_of_lesson,
         }
       })
       setInstructorData(AllInstructors)
@@ -104,6 +106,12 @@ const InstructorList = () => {
     router.push(`/insturctorstudents/${data[0]}`)
   }
 
+  const handlePay = (data: any) => {
+    handleOpen()
+    handleClose()
+    setSelectedRowData(data)
+  }
+
   const data = [
     [1, 'John Doe', '123-456-7890', 'G7231-45532-25122', 'DI-67890'],
     [2, 'Jane Smith', '987-654-3210', 'G7231-45532-25122', 'DI-09876'],
@@ -138,6 +146,15 @@ const InstructorList = () => {
       },
     },
     {
+      name: 'no_of_lesson',
+      label: 'no_of_lesson',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
+    {
       name: 'Name',
       label: 'Name',
       options: {
@@ -145,6 +162,7 @@ const InstructorList = () => {
         sort: false,
       },
     },
+
     {
       name: 'Phone',
       label: 'Phone Number',
@@ -236,12 +254,7 @@ const InstructorList = () => {
                   <MenuItem onClick={() => handleViewStudent(tableMeta.rowData)}>
                     <PeopleAltIcon /> View students
                   </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      handleOpen()
-                      handleClose()
-                    }}
-                  >
+                  <MenuItem onClick={() => handlePay(tableMeta.rowData)}>
                     <PaymentsOutlinedIcon sx={{ marginRight: '2px' }} /> Pay
                   </MenuItem>
                 </Menu>
@@ -285,7 +298,7 @@ const InstructorList = () => {
           Instructors list
         </div>
         <MUIDataTable title={''} data={instructorData} columns={columns} options={options} />
-        <PayModal open={openModal} handleClose={handleCloseFunc} />
+        <PayModal rowData={selectedRowData} open={openModal} handleClose={handleCloseFunc} />
       </Box>
       <ToastContainer
         position='top-right'

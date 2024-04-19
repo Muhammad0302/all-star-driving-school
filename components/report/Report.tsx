@@ -1,5 +1,5 @@
 import { TextField, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -11,10 +11,13 @@ import HistoryIcon from '@mui/icons-material/History'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
 import PaymentHistory from './PaymentHistory'
 import { MUIDataTableOptions } from 'mui-datatables'
+import { getInstructorPayment } from 'services/room'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const Report = () => {
   const [openModal, setOpenModal] = useState(false)
+  const [instructorPay, setInstructorPay] = useState([])
+  const [counter, setCounter] = useState(0)
   const handleOpen = () => setOpenModal(true)
   const handleCloseFunc = () => setOpenModal(false)
   const router = useRouter()
@@ -57,7 +60,40 @@ const Report = () => {
     ['Elijah Clark', '555-123-4567', 'Modi similique eum a', '19', '$926.25'],
   ]
 
+  const fetchInstructorPaymentsData = async () => {
+    try {
+      const response = await getInstructorPayment()
+      console.log('The response of get all instructor is', response)
+      const instructors: any = response.InstructorPayments
+      const AllInstructors: any = instructors.map((instructor: any) => {
+        return {
+          ID: instructor?._id,
+          Name: `${instructor?.firstName} ${instructor?.lastName}`,
+          Phone: instructor?.phone_number,
+          Address: instructor?.address,
+          noOfLessons: instructor?.totalPaidLessons,
+          TotalCompensation: instructor?.totalCompensation,
+        }
+      })
+      setInstructorPay(AllInstructors)
+    } catch (error: any) {
+      console.error('Error fetching instructor data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchInstructorPaymentsData()
+  }, [counter])
+
   const columns = [
+    {
+      name: 'ID',
+      label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
     {
       name: 'Name',
       label: 'Name',
@@ -75,7 +111,7 @@ const Report = () => {
       },
     },
     {
-      name: 'address',
+      name: 'Address',
       label: 'Address',
       options: {
         filter: true,
@@ -107,7 +143,7 @@ const Report = () => {
     //   },
     // },
     {
-      name: 'Total Compensation',
+      name: 'TotalCompensation',
       label: 'Total Compensation',
       options: {
         filter: true,
@@ -178,7 +214,7 @@ const Report = () => {
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
           Instructors Payment list
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={instructorPay} columns={columns} options={options} />
         <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
       </Box>
     </>

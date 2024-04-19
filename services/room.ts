@@ -384,6 +384,31 @@ const getAllStudentInstructor = async (id: string): Promise<any> => {
   }
 }
 
+const addInstructorPayment = async (data: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${getBaseUrl()}/instructorPayment/add`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('add student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const getInstructorPayment = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/instructorPayment/get`, config)
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
 export {
   addInstructor,
   getAllInstructors,
@@ -413,4 +438,6 @@ export {
   editPayment,
   getAllInstructorStudent,
   getAllStudentInstructor,
+  addInstructorPayment,
+  getInstructorPayment,
 }
