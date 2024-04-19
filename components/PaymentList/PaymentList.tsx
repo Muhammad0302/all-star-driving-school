@@ -8,6 +8,7 @@ import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import PrintIcon from '@mui/icons-material/Print'
 import PaymentHistory from './PaymentHistory'
 import HistoryIcon from '@mui/icons-material/History'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
@@ -660,6 +661,14 @@ const PaymentList = () => {
                     }}
                   >
                     <HistoryIcon /> Payment History
+                  </MenuItem>
+                  <MenuItem
+                  // onClick={() => {
+                  //   handleOpenPmntHstry()
+                  //   handleClose()
+                  // }}
+                  >
+                    <PrintIcon /> Print
                   </MenuItem>
                 </Menu>
               ) : (

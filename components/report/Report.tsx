@@ -10,6 +10,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import HistoryIcon from '@mui/icons-material/History'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
 import PaymentHistory from './PaymentHistory'
+import PrintIcon from '@mui/icons-material/Print'
 import { MUIDataTableOptions } from 'mui-datatables'
 import { getInstructorPayment, getInstructorPaymentById } from 'services/room'
 import { useRouter } from 'next/navigation'
@@ -199,6 +200,14 @@ const Report = () => {
                 >
                   <MenuItem onClick={() => handlePaymentHistory(tableMeta.rowData)}>
                     <HistoryIcon /> Payment History
+                  </MenuItem>
+                  <MenuItem
+                  // onClick={() => {
+                  //   handleOpenPmntHstry()
+                  //   handleClose()
+                  // }}
+                  >
+                    <PrintIcon /> Print
                   </MenuItem>
                 </Menu>
               ) : (
