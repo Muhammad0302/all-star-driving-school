@@ -165,15 +165,14 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
             <div className='container flex justify-between mt-6'>
               <table className='w-full border-collapse'>
                 <thead>
-                  <tr className='font-bold'>
-                    <th className='border  py-2'>Name</th>
-                    <th className='border  py-2'>Phone Number</th>
-                    <th className='border  py-2'>Address</th>
-                    <th className='border  py-2'>Hire As</th>
-                    {/* <th className='border  py-2'>Rate</th> */}
-                    <th className='border  py-2'>None-paid Lessons</th>
-                    <th className='border  py-2'>Tax</th>
-                    <th className='border  py-2'>Total Compensation</th>
+                  <tr className='font-bold' style={{ backgroundColor: '#E5E7EB' }}>
+                    <th className='border py-2'>Name</th>
+                    <th className='border py-2'>Phone Number</th>
+                    <th className='border py-2'>Address</th>
+                    <th className='border py-2'>Hire As</th>
+                    <th className='border py-2'>None-paid Lessons</th>
+                    <th className='border py-2'>Tax</th>
+                    <th className='border py-2'>Total Compensation</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -181,21 +180,21 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
                     <></>
                   ) : (
                     <>
-                      <tr className='font-medium'>
-                        <td className='border  py-2 text-center'>{rowData[2]}</td>
-                        <td className='border  py-2 text-center'>{rowData[3]}</td>
-                        <td className='border  py-2 text-center'>{rowData[5]}</td>
-                        <td className='border  py-2 text-center'>{rowData[7]}</td>
-                        {/* <td className='border  py-2 text-center'>$65</td> */}
-                        <td className='border  py-2 text-center'>{rowData[1]}</td>
-                        <td className='border  py-2 text-center'>25%</td>
-                        <td className='border  py-2 text-center'>{totalCompensation}</td>
+                      <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
+                        <td className='border py-2 text-center'>{rowData[2]}</td>
+                        <td className='border py-2 text-center'>{rowData[3]}</td>
+                        <td className='border py-2 text-center'>{rowData[5]}</td>
+                        <td className='border py-2 text-center'>{rowData[7]}</td>
+                        <td className='border py-2 text-center'>{rowData[1]}</td>
+                        <td className='border py-2 text-center'>25%</td>
+                        <td className='border py-2 text-center'>{totalCompensation}</td>
                       </tr>
                     </>
                   )}
                 </tbody>
               </table>
             </div>
+
             <div className='mr-[2.3rem] ml-[2.3rem]'>
               <form onSubmit={formik.handleSubmit}>
                 <Grid container spacing={3} sx={{ marginTop: '8px !important' }}>

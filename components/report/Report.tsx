@@ -75,7 +75,7 @@ const Report = () => {
           Phone: instructor?.phone_number,
           Address: instructor?.address,
           noOfLessons: instructor?.totalPaidLessons,
-          TotalCompensation: instructor?.totalCompensation,
+          TotalCompensation: `$${instructor?.totalCompensation}`,
         }
       })
       setInstructorPay(AllInstructors)
