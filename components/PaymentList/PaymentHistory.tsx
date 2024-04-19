@@ -59,7 +59,7 @@ const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
             <div className='container max-w-[1690px] mx-auto  mt-6'>
               <table className='w-full border-collapse'>
                 <thead>
-                  <tr className='font-bold'>
+                  <tr className='font-bold' style={{ backgroundColor: '#E5E7EB' }}>
                     <th className='border  py-2'>Payment No</th>
                     <th className='border  py-2'>Type</th>
                     <th className='border  py-2'>Amount</th>
@@ -68,28 +68,28 @@ const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className='font-medium'>
+                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
                     <td className='border py-2 text-center'>1</td>
-                    <td className='border py-2 text-center'>Cah</td>
+                    <td className='border py-2 text-center'>Cash</td>
                     <td className='border py-2 text-center'>$300</td>
                     <td className='border py-2 text-center'>21/2/2024</td>
                     <td className='border py-2 text-center'>4:45pm</td>
                   </tr>
-                  <tr className='font-medium'>
+                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
                     <td className='border py-2 text-center'>2</td>
                     <td className='border py-2 text-center'>Credit Card</td>
                     <td className='border py-2 text-center'>$250</td>
                     <td className='border py-2 text-center'>15/5/2024</td>
                     <td className='border py-2 text-center'>10:30am</td>
                   </tr>
-                  <tr className='font-medium'>
+                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
                     <td className='border py-2 text-center'>3</td>
                     <td className='border py-2 text-center'>Debit Card</td>
                     <td className='border py-2 text-center'>$400</td>
                     <td className='border py-2 text-center'>8/8/2024</td>
                     <td className='border py-2 text-center'>2:15pm</td>
                   </tr>
-                  <tr className='font-medium'>
+                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
                     <td className='border py-2 text-center'>4</td>
                     <td className='border py-2 text-center'>Bank Transfer</td>
                     <td className='border py-2 text-center'>$350</td>
@@ -98,7 +98,9 @@ const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
                   </tr>
                 </tbody>
               </table>
-              <div className='flex justify-end items-center mr-9 font-bold'>Total: $1300</div>
+              <div className='flex justify-end items-center mr-6 font-bold mt-[27px]'>
+                Total: $1300
+              </div>
             </div>
           </Box>
         </Fade>
