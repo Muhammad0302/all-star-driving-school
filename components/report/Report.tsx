@@ -11,12 +11,14 @@ import HistoryIcon from '@mui/icons-material/History'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
 import PaymentHistory from './PaymentHistory'
 import { MUIDataTableOptions } from 'mui-datatables'
-import { getInstructorPayment } from 'services/room'
+import { getInstructorPayment, getInstructorPaymentById } from 'services/room'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const Report = () => {
   const [openModal, setOpenModal] = useState(false)
   const [instructorPay, setInstructorPay] = useState([])
+  const [instructorId, setInstructorId] = useState('')
+  const [singleInstructorPay, setSingleInstructorPay] = useState(null)
   const [counter, setCounter] = useState(0)
   const handleOpen = () => setOpenModal(true)
   const handleCloseFunc = () => setOpenModal(false)
@@ -80,9 +82,29 @@ const Report = () => {
       console.error('Error fetching instructor data:', error.message)
     }
   }
+
+  const fetchIndividualInstructorPay = async () => {
+    try {
+      const response = await getInstructorPaymentById(instructorId)
+      console.log('The response of get all instructor is', response)
+      setSingleInstructorPay(response)
+    } catch (error: any) {
+      console.error('Error fetching instructor data:', error.message)
+    }
+  }
+
   useEffect(() => {
     fetchInstructorPaymentsData()
   }, [counter])
+  useEffect(() => {
+    fetchIndividualInstructorPay()
+  }, [instructorId])
+
+  const handlePaymentHistory = (data: any) => {
+    setInstructorId(data[0])
+    handleOpenPmntHstry()
+    handleClose()
+  }
 
   const columns = [
     {
@@ -175,12 +197,7 @@ const Report = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <MenuItem
-                    onClick={() => {
-                      handleOpenPmntHstry()
-                      handleClose()
-                    }}
-                  >
+                  <MenuItem onClick={() => handlePaymentHistory(tableMeta.rowData)}>
                     <HistoryIcon /> Payment History
                   </MenuItem>
                 </Menu>
@@ -215,7 +232,11 @@ const Report = () => {
           Instructors Payment list
         </div>
         <MUIDataTable title={''} data={instructorPay} columns={columns} options={options} />
-        <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
+        <PaymentHistory
+          singleInstructorPay={singleInstructorPay}
+          open={openModalPmntHstry}
+          handleClose={handleCloseFuncPmntHstry}
+        />
       </Box>
     </>
   )

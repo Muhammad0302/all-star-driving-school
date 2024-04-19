@@ -32,9 +32,11 @@ const style = {
 interface ViewDetailInput {
   open: boolean
   handleClose: () => void
+  singleInstructorPay: any
 }
 // changes added
-const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
+const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailInput) => {
+  let serialNumber = 1
   return (
     <div>
       <Modal
@@ -71,50 +73,28 @@ const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className='font-medium'>
-                    <td className='border py-2 text-center'>1</td>
-                    <td className='border py-2 text-center'>Cah</td>
-                    <td className='border py-2 text-center'>$28</td>
-                    <td className='border py-2 text-center'>25%</td>
-                    <td className='border py-2 text-center'>7</td>
-                    <td className='border py-2 text-center'>$420</td>
-                    <td className='border py-2 text-center'>8473635243</td>
-                    <td className='border py-2 text-center'>21/2/2024</td>
-                  </tr>
-                  <tr className='font-medium'>
-                    <td className='border py-2 text-center'>2</td>
-                    <td className='border py-2 text-center'>Credit Card</td>
-                    <td className='border py-2 text-center'>$39</td>
-                    <td className='border py-2 text-center'>25%</td>
-                    <td className='border py-2 text-center'>10</td>
-                    <td className='border py-2 text-center'>$700</td>
-                    <td className='border py-2 text-center'>938735267</td>
-                    <td className='border py-2 text-center'>15/5/2024</td>
-                  </tr>
-                  <tr className='font-medium'>
-                    <td className='border py-2 text-center'>3</td>
-                    <td className='border py-2 text-center'>Debit Card</td>
-                    <td className='border py-2 text-center'>$31</td>
-                    <td className='border py-2 text-center'>25%</td>
-                    <td className='border py-2 text-center'>14</td>
-                    <td className='border py-2 text-center'>$650</td>
-                    <td className='border py-2 text-center'>2357353635</td>
-                    <td className='border py-2 text-center'>8/8/2024</td>
-                  </tr>
-                  <tr className='font-medium'>
-                    <td className='border py-2 text-center'>4</td>
-                    <td className='border py-2 text-center'>Bank Transfer</td>
-                    <td className='border py-2 text-center'>$30</td>
-                    <td className='border py-2 text-center'>25%</td>
-                    <td className='border py-2 text-center'>13</td>
-                    <td className='border py-2 text-center'>$610</td>
-                    <td className='border py-2 text-center'>847364837</td>
-                    <td className='border py-2 text-center'>12/11/2024</td>
-                  </tr>
+                  {singleInstructorPay?.InstructorPayment?.map((payment: any) => {
+                    const date = new Date(payment?.issueDate)
+                    const formattedDate = date.toLocaleDateString('en-GB')
+                    return (
+                      <>
+                        <tr className='font-medium'>
+                          <td className='border py-2 text-center'>{serialNumber++}</td>
+                          <td className='border py-2 text-center'>Cheque</td>
+                          <td className='border py-2 text-center'>${payment?.rate}</td>
+                          <td className='border py-2 text-center'>{payment?.tax}</td>
+                          <td className='border py-2 text-center'>{payment?.noOfLessonToPay}</td>
+                          <td className='border py-2 text-center'>${payment?.compensation}</td>
+                          <td className='border py-2 text-center'>{payment?.chaqueNo}</td>
+                          <td className='border py-2 text-center'>{formattedDate}</td>
+                        </tr>
+                      </>
+                    )
+                  })}
                 </tbody>
               </table>
               <div className='flex justify-end items-center  font-bold mt-[27px] mr-[20px]'>
-                Total: $1300
+                Total: ${singleInstructorPay?.totalCompensation}
               </div>
             </div>
           </Box>
