@@ -30,6 +30,8 @@ const AddLessonCompletion = () => {
   const [roadTest, setRoadTest] = React.useState('')
   const [students, setStudents] = useState([])
   const [studentId, setStudentId] = useState(null)
+  const [lessonCompleted, setLessonCompleted] = useState('')
+  const [remainingLesson, setRemainingLesson] = useState('')
   const [instructors, setInstructors] = useState([])
   const [instructorId, setInstructorId] = useState(null)
   const handleChange = (event: SelectChangeEvent) => {
@@ -125,6 +127,16 @@ const AddLessonCompletion = () => {
       }
     }
     fetchPackageByStdId()
+  }, [studentId])
+
+  useEffect(() => {
+    if (studentId) {
+      setLessonCompleted('8')
+      setRemainingLesson('9')
+    } else {
+      setLessonCompleted('')
+      setRemainingLesson('')
+    }
   }, [studentId])
 
   // added here ..
@@ -295,9 +307,52 @@ const AddLessonCompletion = () => {
 
           <Grid item xs={12} sm={6}>
             <TextField
+              id='lessonCompleted'
+              name='lessonCompleted'
+              label='No of lesson Completed'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              type='text'
+              value={lessonCompleted}
+              onChange={(event: any) => setLessonCompleted(event.target.value)}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='remainingLesson'
+              name='remainingLesson'
+              label='Remaining Lesson'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              type='text'
+              value={remainingLesson}
+              onChange={(event: any) => setRemainingLesson(event.target.value)}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
               id='noOfLessonsCompleted'
               name='noOfLessonsCompleted'
-              label='No of Lessons Completed'
+              label='Lessons just Completed'
               variant='outlined'
               fullWidth
               value={formik.values.noOfLessonsCompleted}

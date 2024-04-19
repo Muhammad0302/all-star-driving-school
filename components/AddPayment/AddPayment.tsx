@@ -28,6 +28,9 @@ const AddPayment = () => {
   const router = useRouter()
   const [students, setStudents] = useState([])
   const [studentId, setStudentId] = useState(null)
+  const [totalAmount, setTotalAmount] = useState('')
+  const [amountPaid, setAmountPaid] = useState('')
+  const [remainingAmount, setRemainingAmount] = useState('')
   const formik = useFormik({
     initialValues: {
       studentName: '',
@@ -91,6 +94,18 @@ const AddPayment = () => {
     fetchStudentData()
   }, [])
 
+  useEffect(() => {
+    if (studentId) {
+      setTotalAmount(`$862`)
+      setAmountPaid(`$350`)
+      setRemainingAmount(`$512`)
+    } else {
+      setTotalAmount('')
+      setAmountPaid('')
+      setRemainingAmount('')
+    }
+  }, [studentId])
+
   console.log('the formik values is:', formik.values)
   return (
     <div className='mt-[3.5rem]'>
@@ -145,9 +160,73 @@ const AddPayment = () => {
 
           <Grid item xs={12} sm={6}>
             <TextField
+              id='totalAmount'
+              name='totalAmount'
+              label='Total Amount'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              type='text'
+              value={totalAmount}
+              onChange={(event: any) => setTotalAmount(event.target.value)}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='amountPaid'
+              name='amountPaid'
+              label='Amount Paid'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              type='text'
+              value={amountPaid}
+              onChange={(event: any) => setAmountPaid(event.target.value)}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='remainingAmount'
+              name='remainingAmount'
+              label='Remaining Amount'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              type='text'
+              value={remainingAmount}
+              onChange={(event: any) => setRemainingAmount(event.target.value)}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
               id='amount'
               name='amount'
-              label='Amount'
+              label='Amount to Pay'
               variant='outlined'
               fullWidth
               sx={{
