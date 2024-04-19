@@ -64,12 +64,13 @@ const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailIn
                   <tr className='font-bold' style={{ backgroundColor: '#E5E7EB' }}>
                     <th className='border py-2'>Serial No</th>
                     <th className='border py-2'>Type</th>
+                    <th className='border py-2'>Issue Date</th>
+                    <th className='border py-2'>Cheque No</th>
+
                     <th className='border py-2'>Rate</th>
                     <th className='border py-2'>Tax</th>
                     <th className='border py-2'>No of Lesson</th>
                     <th className='border py-2'>Amount</th>
-                    <th className='border py-2'>Cheque No</th>
-                    <th className='border py-2'>Issue Date</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -81,12 +82,13 @@ const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailIn
                         <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
                           <td className='border py-2 text-center'>{serialNumber++}</td>
                           <td className='border py-2 text-center'>Cheque</td>
+                          <td className='border py-2 text-center'>{formattedDate}</td>
+                          <td className='border py-2 text-center'>{payment?.chaqueNo}</td>
+
                           <td className='border py-2 text-center'>${payment?.rate}</td>
                           <td className='border py-2 text-center'>{payment?.tax}</td>
                           <td className='border py-2 text-center'>{payment?.noOfLessonToPay}</td>
                           <td className='border py-2 text-center'>${payment?.compensation}</td>
-                          <td className='border py-2 text-center'>{payment?.chaqueNo}</td>
-                          <td className='border py-2 text-center'>{formattedDate}</td>
                         </tr>
                       </>
                     )
