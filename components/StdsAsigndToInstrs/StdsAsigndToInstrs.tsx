@@ -7,6 +7,7 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import PersonIcon from '@mui/icons-material/Person'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { getAllAssignPackage, deletAssignPackage } from 'services/room'
@@ -111,6 +112,11 @@ const StdsAsigndToInstrs = () => {
         transition: Bounce,
       })
     }
+  }
+
+  const handleChangeInstructor = async (data: any) => {
+    handleClose()
+    router.push(`/changeinstructor/${data[0]}`)
   }
 
   const columns = [
@@ -218,6 +224,9 @@ const StdsAsigndToInstrs = () => {
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
+                  <MenuItem onClick={() => handleChangeInstructor(tableMeta.rowData)}>
+                    <PersonIcon /> Change Instructor
+                  </MenuItem>
                 </Menu>
               ) : (
                 ''
@@ -232,7 +241,7 @@ const StdsAsigndToInstrs = () => {
   const HeaderElements = () => {
     return (
       <Button type='button' sx={{ color: '#f23d4d' }} onClick={handleAssignInstructor}>
-        + Assign Package
+        + Assign Instructor
       </Button>
     )
   }
