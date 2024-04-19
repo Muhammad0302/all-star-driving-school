@@ -11,7 +11,7 @@ import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import { getAllInstructors, getAllStudents, getAllPackages } from 'services/room'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
-import { assignPackage } from 'services/room'
+import { changeInstructor } from 'services/room'
 import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 const validationSchema = yup.object({
@@ -19,12 +19,10 @@ const validationSchema = yup.object({
 })
 const ChangeInstructor = ({ params }: any) => {
   console.log('The change instructor id', params.assigninstructorId)
-  const [students, setStudents] = useState([])
-  const [studentId, setStudentId] = useState(null)
+
   const [instructors, setInstructors] = useState([])
   const [instructorId, setInstructorId] = useState(null)
-  const [packages, setPackages] = useState([])
-  const [packageId, setPackageId] = useState(null)
+
   const router = useRouter()
   const formik = useFormik({
     initialValues: {
@@ -36,13 +34,12 @@ const ChangeInstructor = ({ params }: any) => {
 
       const data = {
         instructor_id: instructorId,
-        std_id: studentId,
-        package_id: packageId,
+        id: params.assigninstructorId,
       }
       try {
-        const res = await assignPackage(data)
+        const res = await changeInstructor(data)
         console.log('Assign package api response', res)
-        toast.success('Instructor and package assigned successfully', {
+        toast.success('Instructor changed successfully', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -57,7 +54,7 @@ const ChangeInstructor = ({ params }: any) => {
           router.push('/stdsasigndtoinstrs')
         }, 2000)
       } catch (error: any) {
-        toast.error('Error while assigning package', {
+        toast.error('Error while changing instructor', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,

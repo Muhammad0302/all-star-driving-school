@@ -424,6 +424,21 @@ const getInstructorPaymentById = async (id: any): Promise<any> => {
   }
 }
 
+const changeInstructor = async (data: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${getBaseUrl()}/packageAssigToStud/changeinstructor`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('add student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -456,4 +471,5 @@ export {
   addInstructorPayment,
   getInstructorPayment,
   getInstructorPaymentById,
+  changeInstructor,
 }
