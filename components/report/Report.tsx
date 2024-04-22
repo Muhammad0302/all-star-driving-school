@@ -13,6 +13,7 @@ import PaymentHistory from './PaymentHistory'
 import PrintIcon from '@mui/icons-material/Print'
 import { MUIDataTableOptions } from 'mui-datatables'
 import { getInstructorPayment, getInstructorPaymentById } from 'services/room'
+import PrintData from './Print'
 import { useReactToPrint } from 'react-to-print'
 import Print from './Print'
 import { useRouter } from 'next/navigation'
@@ -109,7 +110,10 @@ const Report = () => {
     handleOpenPmntHstry()
     handleClose()
   }
-  const handlePrint = () => {}
+  const handlePrint = () => {
+    const data = {}
+    PrintData(data)
+  }
   const columns = [
     {
       name: 'ID',
