@@ -13,12 +13,12 @@ import PaymentHistory from './PaymentHistory'
 import PrintIcon from '@mui/icons-material/Print'
 import { MUIDataTableOptions } from 'mui-datatables'
 import { getInstructorPayment, getInstructorPaymentById } from 'services/room'
-import ReactToPrint from 'react-to-print'
+import { useReactToPrint } from 'react-to-print'
 import Print from './Print'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const Report = () => {
-  const componentRef = useRef(null)
+  const ref = useRef(null)
   const [openModal, setOpenModal] = useState(false)
   const [instructorPay, setInstructorPay] = useState([])
   const [instructorId, setInstructorId] = useState('')
@@ -109,9 +109,7 @@ const Report = () => {
     handleOpenPmntHstry()
     handleClose()
   }
-  const handlePrint = () => {
-    // Print(/* pass necessary data here */)
-  }
+  const handlePrint = () => {}
   const columns = [
     {
       name: 'ID',
@@ -212,15 +210,7 @@ const Report = () => {
                   //   handleClose()
                   // }}
                   >
-                    <Print ref={componentRef} />
-                    <ReactToPrint
-                      trigger={() => (
-                        <>
-                          <PrintIcon onClick={handlePrint} /> Print
-                        </>
-                      )}
-                      content={() => componentRef.current}
-                    />
+                    <PrintIcon onClick={handlePrint} /> Print
                   </MenuItem>
                 </Menu>
               ) : (
@@ -260,6 +250,16 @@ const Report = () => {
           handleClose={handleCloseFuncPmntHstry}
         />
       </Box>
+      {/* <Print ref={ref} /> */}
+      {/* <div ref={ref}>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pharetra justo auctor ex
+        maximus commodo vel non odio. Donec id erat ut lectus rhoncus condimentum. Ut id libero
+        pulvinar, blandit ipsum molestie, egestas elit. Nam malesuada ipsum cursus, sollicitudin
+        purus non, vulputate eros. Morbi fermentum felis sit amet nisl ornare, nec dignissim arcu
+        ultricies. Cras commodo id nisl ac lacinia. Donec tincidunt magna tortor, eu ornare justo
+        accumsan sed. Suspendisse eros risus, elementum sit amet lobortis a, viverra vel augue.
+        Fusce tincidunt erat et nulla auctor dignissim. Proin faucibus dui quis ultricies malesuada.
+      </div> */}
     </>
   )
 }

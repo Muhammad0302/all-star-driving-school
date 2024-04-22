@@ -21,3 +21,27 @@
 .css-1jy569b-MuiFormLabel-root-MuiInputLabel-root.Mui-focused {
   color: grey !important;
 }
+
+.print-source {
+  display: none;
+}
+body > .print-source {
+  display: block;
+}
+
+@media print {
+  .print-content {
+    margin: 40px;
+  }
+  .print-only {
+    display: block;
+    margin: 40px;
+    page-break-inside: avoid;
+  }
+}
+
+@media print {
+  .print-source {
+    display: block;
+  }
+}
