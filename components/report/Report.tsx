@@ -1,5 +1,5 @@
 import { TextField, Box } from '@mui/material'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -13,9 +13,12 @@ import PaymentHistory from './PaymentHistory'
 import PrintIcon from '@mui/icons-material/Print'
 import { MUIDataTableOptions } from 'mui-datatables'
 import { getInstructorPayment, getInstructorPaymentById } from 'services/room'
+import ReactToPrint from 'react-to-print'
+import Print from './Print'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const Report = () => {
+  const componentRef = useRef(null)
   const [openModal, setOpenModal] = useState(false)
   const [instructorPay, setInstructorPay] = useState([])
   const [instructorId, setInstructorId] = useState('')
@@ -106,7 +109,9 @@ const Report = () => {
     handleOpenPmntHstry()
     handleClose()
   }
-
+  const handlePrint = () => {
+    // Print(/* pass necessary data here */)
+  }
   const columns = [
     {
       name: 'ID',
@@ -207,7 +212,15 @@ const Report = () => {
                   //   handleClose()
                   // }}
                   >
-                    <PrintIcon /> Print
+                    <Print ref={componentRef} />
+                    <ReactToPrint
+                      trigger={() => (
+                        <>
+                          <PrintIcon onClick={handlePrint} /> Print
+                        </>
+                      )}
+                      content={() => componentRef.current}
+                    />
                   </MenuItem>
                 </Menu>
               ) : (
