@@ -43,7 +43,7 @@ const AddInstructor = () => {
       gender: '',
       drivingLicenseNo: '',
       diNumber: '',
-      hiring: '',
+      // hiring: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -54,7 +54,7 @@ const AddInstructor = () => {
         email: values.email,
         address: values.address,
         dob: values.dob,
-        hired_as: values.hiring,
+        // hired_as: values.hiring,
         gender: values.gender,
         driver_licence_number: values.drivingLicenseNo,
         DI_number: values.diNumber,
@@ -186,7 +186,7 @@ const AddInstructor = () => {
                   onChange={(newDate) => {
                     formik.setFieldValue('dob', dayjs(newDate).format('YYYY-MM-DD'))
                   }}
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                 />
               </DemoContainer>
             </LocalizationProvider>
@@ -255,7 +255,7 @@ const AddInstructor = () => {
               InputLabelProps={{ focused: false }}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel
                 id='hiring-label'
@@ -278,7 +278,7 @@ const AddInstructor = () => {
                 <MenuItem value='monthly'>Monthly</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} container justifyContent='flex-end'>
             <Button

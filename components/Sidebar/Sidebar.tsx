@@ -168,7 +168,7 @@ const Sidebar = () => {
                 </ListItemButton>
               </ListItem>
             </Link>
-            <Link href='/packages' style={{ textDecoration: 'none', color: 'inherit' }}>
+            {/* <Link href='/packages' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='Packages'
                 disablePadding
@@ -181,7 +181,7 @@ const Sidebar = () => {
                   <ListItemText primary='Packages' />
                 </ListItemButton>
               </ListItem>
-            </Link>
+            </Link> */}
           </List>
         </Box>
       </Drawer>

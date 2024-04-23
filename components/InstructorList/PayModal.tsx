@@ -169,7 +169,7 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
                     <th className='border py-2'>Name</th>
                     <th className='border py-2'>Phone Number</th>
                     <th className='border py-2'>Address</th>
-                    <th className='border py-2'>Hire As</th>
+                    {/* <th className='border py-2'>Hire As</th> */}
                     <th className='border py-2'>None-paid Lessons</th>
                     <th className='border py-2'>Tax</th>
                     <th className='border py-2'>Total Compensation</th>
@@ -184,7 +184,7 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
                         <td className='border py-2 text-center'>{rowData[2]}</td>
                         <td className='border py-2 text-center'>{rowData[3]}</td>
                         <td className='border py-2 text-center'>{rowData[5]}</td>
-                        <td className='border py-2 text-center'>{rowData[7]}</td>
+                        {/* <td className='border py-2 text-center'>{rowData[7]}</td> */}
                         <td className='border py-2 text-center'>{rowData[1]}</td>
                         <td className='border py-2 text-center'>25%</td>
                         <td className='border py-2 text-center'>{totalCompensation}</td>

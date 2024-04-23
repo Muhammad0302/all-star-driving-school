@@ -46,7 +46,7 @@ const InstructorList = () => {
           Phone: instructor?.phone_number,
           Email: instructor?.email,
           Address: instructor?.address,
-          hire_as: instructor?.hired_as,
+          // hire_as: instructor?.hired_as,
           DriverLicense: instructor?.driver_licence_number,
           DILicense: instructor?.DI_number,
           no_of_lesson: instructor.no_of_lesson,
@@ -187,22 +187,15 @@ const InstructorList = () => {
         sort: false,
       },
     },
-    {
-      name: 'Address',
-      label: 'Address',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'hire_as',
-      label: 'Hire as',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+
+    // {
+    //   name: 'hire_as',
+    //   label: 'Hire as',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     {
       name: 'DriverLicense',
       label: 'Driver License No',
