@@ -19,7 +19,7 @@ import Print from './Print'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const Report = () => {
-  const ref = useRef(null)
+  const componentRef = useRef(null)
   const [openModal, setOpenModal] = useState(false)
   const [instructorPay, setInstructorPay] = useState([])
   const [instructorId, setInstructorId] = useState('')
@@ -41,6 +41,7 @@ const Report = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
+
   const handleAddInstructor = () => {
     router.push('/addinstructor')
   }
@@ -110,10 +111,10 @@ const Report = () => {
     handleOpenPmntHstry()
     handleClose()
   }
-  const handlePrint = () => {
-    const data = {}
-    PrintData(data)
-  }
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  })
   const columns = [
     {
       name: 'ID',
@@ -254,8 +255,8 @@ const Report = () => {
           handleClose={handleCloseFuncPmntHstry}
         />
       </Box>
-      {/* <Print ref={ref} /> */}
-      {/* <div ref={ref}>
+      <Print ref={componentRef} />
+      {/* <div ref={componentRef}>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pharetra justo auctor ex
         maximus commodo vel non odio. Donec id erat ut lectus rhoncus condimentum. Ut id libero
         pulvinar, blandit ipsum molestie, egestas elit. Nam malesuada ipsum cursus, sollicitudin
