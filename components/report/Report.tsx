@@ -23,7 +23,9 @@ const Report = () => {
   const [openModal, setOpenModal] = useState(false)
   const [instructorPay, setInstructorPay] = useState([])
   const [instructorId, setInstructorId] = useState('')
+  const [Id, setId] = useState('')
   const [singleInstructorPay, setSingleInstructorPay] = useState(null)
+  const [printData, setPrintData] = useState(null)
   const [counter, setCounter] = useState(0)
   const handleOpen = () => setOpenModal(true)
   const handleCloseFunc = () => setOpenModal(false)
@@ -98,6 +100,16 @@ const Report = () => {
       console.error('Error fetching instructor data:', error.message)
     }
   }
+  const instructorPayForPrint = async (id: any) => {
+    try {
+      const response = await getInstructorPaymentById(id)
+      console.log('The response of get all instructor is', response)
+      setPrintData(response)
+      // handlePrint()
+    } catch (error: any) {
+      console.error('Error fetching instructor data:', error.message)
+    }
+  }
 
   useEffect(() => {
     fetchInstructorPaymentsData()
@@ -105,7 +117,11 @@ const Report = () => {
   useEffect(() => {
     fetchIndividualInstructorPay()
   }, [instructorId])
-
+  useEffect(() => {
+    if (printData) {
+      handlePrint()
+    }
+  }, [printData])
   const handlePaymentHistory = (data: any) => {
     setInstructorId(data[0])
     handleOpenPmntHstry()
@@ -115,6 +131,12 @@ const Report = () => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   })
+  const handlePrintData = (data: any) => {
+    // setInstructorId(data[0])
+    handlePrint()
+    handleClose()
+  }
+
   const columns = [
     {
       name: 'ID',
@@ -210,12 +232,15 @@ const Report = () => {
                     <HistoryIcon /> Payment History
                   </MenuItem>
                   <MenuItem
-                  // onClick={() => {
-                  //   handleOpenPmntHstry()
-                  //   handleClose()
-                  // }}
+                    // onClick={() => handlePrintData(tableMeta.rowData)}
+                    // onClick={handlePrint}
+                    onClick={() => {
+                      handleClose()
+                      instructorPayForPrint(tableMeta.rowData[0])
+                      // setId(tableMeta.rowData[0])
+                    }}
                   >
-                    <PrintIcon onClick={handlePrint} /> Print
+                    <PrintIcon /> Print
                   </MenuItem>
                 </Menu>
               ) : (
@@ -255,16 +280,7 @@ const Report = () => {
           handleClose={handleCloseFuncPmntHstry}
         />
       </Box>
-      <Print ref={componentRef} />
-      {/* <div ref={componentRef}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pharetra justo auctor ex
-        maximus commodo vel non odio. Donec id erat ut lectus rhoncus condimentum. Ut id libero
-        pulvinar, blandit ipsum molestie, egestas elit. Nam malesuada ipsum cursus, sollicitudin
-        purus non, vulputate eros. Morbi fermentum felis sit amet nisl ornare, nec dignissim arcu
-        ultricies. Cras commodo id nisl ac lacinia. Donec tincidunt magna tortor, eu ornare justo
-        accumsan sed. Suspendisse eros risus, elementum sit amet lobortis a, viverra vel augue.
-        Fusce tincidunt erat et nulla auctor dignissim. Proin faucibus dui quis ultricies malesuada.
-      </div> */}
+      <Print data={printData} ref={componentRef} />
     </>
   )
 }
