@@ -96,7 +96,7 @@ const addStudent = async (data: any): Promise<any> => {
 const getAllStudents = async (): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/student/getAllStudents`,
+      `${getBaseUrl()}/student/getAllUnAssignStudents`,
       config,
     )
     return response.data // Return the response data
@@ -255,6 +255,19 @@ const getPackageByStdId = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
       `${getBaseUrl()}/packageAssigToStud/getPackageByStdId/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+const getAssignByStdId = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/packageAssigToStud/getAssignById/${id}`,
       config,
     )
     return response.data // Return the response data
@@ -439,6 +452,21 @@ const changeInstructor = async (data: any): Promise<any> => {
   }
 }
 
+const editAssignInstructor = async (data: any, id: string): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.put(
+      `${getBaseUrl()}/packageAssigToStud/update/${id}`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('update room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -472,4 +500,6 @@ export {
   getInstructorPayment,
   getInstructorPaymentById,
   changeInstructor,
+  getAssignByStdId,
+  editAssignInstructor,
 }

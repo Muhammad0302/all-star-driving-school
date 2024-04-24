@@ -30,6 +30,9 @@ const StdsAsigndToInstrs = () => {
   const handleAssignInstructor = () => {
     router.push('/assigninstructor')
   }
+  const handleEdit = (data: any) => {
+    router.push(`/editassigninstructor/${data[0]}`)
+  }
 
   const data = [
     ['John Doe', 'E24/12/1', 'Emma Watson'],
@@ -227,7 +230,7 @@ const StdsAsigndToInstrs = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <MenuItem onClick={handleAssignInstructor}>
+                  <MenuItem onClick={() => handleEdit(tableMeta.rowData)}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>

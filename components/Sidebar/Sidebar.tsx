@@ -122,11 +122,11 @@ const Sidebar = () => {
                   <ListItemIcon>
                     <LibraryAddCheckIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Lessons Completion' />
+                  <ListItemText primary='Lessons' />
                 </ListItemButton>
               </ListItem>
             </Link>
-            {/* <Link href='/pvtlssnasgndtoinstrs' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link href='/pvtlssnasgndtoinstrs' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='pvtlssnasgndtoinstrs'
                 disablePadding
@@ -136,10 +136,10 @@ const Sidebar = () => {
                   <ListItemIcon>
                     <AssignmentIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Private Lessons Assigned to Instrs' />
+                  <ListItemText primary='Private Lessons' />
                 </ListItemButton>
               </ListItem>
-            </Link> */}
+            </Link>
             <Link href='/payments' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='payments'

@@ -49,47 +49,6 @@ const AddPrivateLesson = () => {
               <FormControl fullWidth>
                 <InputLabel
                   id='demo-simple-select-label'
-                  error={formik.touched.studentName && Boolean(formik.errors.studentName)}
-                >
-                  Student Name
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={formik.values.studentName}
-                  label='Student Name'
-                  onChange={(e) => {
-                    formik.setFieldValue('studentName', e.target.value)
-                  }}
-                >
-                  <MenuItem value={'biden'}>Biden</MenuItem>
-                  <MenuItem value={'ahmad'}>Ahmad</MenuItem>
-                  <MenuItem value={'max'}>Max</MenuItem>
-                  <MenuItem value={'verma'}>Verma</MenuItem>
-                  <MenuItem value={'john'}>John</MenuItem>
-                  <MenuItem value={'emma'}>Emma</MenuItem>
-                  <MenuItem value={'david'}>David</MenuItem>
-                  <MenuItem value={'olivia'}>Olivia</MenuItem>
-                  <MenuItem value={'william'}>William</MenuItem>
-                  <MenuItem value={'sophia'}>Sophia</MenuItem>
-                  <MenuItem value={'jackson'}>Jackson</MenuItem>
-                  <MenuItem value={'mia'}>Mia</MenuItem>
-                  <MenuItem value={'ethan'}>Ethan</MenuItem>
-                </Select>
-                {formik.touched.studentName && Boolean(formik.errors.studentName) && (
-                  <FormHelperText sx={{ color: '#d32f2f' }}>
-                    {formik.errors.studentName}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Box>
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel
-                  id='demo-simple-select-label'
                   error={formik.touched.instructorName && Boolean(formik.errors.instructorName)}
                 >
                   Instructor Name
@@ -126,6 +85,30 @@ const AddPrivateLesson = () => {
               </FormControl>
             </Box>
           </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='studentName'
+              name='studentName'
+              label='Student Name'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              type='text'
+              value={formik.values.studentName}
+              onChange={formik.handleChange}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+              error={formik.touched.studentName && Boolean(formik.errors.studentName)}
+              helperText={formik.touched.studentName && (formik.errors.studentName as any)}
+            />
+          </Grid>
+
           <Grid item xs={12} sm={6}>
             <TextField
               id='initialLessonsRequested'
@@ -187,7 +170,7 @@ const AddPrivateLesson = () => {
               </FormControl>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <TextField
               id='lessonsCompleted'
               name='lessonsCompleted'
@@ -211,7 +194,7 @@ const AddPrivateLesson = () => {
                 formik.touched.lessonsCompleted && (formik.errors.lessonsCompleted as any)
               }
             />
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} container justifyContent='flex-end'>
             <Button

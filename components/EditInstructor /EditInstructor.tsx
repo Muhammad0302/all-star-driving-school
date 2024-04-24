@@ -58,7 +58,7 @@ const EditInstructor = ({ params }: any) => {
       }
       try {
         const res = await editInstructor(data, params.instructorid)
-        console.log('Edit instructor api response', res)
+        console.log('Instructor api response', res)
         toast.success('Instructor updated successfully', {
           position: 'top-right',
           autoClose: 5000,
