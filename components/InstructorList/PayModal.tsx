@@ -283,6 +283,7 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
                           }}
                           // @ts-ignore
                           renderInput={(startProps: any) => <TextField {...startProps} />}
+                          format='YYYY/MM/DD'
                         />
                       </DemoContainer>
                     </LocalizationProvider>

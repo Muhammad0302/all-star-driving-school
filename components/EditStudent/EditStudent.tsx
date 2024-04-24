@@ -290,7 +290,7 @@ const EditStudent = ({ params }: any) => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='Date of Birth'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.dob}
                   onChange={(newDate) => {
                     formik.setFieldValue('dob', dayjs(newDate).format('YYYY-MM-DD'))
@@ -305,7 +305,7 @@ const EditStudent = ({ params }: any) => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='Course Start Date'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.courseStartDate}
                   onChange={(newDate) => {
                     formik.setFieldValue('courseStartDate', dayjs(newDate).format('YYYY-MM-DD'))
@@ -320,7 +320,7 @@ const EditStudent = ({ params }: any) => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='License Issue Date'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.licenseIssueDate}
                   onChange={(newDate) => {
                     formik.setFieldValue('licenseIssueDate', dayjs(newDate).format('YYYY-MM-DD'))
@@ -335,7 +335,7 @@ const EditStudent = ({ params }: any) => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='License Expiry Date'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.licenseExpiryDate}
                   onChange={(newDate) => {
                     formik.setFieldValue('licenseExpiryDate', dayjs(newDate).format('YYYY-MM-DD'))

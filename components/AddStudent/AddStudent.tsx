@@ -126,8 +126,8 @@ const AddStudent = () => {
                 }}
                 error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
               >
-                <MenuItem value='online'>Online</MenuItem>
-                <MenuItem value='onsite'>Onsite</MenuItem>
+                <MenuItem value='Online'>Online</MenuItem>
+                <MenuItem value='Onsite'>Onsite</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -260,7 +260,7 @@ const AddStudent = () => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='Date of Birth'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.dob}
                   onChange={(newDate) => {
                     formik.setFieldValue('dob', dayjs(newDate).format('YYYY-MM-DD'))
@@ -275,7 +275,7 @@ const AddStudent = () => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='Course Start Date'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.courseStartDate}
                   onChange={(newDate) => {
                     formik.setFieldValue('courseStartDate', dayjs(newDate).format('YYYY-MM-DD'))
@@ -290,7 +290,7 @@ const AddStudent = () => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='License Issue Date'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.licenseIssueDate}
                   onChange={(newDate) => {
                     formik.setFieldValue('licenseIssueDate', dayjs(newDate).format('YYYY-MM-DD'))
@@ -305,7 +305,7 @@ const AddStudent = () => {
               <DemoContainer components={['DatePicker']}>
                 <DatePicker
                   label='License Expiry Date'
-                  format='DD/MM/YYYY'
+                  format='YYYY/MM/DD'
                   value={formik.values.licenseExpiryDate}
                   onChange={(newDate) => {
                     formik.setFieldValue('licenseExpiryDate', dayjs(newDate).format('YYYY-MM-DD'))

@@ -65,11 +65,12 @@ const StdsAsigndToInstrs = () => {
           InstructorName: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
           StudentID: student?.std_id.supportive_id,
           StudentName: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
-          nooflesson: student?.package_id.no_of_lesson,
-          totalPrice: student?.package_id.price,
-          advancePayment: student?.advance,
-          remainingprice: student?.remainingAmount,
-          paymentplan: student?.paymentPlan,
+          nooflesson: student?.no_of_lesson,
+          roadTest: student.road_test,
+          // totalPrice: student?.package_id.price,
+          // advancePayment: student?.advance,
+          // remainingprice: student?.remainingAmount,
+          // paymentplan: student?.paymentPlan,
         }
       })
       setStudentList(Students)
@@ -162,37 +163,45 @@ const StdsAsigndToInstrs = () => {
       },
     },
     {
-      name: 'totalPrice',
-      label: 'Total Price',
+      name: 'roadTest',
+      label: 'Road Test',
       options: {
         filter: true,
         sort: false,
       },
     },
-    {
-      name: 'advancePayment',
-      label: 'Advance Payment',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'remainingprice',
-      label: 'Remaining Price',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'paymentplan',
-      label: 'Payment Plan',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: 'totalPrice',
+    //   label: 'Total Price',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'advancePayment',
+    //   label: 'Advance Payment',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'remainingprice',
+    //   label: 'Remaining Price',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'paymentplan',
+    //   label: 'Payment Plan',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     {
       name: 'Actions',
       options: {

@@ -17,12 +17,14 @@ import './styles.css'
 const validationSchema = yup.object({
   studentName: yup.string().required('Student is required'),
   instructorName: yup.string().required('Instructor is required'),
-  packageName: yup.string().required('Package is required'),
-  price: yup.string().required('Price is required'),
-  payementType: yup.string(),
-  payementPlan: yup.string().required('Payment plan is required'),
-  advancePayment: yup.string(),
-  remainingPrice: yup.string(),
+  no_of_lesson: yup.string().required('Package is required'),
+  road_test: yup.string().required('Package is required'),
+  // packageName: yup.string().required('Package is required'),
+  // price: yup.string().required('Price is required'),
+  // payementType: yup.string(),
+  // payementPlan: yup.string().required('Payment plan is required'),
+  // advancePayment: yup.string(),
+  // remainingPrice: yup.string(),
 })
 const AssignInstructor = () => {
   const [students, setStudents] = useState([])
@@ -36,12 +38,14 @@ const AssignInstructor = () => {
     initialValues: {
       studentName: '',
       instructorName: '',
-      packageName: '',
-      price: '',
-      payementType: '',
-      payementPlan: '',
-      advancePayment: '',
-      remainingPrice: '',
+      no_of_lesson: '',
+      road_test: '',
+      // packageName: '',
+      // price: '',
+      // payementType: '',
+      // payementPlan: '',
+      // advancePayment: '',
+      // remainingPrice: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -50,17 +54,19 @@ const AssignInstructor = () => {
       const data = {
         instructor_id: instructorId,
         std_id: studentId,
-        package_id: packageId,
-        paymentPlan: values.payementPlan,
-        paymentType: values.payementType,
-        advance: values.advancePayment,
-        total: values.price,
-        remainingAmount: values.remainingPrice,
+        no_of_lesson: values.no_of_lesson,
+        road_test: values.road_test,
+        // package_id: packageId,
+        // paymentPlan: values.payementPlan,
+        // paymentType: values.payementType,
+        // advance: values.advancePayment,
+        // total: values.price,
+        // remainingAmount: values.remainingPrice,
       }
       try {
         const res = await assignPackage(data)
-        console.log('Assign package api response', res)
-        toast.success('Instructor and package assigned successfully', {
+        console.log('Instructor assigned api response', res)
+        toast.success('Instructor assigned successfully', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -75,7 +81,7 @@ const AssignInstructor = () => {
           router.push('/stdsasigndtoinstrs')
         }, 2000)
       } catch (error: any) {
-        toast.error('Error while assigning package', {
+        toast.error('Error while assigning instructor', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -126,15 +132,15 @@ const AssignInstructor = () => {
     fetchPackageData()
   }, [])
 
-  useEffect(() => {
-    if (formik.values.price && formik.values.advancePayment) {
-      const price = parseFloat(formik.values.price.replace(/\$/g, ''))
-      const advancePayment = parseFloat(formik.values.advancePayment.replace(/\$/g, ''))
-      const remainingPrice = price - advancePayment
-      console.log('the remaining price is:', remainingPrice)
-      formik.setFieldValue('remainingPrice', `$${remainingPrice.toFixed(2).toString()}`)
-    }
-  }, [formik.values.price, formik.values.advancePayment, formik.values.packageName])
+  // useEffect(() => {
+  //   if (formik.values.price && formik.values.advancePayment) {
+  //     const price = parseFloat(formik.values.price.replace(/\$/g, ''))
+  //     const advancePayment = parseFloat(formik.values.advancePayment.replace(/\$/g, ''))
+  //     const remainingPrice = price - advancePayment
+  //     console.log('the remaining price is:', remainingPrice)
+  //     formik.setFieldValue('remainingPrice', `$${remainingPrice.toFixed(2).toString()}`)
+  //   }
+  // }, [formik.values.price, formik.values.advancePayment, formik.values.packageName])
   console.log('the formik values is:', formik.values)
 
   return (
@@ -229,7 +235,58 @@ const AssignInstructor = () => {
               </FormControl>
             </Box>
           </Grid>
+
           <Grid item xs={12} sm={6}>
+            <TextField
+              id='no_of_lesson'
+              name='no_of_lesson'
+              label='No of Lesson'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              value={formik.values.no_of_lesson}
+              onChange={formik.handleChange}
+              error={formik.touched.no_of_lesson && Boolean(formik.errors.no_of_lesson)}
+              helperText={formik.touched.no_of_lesson && (formik.errors.no_of_lesson as any)}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <Box sx={{ minWidth: 120 }}>
+              <FormControl fullWidth>
+                <InputLabel
+                  id='demo-simple-select-label'
+                  error={formik.touched.road_test && Boolean(formik.errors.road_test)}
+                >
+                  Road Test
+                </InputLabel>
+                <Select
+                  labelId='demo-simple-select-label'
+                  id='demo-simple-select'
+                  value={formik.values.road_test}
+                  label='Package'
+                  onChange={(e) => {
+                    formik.setFieldValue('road_test', e.target.value)
+                  }}
+                >
+                  <MenuItem value={'yes'}>Yes</MenuItem>
+                  <MenuItem value={'no'}>No</MenuItem>
+                </Select>
+                {formik.touched.road_test && Boolean(formik.errors.road_test) && (
+                  <FormHelperText sx={{ color: '#d32f2f' }}>
+                    {formik.errors.road_test}
+                  </FormHelperText>
+                )}
+              </FormControl>
+            </Box>
+          </Grid>
+
+          {/* <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -269,8 +326,8 @@ const AssignInstructor = () => {
                 )}
               </FormControl>
             </Box>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={6}>
             <TextField
               id='price'
               name='price'
@@ -289,8 +346,8 @@ const AssignInstructor = () => {
               error={formik.touched.price && Boolean(formik.errors.price)}
               helperText={formik.touched.price && (formik.errors.price as any)}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={6}>
             <TextField
               id='advancePayment'
               name='advancePayment'
@@ -308,8 +365,8 @@ const AssignInstructor = () => {
               error={formik.touched.advancePayment && Boolean(formik.errors.advancePayment)}
               helperText={formik.touched.advancePayment && (formik.errors.advancePayment as any)}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Grid> */}
+          {/* r   <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel
                 id='payementType-label'
@@ -333,9 +390,9 @@ const AssignInstructor = () => {
                 <MenuItem value='bank_transfer'>Bank Transfer</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
 
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <FormControl fullWidth>
               <InputLabel
                 id='payementPlan-label'
@@ -364,8 +421,8 @@ const AssignInstructor = () => {
                 </FormHelperText>
               )}
             </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={6}>
             <TextField
               id='remainingPrice'
               name='remainingPrice'
@@ -383,7 +440,7 @@ const AssignInstructor = () => {
               error={formik.touched.remainingPrice && Boolean(formik.errors.remainingPrice)}
               helperText={formik.touched.remainingPrice && (formik.errors.remainingPrice as any)}
             />
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} container justifyContent='flex-end'>
             <Button
               type='submit'
