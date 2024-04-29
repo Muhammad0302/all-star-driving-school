@@ -6,17 +6,18 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
-import { getAllCompletedLesson, deleteCompletedLesson } from 'services/room'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import PersonIcon from '@mui/icons-material/Person'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { getAllAssignPackage, deletAssignPackage } from 'services/room'
 import { useRouter } from 'next/navigation'
 import './styles.css'
-const StdsIntrsLssnCompleted = () => {
+const AssignLesson = () => {
   const router = useRouter()
-  const [anchorEl, setAnchorEl] = useState(null)
-  const [lessons, setLessons] = useState([])
   const [counter, setCounter] = useState(0)
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [studentList, setStudentList] = useState([])
   const open = Boolean(anchorEl)
   const [activeRow, setActiveRow] = useState(null)
   const handleClick = (event: any, index: any) => {
@@ -26,39 +27,71 @@ const StdsIntrsLssnCompleted = () => {
   const handleClose = () => {
     setAnchorEl(null)
   }
-  const handleAddLessonCompletion = () => {
-    router.push('/addlessoncompletion')
+  const handleAssignInstructor = () => {
+    router.push('/addassignlesson')
   }
+  const handleEdit = (data: any) => {
+    // router.push(`/addassignlesson /${data[0]}`)
+  }
+
   const data = [
-    ['Instructor 1', 'I24/12/1', 'John Doe', '2', '10', 'Yes'],
-    ['Instructor 2', 'I24/12/2', 'Jane Smith', '3', '8', 'No'],
-    ['Instructor 3', 'I24/12/3', 'Alice Brown', '2', '12', 'Yes'],
-    ['Instructor 4', 'I24/12/4', 'Bob Johnson', '1', '15', 'No'],
-    ['Instructor 5', 'I24/12/5', 'Charlie Davis', '1', '18', 'Yes'],
-    ['Instructor 6', 'I24/12/6', 'Eva Thomas', '1', '20', 'No'],
-    ['Instructor 7', 'I24/12/7', 'Frank Miller', '2', '22', 'Yes'],
-    ['Instructor 8', 'I24/12/8', 'Grace Wilson', '2', '25', 'No'],
-    ['Instructor 9', 'I24/12/9', 'Harry Lee', '2', '28', 'Yes'],
-    ['Instructor 10', 'I24/12/10', 'Ivy Turner', '3', '30', 'No'],
-    ['Instructor 11', 'I24/12/11', 'Jack Evans', '2', '32', 'Yes'],
-    ['Instructor 12', 'E24/12/12', 'Katherine Hall', '1', '35', 'No'],
-    ['Instructor 13', 'E24/12/13', 'Liam Brooks', '1', '38', 'Yes'],
-    ['Instructor 14', 'E24/12/14', 'Mia Taylor', '$13.50', '$13.75', '$14.00', '40', 'No'],
-    ['Instructor 15', 'E24/12/15', 'Noah Adams', '$14.50', '$14.75', '$15.00', '42', 'Yes'],
-    ['Instructor 16', 'E24/12/16', 'Olivia Clark', '2', '45', 'No'],
-    ['Instructor 17', 'E24/12/17', 'Peter Brown', '3', '48', 'Yes'],
-    ['Instructor 18', 'E24/12/18', 'Quinn Evans', '$17.50', '$17.75', '$18.00', '50', 'No'],
-    ['Instructor 19', 'E24/12/9', 'Rachel Turner', '3', '52', 'Yes'],
-    ['Instructor 20', 'E24/12/20', 'Samuel Lee', '$19.50', '$19.75', '$20.00', '55', 'No'],
+    ['John Doe', 'E24/12/1', 'Emma Watson'],
+    ['Jane Smith', 'E24/12/2', 'Ian Johnson'],
+    ['Alice Brown', 'E24/12/3', 'Elijah Taylor'],
+    ['Bob Johnson', 'E24/12/4', 'Isabel Turner'],
+    ['Charlie Davis', 'E24/12/5', 'Eva Clark'],
+    ['Eva Thomas', 'E24/12/6', 'Frank Miller'],
+    ['Frank Miller', 'E24/12/7', 'Grace Wilson'],
+    ['Grace Wilson', 'E24/12/8', 'Harry Lee'],
+    ['Harry Lee', 'E24/12/9', 'Ivy Turner'],
+    ['Ivy Turner', 'E24/12/10', 'Jack Evans'],
+    ['Jack Evans', 'E24/12/11', 'Katherine Hall'],
+    ['Katherine Hall', 'E24/12/12', 'Liam Brooks'],
+    ['Liam Brooks', 'E24/12/13', 'Mia Taylor'],
+    ['Mia Taylor', 'E24/12/14', 'Noah Adams'],
+    ['Noah Adams', 'E24/12/15', 'Olivia Clark'],
+    ['Olivia Clark', 'E24/12/16', 'Peter Brown'],
+    ['Peter Brown', 'E24/12/17', 'Quinn Evans'],
+    ['Quinn Evans', 'E24/12/18', 'Rachel Turner'],
+    ['Rachel Turner', 'E24/12/19', 'Samuel Lee'],
+    ['Samuel Lee', 'E24/12/20', 'Sophia Smith'],
   ]
+
+  const fetchStudentsData = async () => {
+    try {
+      const response = await getAllAssignPackage()
+      console.log('The response is', response)
+      const instructors: any = response.packagesAssigToStuds
+      const Students: any = instructors.map((student: any) => {
+        return {
+          ID: student?._id,
+          InstructorName: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
+          StudentID: student?.std_id.supportive_id,
+          StudentName: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
+          nooflesson: student?.no_of_lesson,
+          roadTest: student?.road_test,
+          // totalPrice: student?.package_id.price,
+          // advancePayment: student?.advance,
+          // remainingprice: student?.remainingAmount,
+          // paymentplan: student?.paymentPlan,
+        }
+      })
+      setStudentList(Students)
+    } catch (error: any) {
+      console.error('Error fetching data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchStudentsData()
+  }, [counter])
 
   const handleDelete = async (data: any) => {
     handleClose()
     console.log('The data is:', data)
     try {
-      const res = await deleteCompletedLesson(data[0])
+      const res = await deletAssignPackage(data[0])
       console.log('Delete api response', res)
-      toast.success('Lesson deleted Successfully', {
+      toast.success('Assign Package deleted Successfully', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -71,7 +104,7 @@ const StdsIntrsLssnCompleted = () => {
       })
       setCounter(counter + 1)
     } catch (error: any) {
-      toast.error('Error while deleting lessons', {
+      toast.error('Error while deleting assign package', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -85,31 +118,10 @@ const StdsIntrsLssnCompleted = () => {
     }
   }
 
-  const fetchLeesonData = async () => {
-    try {
-      const response = await getAllCompletedLesson()
-      console.log('The response of get all lesson is', response)
-      const lessons: any = response.lessons
-
-      const AllLessons: any = lessons.map((lesson: any) => {
-        return {
-          ID: lesson?._id,
-          InstructorName: `${lesson?.instruct_id?.firstName} ${lesson?.instruct_id?.lastName}`,
-          StudentID: lesson?.std_id?.supportive_id,
-          StudentName: `${lesson?.std_id?.firstName} ${lesson?.std_id?.lastName}`,
-          LessonsCompleted: lesson?.no_of_lesson_compeleted,
-          RoadTestCompleted: lesson?.road_test_completion,
-          totalnooflesson: lesson?.total_lesson,
-        }
-      })
-      setLessons(AllLessons)
-    } catch (error: any) {
-      console.error('Error fetching lesson data:', error.message)
-    }
+  const handleChangeInstructor = async (data: any) => {
+    handleClose()
+    router.push(`/changeinstructor/${data[0]}`)
   }
-  useEffect(() => {
-    fetchLeesonData()
-  }, [counter])
 
   const columns = [
     {
@@ -146,29 +158,53 @@ const StdsIntrsLssnCompleted = () => {
       },
     },
     {
-      name: 'totalnooflesson',
-      label: 'Total no of Lessons',
+      name: 'nooflesson',
+      label: 'No Of Lesson',
       options: {
         filter: true,
         sort: false,
       },
     },
     {
-      name: 'LessonsCompleted',
-      label: 'Lessons Completed',
+      name: 'roadTest',
+      label: 'Road Test',
       options: {
         filter: true,
         sort: false,
       },
     },
-    {
-      name: 'RoadTestCompleted',
-      label: 'Road Test Completed',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: 'totalPrice',
+    //   label: 'Total Price',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'advancePayment',
+    //   label: 'Advance Payment',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'remainingprice',
+    //   label: 'Remaining Price',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'paymentplan',
+    //   label: 'Payment Plan',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     {
       name: 'Actions',
       options: {
@@ -194,11 +230,14 @@ const StdsIntrsLssnCompleted = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <MenuItem onClick={handleAddLessonCompletion}>
+                  <MenuItem onClick={() => handleEdit(tableMeta.rowData)}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
+                  </MenuItem>
+                  <MenuItem onClick={() => handleChangeInstructor(tableMeta.rowData)}>
+                    <PersonIcon /> Change Instructor
                   </MenuItem>
                 </Menu>
               ) : (
@@ -213,8 +252,8 @@ const StdsIntrsLssnCompleted = () => {
 
   const HeaderElements = () => {
     return (
-      <Button type='button' sx={{ color: '#f23d4d' }} onClick={handleAddLessonCompletion}>
-        + Add Lesson Completion
+      <Button type='button' sx={{ color: '#f23d4d' }} onClick={handleAssignInstructor}>
+        + Assign Lesson
       </Button>
     )
   }
@@ -235,9 +274,9 @@ const StdsIntrsLssnCompleted = () => {
     <>
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Completed Lessons
+          Assign Lesson List
         </div>
-        <MUIDataTable title={''} data={lessons} columns={columns} options={options} />
+        <MUIDataTable title={''} data={studentList} columns={columns} options={options} />
       </Box>
       <ToastContainer
         position='top-right'
@@ -256,4 +295,4 @@ const StdsIntrsLssnCompleted = () => {
   )
 }
 
-export default StdsIntrsLssnCompleted
+export default AssignLesson

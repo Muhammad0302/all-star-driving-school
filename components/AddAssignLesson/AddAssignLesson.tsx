@@ -11,23 +11,24 @@ import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import { getAllInstructors, getAllStudents, getAllPackages } from 'services/room'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
-import { assignPackage } from 'services/room'
+import { addlesson } from 'services/room'
 import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 const validationSchema = yup.object({
   studentName: yup.string().required('Student is required'),
-  instructorName: yup.string().required('Instructor is required'),
-  // no_of_lesson: yup.string().required('Package is required'),
-  // road_test: yup.string().required('Package is required'),
-  // packageName: yup.string().required('Package is required'),
-  // price: yup.string().required('Price is required'),
+  // instructorName: yup.string().required('Instructor is required'),
+  no_of_lesson: yup.string(),
+  road_test: yup.string(),
+  packageName: yup.string(),
+  price: yup.string(),
   // payementType: yup.string(),
   // payementPlan: yup.string().required('Payment plan is required'),
   // advancePayment: yup.string(),
   // remainingPrice: yup.string(),
 })
-const AssignInstructor = () => {
+const AddAssignLesson = () => {
   const [students, setStudents] = useState([])
+  const [assign, setAssign] = useState('customlesson')
   const [studentId, setStudentId] = useState(null)
   const [instructors, setInstructors] = useState([])
   const [instructorId, setInstructorId] = useState(null)
@@ -37,10 +38,11 @@ const AssignInstructor = () => {
   const formik = useFormik({
     initialValues: {
       studentName: '',
-      instructorName: '',
-      // no_of_lesson: '',
-      // road_test: '',
-      // packageName: '',
+      // instructorName: '',
+      price: '',
+      no_of_lesson: '',
+      road_test: '',
+      packageName: '',
       // price: '',
       // payementType: '',
       // payementPlan: '',
@@ -52,11 +54,13 @@ const AssignInstructor = () => {
       console.log(values)
 
       const data = {
-        instructor_id: instructorId,
+        // instructor_id: instructorId,
         std_id: studentId,
-        no_of_lesson: '',
-        road_test: '',
-        price_per_lesson: '',
+        no_of_lesson: values.no_of_lesson,
+        road_test: values.road_test,
+        package_id: packageId,
+        price_per_lesson: parseFloat(values.price),
+
         // paymentPlan: values.payementPlan,
         // paymentType: values.payementType,
         // advance: values.advancePayment,
@@ -64,9 +68,9 @@ const AssignInstructor = () => {
         // remainingAmount: values.remainingPrice,
       }
       try {
-        const res = await assignPackage(data)
-        console.log('Instructor assigned api response', res)
-        toast.success('Instructor assigned successfully', {
+        const res = await addlesson(studentId, data)
+        console.log('Add lesson api response', res)
+        toast.success('Lesson assigned successfully', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -78,7 +82,7 @@ const AssignInstructor = () => {
           transition: Bounce,
         })
         setTimeout(() => {
-          router.push('/stdsasigndtoinstrs')
+          router.push('/assignlesson')
         }, 2000)
       } catch (error: any) {
         toast.error('Error while assigning instructor', {
@@ -131,6 +135,9 @@ const AssignInstructor = () => {
     fetchInstructorData()
     fetchPackageData()
   }, [])
+  const handleChange = (event: any) => {
+    setAssign(event.target.value)
+  }
 
   // useEffect(() => {
   //   if (formik.values.price && formik.values.advancePayment) {
@@ -141,6 +148,7 @@ const AssignInstructor = () => {
   //     formik.setFieldValue('remainingPrice', `$${remainingPrice.toFixed(2).toString()}`)
   //   }
   // }, [formik.values.price, formik.values.advancePayment, formik.values.packageName])
+
   console.log('the formik values is:', formik.values)
 
   return (
@@ -151,7 +159,7 @@ const AssignInstructor = () => {
           spacing={3}
           sx={{ marginTop: '5px !important', paddingLeft: '6rem', paddingRight: '6rem' }}
         >
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -192,7 +200,7 @@ const AssignInstructor = () => {
                 )}
               </FormControl>
             </Box>
-          </Grid>
+          </Grid> */}
           <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
@@ -235,47 +243,24 @@ const AssignInstructor = () => {
               </FormControl>
             </Box>
           </Grid>
-
-          {/* <Grid item xs={12} sm={6}>
-            <TextField
-              id='no_of_lesson'
-              name='no_of_lesson'
-              label='No of Lesson'
-              variant='outlined'
-              fullWidth
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
-              value={formik.values.no_of_lesson}
-              onChange={formik.handleChange}
-              error={formik.touched.no_of_lesson && Boolean(formik.errors.no_of_lesson)}
-              helperText={formik.touched.no_of_lesson && (formik.errors.no_of_lesson as any)}
-            />
-          </Grid> */}
-
-          {/* <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel
                   id='demo-simple-select-label'
                   error={formik.touched.road_test && Boolean(formik.errors.road_test)}
                 >
-                  Road Test
+                  Assign
                 </InputLabel>
                 <Select
                   labelId='demo-simple-select-label'
                   id='demo-simple-select'
-                  value={formik.values.road_test}
+                  value={assign}
                   label='Package'
-                  onChange={(e) => {
-                    formik.setFieldValue('road_test', e.target.value)
-                  }}
+                  onChange={handleChange}
                 >
-                  <MenuItem value={'yes'}>Yes</MenuItem>
-                  <MenuItem value={'no'}>No</MenuItem>
+                  <MenuItem value={'package'}>Package</MenuItem>
+                  <MenuItem value={'customlesson'}>Custom Lesson</MenuItem>
                 </Select>
                 {formik.touched.road_test && Boolean(formik.errors.road_test) && (
                   <FormHelperText sx={{ color: '#d32f2f' }}>
@@ -284,49 +269,166 @@ const AssignInstructor = () => {
                 )}
               </FormControl>
             </Box>
-          </Grid> */}
+          </Grid>
+          {assign === 'package' ? (
+            <>
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      id='demo-simple-select-label'
+                      error={formik.touched.packageName && Boolean(formik.errors.packageName)}
+                    >
+                      Package
+                    </InputLabel>
+                    <Select
+                      labelId='demo-simple-select-label'
+                      id='demo-simple-select'
+                      value={formik.values.packageName}
+                      label='Student Name'
+                      onChange={(e) => {
+                        formik.setFieldValue('packageName', e.target.value)
 
-          {/* <Grid item xs={12} sm={6}>
-            <Box sx={{ minWidth: 120 }}>
-              <FormControl fullWidth>
-                <InputLabel
-                  id='demo-simple-select-label'
-                  error={formik.touched.packageName && Boolean(formik.errors.packageName)}
-                >
-                  Package
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-label'
-                  id='demo-simple-select'
-                  value={formik.values.packageName}
-                  label='Student Name'
-                  onChange={(e) => {
-                    formik.setFieldValue('packageName', e.target.value)
+                        const selectedPackage: any = packages.find(
+                          (packags: any) => packags.name[0] === e.target.value,
+                        )
 
-                    const selectedPackage: any = packages.find(
-                      (packags: any) => packags.name[0] === e.target.value,
-                    )
-
-                    if (selectedPackage) {
-                      setPackageId(selectedPackage._id)
-                      formik.setFieldValue('price', selectedPackage.price)
-                    }
+                        if (selectedPackage) {
+                          setPackageId(selectedPackage._id)
+                          formik.setFieldValue('price', selectedPackage.price)
+                          formik.setFieldValue('no_of_lesson', selectedPackage.no_of_lesson)
+                        }
+                      }}
+                    >
+                      {packages?.map((packages: any, index) => (
+                        <MenuItem key={index} value={`${packages.name}`}>
+                          {`${packages.name}`}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    {formik.touched.packageName && Boolean(formik.errors.packageName) && (
+                      <FormHelperText sx={{ color: '#d32f2f' }}>
+                        {formik.errors.packageName}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Box>
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id='price'
+                  name='price'
+                  label='Price'
+                  variant='outlined'
+                  fullWidth
+                  sx={{
+                    '& fieldset': { borderColor: '#f23d4d !important' },
                   }}
-                >
-                  {packages?.map((packages: any, index) => (
-                    <MenuItem key={index} value={`${packages.name}`}>
-                      {`${packages.name}`}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {formik.touched.packageName && Boolean(formik.errors.packageName) && (
-                  <FormHelperText sx={{ color: '#d32f2f' }}>
-                    {formik.errors.packageName}
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Box>
-          </Grid> */}
+                  InputLabelProps={{
+                    focused: false,
+                  }}
+                  // @ts-ignore
+                  value={formik.values.price}
+                  onChange={formik.handleChange}
+                  error={formik.touched.price && Boolean(formik.errors.price)}
+                  helperText={formik.touched.price && (formik.errors.price as any)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id='no_of_lesson'
+                  name='no_of_lesson'
+                  label='No of lesson'
+                  variant='outlined'
+                  fullWidth
+                  sx={{
+                    '& fieldset': { borderColor: '#f23d4d !important' },
+                  }}
+                  InputLabelProps={{
+                    focused: false,
+                  }}
+                  // @ts-ignore
+                  value={formik.values.no_of_lesson}
+                  onChange={formik.handleChange}
+                  error={formik.touched.no_of_lesson && Boolean(formik.errors.no_of_lesson)}
+                  helperText={formik.touched.no_of_lesson && (formik.errors.no_of_lesson as any)}
+                />
+              </Grid>
+            </>
+          ) : (
+            <>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id='no_of_lesson'
+                  name='no_of_lesson'
+                  label='No of Lesson'
+                  variant='outlined'
+                  fullWidth
+                  sx={{
+                    '& fieldset': { borderColor: '#f23d4d !important' },
+                  }}
+                  InputLabelProps={{
+                    focused: false,
+                  }}
+                  value={formik.values.no_of_lesson}
+                  onChange={formik.handleChange}
+                  error={formik.touched.no_of_lesson && Boolean(formik.errors.no_of_lesson)}
+                  helperText={formik.touched.no_of_lesson && (formik.errors.no_of_lesson as any)}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  id='price'
+                  name='price'
+                  label='Price'
+                  variant='outlined'
+                  fullWidth
+                  sx={{
+                    '& fieldset': { borderColor: '#f23d4d !important' },
+                  }}
+                  InputLabelProps={{
+                    focused: false,
+                  }}
+                  value={formik.values.price}
+                  onChange={formik.handleChange}
+                  error={formik.touched.price && Boolean(formik.errors.price)}
+                  helperText={formik.touched.price && (formik.errors.price as any)}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <Box sx={{ minWidth: 120 }}>
+                  <FormControl fullWidth>
+                    <InputLabel
+                      id='demo-simple-select-label'
+                      error={formik.touched.road_test && Boolean(formik.errors.road_test)}
+                    >
+                      Road Test
+                    </InputLabel>
+                    <Select
+                      labelId='demo-simple-select-label'
+                      id='demo-simple-select'
+                      value={formik.values.road_test}
+                      label='Package'
+                      onChange={(e) => {
+                        formik.setFieldValue('road_test', e.target.value)
+                      }}
+                    >
+                      <MenuItem value={'yes'}>Yes</MenuItem>
+                      <MenuItem value={'no'}>No</MenuItem>
+                    </Select>
+                    {formik.touched.road_test && Boolean(formik.errors.road_test) && (
+                      <FormHelperText sx={{ color: '#d32f2f' }}>
+                        {formik.errors.road_test}
+                      </FormHelperText>
+                    )}
+                  </FormControl>
+                </Box>
+              </Grid>
+            </>
+          )}
+
           {/* <Grid item xs={12} sm={6}>
             <TextField
               id='price'
@@ -476,4 +578,4 @@ const AssignInstructor = () => {
   )
 }
 
-export default AssignInstructor
+export default AddAssignLesson

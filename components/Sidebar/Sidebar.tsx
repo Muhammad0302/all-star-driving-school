@@ -109,6 +109,21 @@ const Sidebar = () => {
               </ListItem>
             </Link>
 
+            <Link href='/assignlesson' style={{ textDecoration: 'none', color: 'inherit' }}>
+              <ListItem
+                key='assignlesson'
+                disablePadding
+                sx={{ backgroundColor: activeTab === 'assignlesson' ? '#f23d4d' : '' }}
+              >
+                <ListItemButton onClick={() => handleSiderNavigation('assignlesson')}>
+                  <ListItemIcon>
+                    <AssignmentIcon />{' '}
+                  </ListItemIcon>
+                  <ListItemText primary='Assign Lesson' />
+                </ListItemButton>
+              </ListItem>
+            </Link>
+
             <Link
               href='/stdsintrslssncompleted'
               style={{ textDecoration: 'none', color: 'inherit' }}
@@ -122,7 +137,7 @@ const Sidebar = () => {
                   <ListItemIcon>
                     <LibraryAddCheckIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Lessons' />
+                  <ListItemText primary='Completed Lessons' />
                 </ListItemButton>
               </ListItem>
             </Link>
@@ -168,7 +183,7 @@ const Sidebar = () => {
                 </ListItemButton>
               </ListItem>
             </Link>
-            {/* <Link href='/packages' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <Link href='/packages' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='Packages'
                 disablePadding
@@ -181,7 +196,7 @@ const Sidebar = () => {
                   <ListItemText primary='Packages' />
                 </ListItemButton>
               </ListItem>
-            </Link> */}
+            </Link>
           </List>
         </Box>
       </Drawer>

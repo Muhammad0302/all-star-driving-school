@@ -411,10 +411,10 @@ const PaymentList = () => {
       const AllPayments: any = payments.map((payment: any) => {
         return {
           ID: payment?._id,
-          StudentID: payment?.std_id.supportive_id,
+          StudentID: payment?.std_id?.supportive_id,
           StudentName: `${payment?.std_id?.firstName} ${payment?.std_id?.lastName}`,
           TotalPayments: payment?.amount,
-          phoneNumber: payment?.std_id.phone_number,
+          phoneNumber: payment?.std_id?.phone_number,
           PaymentPlan: 4,
         }
       })

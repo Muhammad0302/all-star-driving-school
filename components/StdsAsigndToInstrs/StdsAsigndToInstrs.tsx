@@ -68,8 +68,8 @@ const StdsAsigndToInstrs = () => {
           InstructorName: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
           StudentID: student?.std_id.supportive_id,
           StudentName: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
-          nooflesson: student?.no_of_lesson,
-          roadTest: student.road_test,
+          // nooflesson: student?.no_of_lesson,
+          // roadTest: student?.road_test,
           // totalPrice: student?.package_id.price,
           // advancePayment: student?.advance,
           // remainingprice: student?.remainingAmount,
@@ -157,22 +157,22 @@ const StdsAsigndToInstrs = () => {
         sort: false,
       },
     },
-    {
-      name: 'nooflesson',
-      label: 'No Of Lesson',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'roadTest',
-      label: 'Road Test',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: 'nooflesson',
+    //   label: 'No Of Lesson',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
+    // {
+    //   name: 'roadTest',
+    //   label: 'Road Test',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     // {
     //   name: 'totalPrice',
     //   label: 'Total Price',
@@ -274,7 +274,7 @@ const StdsAsigndToInstrs = () => {
     <>
       <Box sx={{ padding: '24px' }}>
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
-          Assign Instructor and Packages Students List
+          Assign Instructor
         </div>
         <MUIDataTable title={''} data={studentList} columns={columns} options={options} />
       </Box>
