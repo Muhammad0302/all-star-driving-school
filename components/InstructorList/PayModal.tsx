@@ -121,7 +121,8 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
     if (formik.values.rate) {
       const totalBeforeTax = parseFloat(formik.values.rate) * rowData[1]
       const tax = totalBeforeTax * 0.25 // 25% tax
-      const totalWithTax = totalBeforeTax - tax
+      // const totalWithTax = totalBeforeTax - tax
+      const totalWithTax = totalBeforeTax + tax
       setTotalCompensation(`$${totalWithTax}`)
     } else {
       setTotalCompensation('')
@@ -132,7 +133,8 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
       const totalBeforeTax =
         parseFloat(formik.values.rate) * parseFloat(formik.values.noOfLessonToPay)
       const tax = totalBeforeTax * 0.25 // 25% tax
-      const totalWithTax = totalBeforeTax - tax
+      // const totalWithTax = totalBeforeTax - tax
+      const totalWithTax = totalBeforeTax + tax
       setCompensation(`$${totalWithTax}`)
     } else {
       setCompensation('')

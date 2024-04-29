@@ -327,6 +327,9 @@ const AddAssignLesson = () => {
                   InputLabelProps={{
                     focused: false,
                   }}
+                  inputProps={{
+                    readOnly: true,
+                  }}
                   // @ts-ignore
                   value={formik.values.price}
                   onChange={formik.handleChange}
@@ -343,6 +346,9 @@ const AddAssignLesson = () => {
                   fullWidth
                   sx={{
                     '& fieldset': { borderColor: '#f23d4d !important' },
+                  }}
+                  inputProps={{
+                    readOnly: true,
                   }}
                   InputLabelProps={{
                     focused: false,

@@ -69,6 +69,7 @@ const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailIn
 
                     <th className='border py-2'>Rate</th>
                     <th className='border py-2'>Tax</th>
+                    <th className='border py-2'>Tax Amount</th>
                     <th className='border py-2'>No of Lesson</th>
                     <th className='border py-2'>Amount</th>
                   </tr>
@@ -77,6 +78,15 @@ const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailIn
                   {singleInstructorPay?.InstructorPayment?.map((payment: any) => {
                     const date = new Date(payment?.issueDate)
                     const formattedDate = date.toLocaleDateString('en-GB')
+                    // Check if payment?.tax is a valid string
+                    const taxPercentage =
+                      payment?.tax && typeof payment.tax === 'string'
+                        ? parseFloat(payment.tax.replace('%', '')) / 100
+                        : 0
+
+                    // Calculate tax amount
+                    const taxAmount = payment.compensation * taxPercentage
+
                     return (
                       <>
                         <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
@@ -87,6 +97,7 @@ const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailIn
 
                           <td className='border py-2 text-center'>${payment?.rate}</td>
                           <td className='border py-2 text-center'>{payment?.tax}</td>
+                          <td className='border py-2 text-center'>${taxAmount}</td>
                           <td className='border py-2 text-center'>{payment?.noOfLessonToPay}</td>
                           <td className='border py-2 text-center'>${payment?.compensation}</td>
                         </tr>

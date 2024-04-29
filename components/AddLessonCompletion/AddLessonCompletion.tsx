@@ -299,6 +299,9 @@ const AddLessonCompletion = () => {
               sx={{
                 '& fieldset': { borderColor: '#f23d4d !important' },
               }}
+              inputProps={{
+                readOnly: true,
+              }}
               InputLabelProps={{
                 focused: false,
               }}
@@ -318,6 +321,9 @@ const AddLessonCompletion = () => {
               InputLabelProps={{
                 focused: false,
               }}
+              inputProps={{
+                readOnly: true,
+              }}
               type='text'
               value={lessonCompleted}
               onChange={(event: any) => setLessonCompleted(event.target.value)}
@@ -332,6 +338,9 @@ const AddLessonCompletion = () => {
               name='remainingLesson'
               label='Remaining Lesson'
               variant='outlined'
+              inputProps={{
+                readOnly: true,
+              }}
               fullWidth
               sx={{
                 '& fieldset': { borderColor: '#f23d4d !important' },
