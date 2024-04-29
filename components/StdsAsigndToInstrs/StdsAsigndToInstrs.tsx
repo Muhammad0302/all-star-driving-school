@@ -64,10 +64,10 @@ const StdsAsigndToInstrs = () => {
       const instructors: any = response.packagesAssigToStuds
       const Students: any = instructors.map((student: any) => {
         return {
-          ID: student?._id,
-          InstructorName: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
-          StudentID: student?.std_id.supportive_id,
-          StudentName: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
+          ID: student?.id,
+          InstructorName: `${student?.instructor?.firstName} ${student?.instructor?.lastName}`,
+          StudentID: student?.student.supportive_id,
+          StudentName: `${student?.student?.firstName} ${student?.student?.lastName}`,
           // nooflesson: student?.no_of_lesson,
           // roadTest: student?.road_test,
           // totalPrice: student?.package_id.price,

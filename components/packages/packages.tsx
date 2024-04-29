@@ -27,7 +27,7 @@ const Package = () => {
     setAnchorEl(null)
   }
   const handleAddPackage = (data: any) => {
-    router.push('/editpackage')
+    router.push('/addpackage')
   }
   const handleEditPackage = (data: any) => {
     router.push(`/editpackage/${data[0]}`)
