@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import { Grid, TextField, Button } from '@mui/material'
@@ -7,6 +7,9 @@ import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getAllInstructors, addprivatelesson } from 'services/room'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import './styles.css'
@@ -15,10 +18,10 @@ const validationSchema = yup.object({
   instructorName: yup.string().required('Instructor Name is required'),
   initialLessonsRequested: yup.string().required('Initial Lessons Requested is required'),
   roadTestRequested: yup.string(),
-  lessonsCompleted: yup.string().required('Number of Lessons Completed is required'),
-  roadTestCompleted: yup.string(),
 })
 const AddPrivateLesson = () => {
+  const [instructors, setInstructors] = useState([])
+  const [instructorId, setInstructorId] = useState(null)
   const router = useRouter()
   const formik = useFormik({
     initialValues: {
@@ -26,15 +29,62 @@ const AddPrivateLesson = () => {
       instructorName: '',
       initialLessonsRequested: '',
       roadTestRequested: '',
-      lessonsCompleted: '',
-      roadTestCompleted: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
-      console.log(values)
-      router.push('/pvtlssnasgndtoinstrs')
+      const data = {
+        instructor_id: instructorId,
+        student_name: values.studentName,
+        road_test_req: values.roadTestRequested,
+        initial_lesson_requested: values.initialLessonsRequested,
+      }
+      try {
+        const res = await addprivatelesson(data)
+        console.log('Private lesson api response', res)
+        toast.success('Private Lesson added successfully', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+        setTimeout(() => {
+          router.push('/pvtlssnasgndtoinstrs')
+        }, 2000)
+      } catch (error: any) {
+        toast.error('Error while adding private lesson', {
+          position: 'top-right',
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: 'colored',
+          transition: Bounce,
+        })
+      }
     },
   })
+
+  useEffect(() => {
+    const fetchInstructorData = async () => {
+      try {
+        const res = await getAllInstructors()
+        console.log('The instructor data is:', res)
+        const instructor = res.instructors
+        setInstructors(instructor)
+      } catch (error) {
+        console.error('Error fetching instructor data:', error)
+      }
+    }
+
+    fetchInstructorData()
+  }, [])
   console.log('formik values is:', formik.values)
   return (
     <div className='mt-[3.5rem]'>
@@ -51,7 +101,7 @@ const AddPrivateLesson = () => {
                   id='demo-simple-select-label'
                   error={formik.touched.instructorName && Boolean(formik.errors.instructorName)}
                 >
-                  Instructor Name
+                  Instructor
                 </InputLabel>
                 <Select
                   labelId='demo-simple-select-label'
@@ -60,26 +110,27 @@ const AddPrivateLesson = () => {
                   label='Instructor Name'
                   onChange={(e) => {
                     formik.setFieldValue('instructorName', e.target.value)
+                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
+
+                    const selectedInstructor: any = instructors.find(
+                      (instructor: any) =>
+                        instructor.firstName === selectedFirstName &&
+                        instructor.lastName === selectedLastName,
+                    )
+                    if (selectedInstructor) {
+                      setInstructorId(selectedInstructor._id)
+                    }
                   }}
                 >
-                  <MenuItem value={'scarlett'}>Scarlett</MenuItem>
-                  <MenuItem value={'lucas'}>Lucas</MenuItem>
-                  <MenuItem value={'ella'}>Ella</MenuItem>
-                  <MenuItem value={'nathan'}>Nathan</MenuItem>
-                  <MenuItem value={'grace'}>Grace</MenuItem>
-                  <MenuItem value={'austin'}>Austin</MenuItem>
-                  <MenuItem value={'madison'}>Madison</MenuItem>
-                  <MenuItem value={'carter'}>Carter</MenuItem>
-                  <MenuItem value={'aubrey'}>Aubrey</MenuItem>
-                  <MenuItem value={'sebastian'}>Sebastian</MenuItem>
-                  <MenuItem value={'claire'}>Claire</MenuItem>
-                  <MenuItem value={'gabriel'}>Gabriel</MenuItem>
-                  <MenuItem value={'zoey'}>Zoey</MenuItem>
+                  {instructors?.map((instructor: any, index) => (
+                    <MenuItem key={index} value={`${instructor.firstName} ${instructor.lastName}`}>
+                      {`${instructor.firstName} ${instructor.lastName}`}
+                    </MenuItem>
+                  ))}
                 </Select>
-
-                {!!(formik.touched.instructorName && formik.errors.instructorName) && (
+                {formik.touched.instructorName && Boolean(formik.errors.instructorName) && (
                   <FormHelperText sx={{ color: '#d32f2f' }}>
-                    {formik.errors.instructorName as string}
+                    {formik.errors.instructorName}
                   </FormHelperText>
                 )}
               </FormControl>
@@ -217,6 +268,19 @@ const AddPrivateLesson = () => {
           </Grid>
         </Grid>
       </form>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </div>
   )
 }

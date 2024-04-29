@@ -1,5 +1,5 @@
 import { TextField, Box } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import MUIDataTable from 'mui-datatables'
 import { Button } from '@mui/material'
 import MoreVertIcon from '@mui/icons-material/MoreVert'
@@ -7,10 +7,15 @@ import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import { ToastContainer, toast, Bounce } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { getAllPrivateLesson, deletePrivateLesson } from 'services/room'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const PvtLssnAsgndToInstrs = () => {
   const router = useRouter()
+  const [counter, setCounter] = useState(0)
+  const [pvtLessonData, setPvtLessonData] = useState([])
   const [anchorEl, setAnchorEl] = useState(null)
 
   const open = Boolean(anchorEl)
@@ -48,9 +53,74 @@ const PvtLssnAsgndToInstrs = () => {
     ['Ava Anderson', 'Liam Turner', '111-222-3333', '52', 'No'],
   ]
 
+  const fetchData = async () => {
+    try {
+      const response = await getAllPrivateLesson()
+      console.log('The response of pvt lesson is', response)
+      const pvtlessons: any = response.privateLessons
+      const AllInstructors: any = pvtlessons.map((pvtlesson: any) => {
+        return {
+          ID: pvtlesson?._id,
+          instructorName: `${pvtlesson?.instructor_id.firstName} ${pvtlesson?.instructor_id.lastName}`,
+          StudentName: pvtlesson?.student_name,
+          InitialLessonsRequested: pvtlesson?.initial_lesson_requested,
+          RoadTestRequested: pvtlesson?.road_test_req,
+        }
+      })
+      setPvtLessonData(AllInstructors)
+    } catch (error: any) {
+      console.error('Error fetching instructor data:', error.message)
+    }
+  }
+  useEffect(() => {
+    fetchData()
+  }, [counter])
+
+  const handleDelete = async (data: any) => {
+    handleClose()
+    console.log('The data is:', data)
+    try {
+      const res = await deletePrivateLesson(data[0])
+      console.log('Delete api response', res)
+      toast.success('Pvt lesson deleted Successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error: any) {
+      toast.error('Error while deleting pvt lesson', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
   const columns = [
     {
-      name: 'InstructorName',
+      name: 'ID',
+      label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
+    {
+      name: 'instructorName',
       label: 'Instructor Name',
       options: {
         filter: true,
@@ -65,14 +135,7 @@ const PvtLssnAsgndToInstrs = () => {
         sort: false,
       },
     },
-    {
-      name: 'StudentPhone',
-      label: 'Student Phone',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+
     {
       name: 'InitialLessonsRequested',
       label: 'Initial Lessons Requested',
@@ -133,9 +196,7 @@ const PvtLssnAsgndToInstrs = () => {
                   <MenuItem onClick={handleAddPvtLesson}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem
-                  // onClick={() => handleDelete(tableMeta.rowData[0])}
-                  >
+                  <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
                 </Menu>
@@ -175,8 +236,21 @@ const PvtLssnAsgndToInstrs = () => {
         <div className='mt-10 mb-[1rem] text-[20x] sm:text-[19px] md:text-[23px] lg:text-[26px] text-center font-russoone font-normal'>
           Private Lessons
         </div>
-        <MUIDataTable title={''} data={data} columns={columns} options={options} />
+        <MUIDataTable title={''} data={pvtLessonData} columns={columns} options={options} />
       </Box>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='colored'
+        transition={Bounce} // Specify Bounce as the transition prop value
+      />
     </>
   )
 }

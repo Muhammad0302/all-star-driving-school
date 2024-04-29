@@ -481,6 +481,46 @@ const editAssignInstructor = async (data: any, id: string): Promise<any> => {
   }
 }
 
+const addprivatelesson = async (data: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.post(
+      `${getBaseUrl()}/privateLesson/add`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('add student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const getAllPrivateLesson = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/privateLesson/get`, config)
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const deletePrivateLesson = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.delete(
+      `${getBaseUrl()}/privateLesson/delete/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -517,4 +557,7 @@ export {
   getAssignByStdId,
   editAssignInstructor,
   addlesson,
+  addprivatelesson,
+  getAllPrivateLesson,
+  deletePrivateLesson,
 }
