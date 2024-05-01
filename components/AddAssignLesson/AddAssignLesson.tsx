@@ -9,7 +9,7 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
-import { getAllInstructors, getAllStudents, getAllPackages } from 'services/room'
+import { getAllInstructors, getAllAssignStudents, getAllPackages } from 'services/room'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import { addlesson } from 'services/room'
 import 'react-toastify/dist/ReactToastify.css'
@@ -103,7 +103,7 @@ const AddAssignLesson = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const res = await getAllStudents()
+        const res = await getAllAssignStudents()
         console.log('The student data is:', res)
         const students = res.students
         setStudents(students)

@@ -133,6 +133,7 @@ const AddLessonCompletion = () => {
     if (studentId) {
       setLessonCompleted('8')
       setRemainingLesson('9')
+      formik.setFieldValue('totalLesson', '17')
     } else {
       setLessonCompleted('')
       setRemainingLesson('')

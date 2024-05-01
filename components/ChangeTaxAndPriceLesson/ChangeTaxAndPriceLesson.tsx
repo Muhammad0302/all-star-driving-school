@@ -1,38 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
 import { Grid, TextField, Button } from '@mui/material'
 import { useRouter } from 'next/navigation'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
-import { addPackage } from 'services/room'
+import { updateRate, getRate } from 'services/room'
 import 'react-toastify/dist/ReactToastify.css'
 const validationSchema = yup.object({
-  name: yup.string().required('Name is required'),
-  price: yup.string().required('Price is required'),
-  noOfLesson: yup.string().required('No of Lesson is required'),
+  tax: yup.string().required('Name is required'),
+  priceperlesson: yup.string().required('Price is required'),
 })
 
-const AddPackage = () => {
+interface Rate {
+  _id: string
+}
+const ChangeTaxAndPriceLesson = () => {
+  const [rate, setRate] = useState<Rate | null>(null)
   const router = useRouter()
-
   const formik = useFormik({
     initialValues: {
-      name: '',
-      price: '',
-      noOfLesson: '',
+      tax: '',
+      priceperlesson: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log(values)
       const data = {
-        name: values.name,
-        price: values.price,
-        no_of_lesson: values.noOfLesson,
+        tax: values.tax,
+        price_per_lesson: values.priceperlesson,
       }
       try {
-        const res = await addPackage(data)
-        console.log('Add Package api response', res)
-        toast.success('Package added Successfully', {
+        const res = await updateRate(data, rate!._id || '')
+        console.log('update rate response', res)
+        toast.success('Rate updated Successfully', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -44,10 +44,10 @@ const AddPackage = () => {
           transition: Bounce,
         })
         setTimeout(() => {
-          router.push('/packages')
+          router.push('/instructors')
         }, 2000)
       } catch (error: any) {
-        toast.error('Error while adding package', {
+        toast.error('Error while updating rate', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -62,6 +62,22 @@ const AddPackage = () => {
     },
   })
 
+  useEffect(() => {
+    const fetchRateData = async () => {
+      try {
+        const res = await getRate()
+        console.log('The rate is:', res)
+        const rate = res.Rate[0]
+        setRate(rate)
+        formik.setFieldValue('priceperlesson', rate.price_per_lesson)
+        formik.setFieldValue('tax', rate.tax)
+      } catch (error) {
+        console.error('Error fetching students data:', error)
+      }
+    }
+    fetchRateData()
+  }, [])
+
   return (
     <div className='mt-[3.5rem]'>
       <form onSubmit={formik.handleSubmit}>
@@ -72,15 +88,15 @@ const AddPackage = () => {
         >
           <Grid item xs={12} sm={6}>
             <TextField
-              id='name'
-              name='name'
-              label='Name'
+              id='tax'
+              name='tax'
+              label='Tax(%)'
               variant='outlined'
               fullWidth
-              value={formik.values.name}
+              value={formik.values.tax}
               onChange={formik.handleChange}
-              error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
+              error={formik.touched.tax && Boolean(formik.errors.tax)}
+              helperText={formik.touched.tax && formik.errors.tax}
               sx={{
                 '& fieldset': { borderColor: '#f23d4d !important' },
               }}
@@ -92,15 +108,15 @@ const AddPackage = () => {
 
           <Grid item xs={12} sm={6}>
             <TextField
-              id='price'
-              name='price'
-              label='Price'
+              id='priceperlesson'
+              name='priceperlesson'
+              label='Price Per Lesson($)'
               variant='outlined'
               fullWidth
-              value={formik.values.price}
+              value={formik.values.priceperlesson}
               onChange={formik.handleChange}
-              error={formik.touched.price && Boolean(formik.errors.price)}
-              helperText={formik.touched.price && formik.errors.price}
+              error={formik.touched.priceperlesson && Boolean(formik.errors.priceperlesson)}
+              helperText={formik.touched.priceperlesson && formik.errors.priceperlesson}
               sx={{
                 '& fieldset': { borderColor: '#f23d4d !important' },
               }}
@@ -110,27 +126,7 @@ const AddPackage = () => {
             />
           </Grid>
 
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id='noOfLesson'
-              name='noOfLesson'
-              label='No of Lesson'
-              variant='outlined'
-              fullWidth
-              value={formik.values.noOfLesson}
-              onChange={formik.handleChange}
-              error={formik.touched.noOfLesson && Boolean(formik.errors.noOfLesson)}
-              helperText={formik.touched.noOfLesson && formik.errors.noOfLesson}
-              sx={{
-                '& fieldset': { borderColor: '#f23d4d !important' },
-              }}
-              InputLabelProps={{
-                focused: false,
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={6} container justifyContent='flex-end'>
+          <Grid item xs={12} container justifyContent='flex-end'>
             <div className='flex justify-center items-center'>
               <Button
                 type='submit'
@@ -168,4 +164,4 @@ const AddPackage = () => {
   )
 }
 
-export default AddPackage
+export default ChangeTaxAndPriceLesson

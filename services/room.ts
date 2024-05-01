@@ -96,7 +96,35 @@ const addStudent = async (data: any): Promise<any> => {
 const getAllStudents = async (): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/student/getAllUnAssignStudents`,
+      `${getBaseUrl()}/student/getAllStudents`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+const getAllUnAssignStudents = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      // `${getBaseUrl()}/student/getAllUnAssignStudents`,
+      `${getBaseUrl()}/student/getAllStudents`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const getAllAssignStudents = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/student/getAllAssignStudents`,
       config,
     )
     return response.data // Return the response data
@@ -521,6 +549,32 @@ const deletePrivateLesson = async (id: any): Promise<any> => {
   }
 }
 
+const getRate = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/rate/get`, config)
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting packages error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
+const updateRate = async (data: any, id: string): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.put(
+      `${getBaseUrl()}/rate/update/${id}`,
+      data,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('update room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -560,4 +614,8 @@ export {
   addprivatelesson,
   getAllPrivateLesson,
   deletePrivateLesson,
+  getRate,
+  updateRate,
+  getAllUnAssignStudents,
+  getAllAssignStudents,
 }

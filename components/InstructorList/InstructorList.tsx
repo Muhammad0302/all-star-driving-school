@@ -269,10 +269,24 @@ const InstructorList = () => {
       </Link>
     )
   }
+  const PricePerLessonAndTax = () => {
+    return (
+      <Link href='/changetaxandpriceoflesson' style={{ textDecoration: 'none', color: 'inherit' }}>
+        <Button type='button' sx={{ color: '#f23d4d' }}>
+          Change Tax & Price per lesson
+        </Button>
+      </Link>
+    )
+  }
 
   const options = {
     filterType: 'checkbox' as const,
-    customToolbar: HeaderElements,
+    customToolbar: () => (
+      <>
+        <PricePerLessonAndTax />
+        <HeaderElements />
+      </>
+    ),
     headCells: {
       style: {
         fontWeight: 'bold !important',
