@@ -387,7 +387,7 @@ const AddAssignLesson = () => {
                 <TextField
                   id='price'
                   name='price'
-                  label='Price'
+                  label='Price per lesson'
                   variant='outlined'
                   fullWidth
                   sx={{

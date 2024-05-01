@@ -64,7 +64,7 @@ const AssignLesson = () => {
       const instructors: any = response.packagesAssigToStuds
       const Students: any = instructors.map((student: any) => {
         return {
-          ID: student?._id,
+          ID: student?.id,
           InstructorName: `${student?.instructor?.firstName} ${student?.instructor?.lastName}`,
           StudentID: student?.student?.supportive_id,
           StudentName: `${student?.student?.firstName} ${student?.student?.lastName}`,
