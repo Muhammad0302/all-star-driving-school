@@ -13,7 +13,7 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { addPayment, getAllStudents, getPackageByStdId, getPaymentByStdId } from 'services/room'
+import { addPayment, getAssignedStudent, getPackageByStdId, getPaymentByStdId } from 'services/room'
 import dayjs from 'dayjs'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
@@ -85,9 +85,9 @@ const AddPayment = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const res = await getAllStudents()
+        const res = await getAssignedStudent()
         console.log('The student data is:', res)
-        const students = res.students
+        const students = res.assignedStudents
         setStudents(students)
       } catch (error) {
         console.error('Error fetching students data:', error)
@@ -189,11 +189,13 @@ const AddPayment = () => {
 
                     const selectedStudent: any = students.find(
                       (student: any) =>
-                        student.firstName === selectedFirstName &&
-                        student.lastName === selectedLastName,
+                        student.student.firstName === selectedFirstName &&
+                        student.student.lastName === selectedLastName,
                     )
+
+                    console.log('The selected student id is:', selectedStudent)
                     if (selectedStudent) {
-                      setStudentId(selectedStudent._id)
+                      setStudentId(selectedStudent.student._id)
                     }
                     setTotalAmount('')
                     setAmountPaid('')
@@ -201,8 +203,11 @@ const AddPayment = () => {
                   }}
                 >
                   {students?.map((student: any, index) => (
-                    <MenuItem key={index} value={`${student.firstName} ${student.lastName}`}>
-                      {`${student.firstName} ${student.lastName}`}
+                    <MenuItem
+                      key={index}
+                      value={`${student.student.firstName} ${student.student.lastName}`}
+                    >
+                      {`${student.student.firstName} ${student.student.lastName}`}
                     </MenuItem>
                   ))}
                 </Select>
