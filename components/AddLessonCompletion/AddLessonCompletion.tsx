@@ -27,7 +27,10 @@ const validationSchema = yup.object({
   roadTestCompleted: yup.string().required('Road test is required'),
   totalLesson: yup.string(),
 })
+
 const AddLessonCompletion = () => {
+  const [formDisabled, setFormDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(false)
   const [roadTest, setRoadTest] = React.useState('')
   const [students, setStudents] = useState([])
   const [studentId, setStudentId] = useState(null)
@@ -153,7 +156,26 @@ const AddLessonCompletion = () => {
     }
   }, [studentId])
 
+  useEffect(() => {
+    // Update formDisabled state based on the validation result
+    setFormDisabled(!formik.isValid)
+  }, [formik.isValid])
+
+  useEffect(() => {
+    // Update formDisabled state based on the validation result
+    // setFormDisabled(!formik.isValid)
+    if (formik.values.noOfLessonsCompleted > remainingLesson) {
+      setFormDisabled(true)
+      setDisabled(true)
+    } else {
+      setFormDisabled(false)
+      setDisabled(false)
+    }
+  }, [formik.values.noOfLessonsCompleted, remainingLesson])
+
   // added here ..
+
+  console.log('The form disable vlaue is:', formDisabled, disabled)
   return (
     <div className='mt-[3.5rem]'>
       <form onSubmit={formik.handleSubmit}>
@@ -394,6 +416,13 @@ const AddLessonCompletion = () => {
                 focused: false,
               }}
             />
+            {formDisabled && disabled && (
+              <>
+                <FormHelperText sx={{ color: '#d32f2f' }}>
+                  Lessons just completed should be less than or equal to remaining lesson
+                </FormHelperText>
+              </>
+            )}{' '}
           </Grid>
           <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
@@ -439,6 +468,7 @@ const AddLessonCompletion = () => {
                   background: '#e01527',
                 },
               }}
+              disabled={formDisabled}
             >
               Submit
             </Button>
