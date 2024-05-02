@@ -56,7 +56,7 @@ const AddLessonCompletion = () => {
       const data = {
         instruct_id: instructorId,
         std_id: studentId,
-        no_of_lesson_compeleted: values.noOfLessonsCompleted,
+        no_of_lesson_compeleted: parseInt(values.noOfLessonsCompleted),
         road_test_completion: values.roadTestCompleted,
         total_lesson: values.totalLesson,
       }
@@ -395,7 +395,7 @@ const AddLessonCompletion = () => {
               }}
             />
           </Grid>
-          {/* <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -425,7 +425,7 @@ const AddLessonCompletion = () => {
                 )}
               </FormControl>
             </Box>
-          </Grid> */}
+          </Grid>
 
           <Grid item xs={12} container justifyContent='flex-end'>
             <Button
