@@ -239,11 +239,7 @@ const addPackage = async (data: any): Promise<any> => {
 }
 const assignPackage = async (data: any): Promise<any> => {
   try {
-    const response: AxiosResponse = await axios.post(
-      `${getBaseUrl()}/packageAssigToStud/add`,
-      data,
-      config,
-    )
+    const response: AxiosResponse = await axios.post(`${getBaseUrl()}/assign/add`, data, config)
     return response.data // Return the response data
   } catch (error: any) {
     // Handle addRoom error
@@ -254,7 +250,7 @@ const assignPackage = async (data: any): Promise<any> => {
 const addlesson = async (id: any, data: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.put(
-      `${getBaseUrl()}/packageAssigToStud/addlesson/${id}`,
+      `${getBaseUrl()}/assign/addlesson/${id}`,
       data,
       config,
     )
@@ -267,10 +263,7 @@ const addlesson = async (id: any, data: any): Promise<any> => {
 }
 const getAllAssignPackage = async (): Promise<any> => {
   try {
-    const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/packageAssigToStud/get`,
-      config,
-    )
+    const response: AxiosResponse = await axios.get(`${getBaseUrl()}/assign/get`, config)
     return response.data // Return the response data
   } catch (error: any) {
     // Handle addRoom error
@@ -282,7 +275,7 @@ const getAllAssignPackage = async (): Promise<any> => {
 const deletAssignPackage = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.delete(
-      `${getBaseUrl()}/packageAssigToStud/delete/${id}`,
+      `${getBaseUrl()}/assign/delete/${id}`,
       config,
     )
     return response.data // Return the response data
@@ -296,7 +289,7 @@ const deletAssignPackage = async (id: any): Promise<any> => {
 const getPackageByStdId = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/packageAssigToStud/getPackageByStdId/${id}`,
+      `${getBaseUrl()}/assign/getPackageByStdId/${id}`,
       config,
     )
     return response.data // Return the response data
@@ -309,7 +302,7 @@ const getPackageByStdId = async (id: any): Promise<any> => {
 const getAssignByStdId = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/packageAssigToStud/getAssignById/${id}`,
+      `${getBaseUrl()}/assign/getAssignById/${id}`,
       config,
     )
     return response.data // Return the response data
@@ -414,7 +407,7 @@ const editPayment = async (data: any, id: string): Promise<any> => {
 const getAllInstructorStudent = async (id: string): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/packageAssigToStud/getStudentsByInstructor/${id}`,
+      `${getBaseUrl()}/assign/getStudentsByInstructor/${id}`,
       config,
     )
     return response.data // Return the response data
@@ -428,7 +421,7 @@ const getAllInstructorStudent = async (id: string): Promise<any> => {
 const getAllStudentInstructor = async (id: string): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/packageAssigToStud/getInstructorsByStudent/${id}`,
+      `${getBaseUrl()}/assign/getInstructorsByStudent/${id}`,
       config,
     )
     return response.data // Return the response data
@@ -482,7 +475,7 @@ const getInstructorPaymentById = async (id: any): Promise<any> => {
 const changeInstructor = async (data: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.post(
-      `${getBaseUrl()}/packageAssigToStud/changeinstructor`,
+      `${getBaseUrl()}/assign/changeinstructor`,
       data,
       config,
     )
@@ -497,7 +490,7 @@ const changeInstructor = async (data: any): Promise<any> => {
 const editAssignInstructor = async (data: any, id: string): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.put(
-      `${getBaseUrl()}/packageAssigToStud/update/${id}`,
+      `${getBaseUrl()}/assign/update/${id}`,
       data,
       config,
     )
@@ -575,6 +568,20 @@ const updateRate = async (data: any, id: string): Promise<any> => {
   }
 }
 
+const getStudentsByInstructorId = async (id: string): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/student/getStudentByInstructorId/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -618,4 +625,5 @@ export {
   updateRate,
   getAllUnAssignStudents,
   getAllAssignStudents,
+  getStudentsByInstructorId,
 }

@@ -32,7 +32,7 @@ const Sidebar = () => {
   const handleSiderNavigation = (itemText: string) => {
     setActiveTab(itemText)
   }
-  console.log('the tab value is:', activeTab)
+
   return (
     <>
       <Drawer

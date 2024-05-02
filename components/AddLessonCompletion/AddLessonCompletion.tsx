@@ -13,6 +13,7 @@ import {
   getAllStudents,
   getPackageByStdId,
   addLessonCompletion,
+  getStudentsByInstructorId,
 } from 'services/room'
 import FormHelperText from '@mui/material/FormHelperText'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
@@ -95,13 +96,20 @@ const AddLessonCompletion = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const res = await getAllStudents()
-        const students = res.students
-        setStudents(students)
+        if (instructorId !== null) {
+          const res = await getStudentsByInstructorId(instructorId)
+          console.log('Get student through instructor id:', res)
+          const students = res.assignedStudents
+          setStudents(students)
+        }
       } catch (error) {
         console.error('Error fetching students data:', error)
       }
     }
+    fetchStudentData()
+  }, [instructorId])
+
+  useEffect(() => {
     const fetchInstructorData = async () => {
       try {
         const res = await getAllInstructors()
@@ -111,29 +119,34 @@ const AddLessonCompletion = () => {
         console.error('Error fetching instructor data:', error)
       }
     }
-    fetchStudentData()
+
     fetchInstructorData()
   }, [])
   useEffect(() => {
-    const fetchPackageByStdId = async () => {
+    const fetchAssignByStdId = async () => {
       try {
-        const res = await getPackageByStdId(studentId)
-        console.log('The package data is:', res)
-        const packags = res.packageAssigToStud[0]
+        if (instructorId !== null) {
+          const res = await getPackageByStdId(studentId)
+          console.log('The package data is:', res)
+          const assignInfo: any = res.packageAssigToStud
 
-        formik.setFieldValue('totalLesson', packags.package_id.no_of_lesson)
+          formik.setFieldValue('totalLesson', assignInfo.no_of_lesson)
+          setLessonCompleted(assignInfo.no_of_lesson_completed)
+          const remainingLesson: any = assignInfo.no_of_lesson - assignInfo.no_of_lesson_completed
+          setRemainingLesson(remainingLesson)
+        }
       } catch (error) {
         console.error('Error fetching students data:', error)
       }
     }
-    fetchPackageByStdId()
+    fetchAssignByStdId()
   }, [studentId])
 
   useEffect(() => {
     if (studentId) {
-      setLessonCompleted('8')
-      setRemainingLesson('9')
-      formik.setFieldValue('totalLesson', '17')
+      // setLessonCompleted('8')
+      // setRemainingLesson('9')
+      // formik.setFieldValue('totalLesson', '17')
     } else {
       setLessonCompleted('')
       setRemainingLesson('')
@@ -212,17 +225,20 @@ const AddLessonCompletion = () => {
 
                     const selectedStudent: any = students.find(
                       (student: any) =>
-                        student.firstName === selectedFirstName &&
-                        student.lastName === selectedLastName,
+                        student?.std_id?.firstName === selectedFirstName &&
+                        student?.std_id?.lastName === selectedLastName,
                     )
                     if (selectedStudent) {
-                      setStudentId(selectedStudent._id)
+                      setStudentId(selectedStudent.std_id?._id)
                     }
                   }}
                 >
                   {students?.map((student: any, index) => (
-                    <MenuItem key={index} value={`${student.firstName} ${student.lastName}`}>
-                      {`${student.firstName} ${student.lastName}`}
+                    <MenuItem
+                      key={index}
+                      value={`${student?.std_id?.firstName} ${student?.std_id?.lastName}`}
+                    >
+                      {`${student?.std_id?.firstName} ${student?.std_id?.lastName}`}
                     </MenuItem>
                   ))}
                 </Select>
@@ -379,7 +395,7 @@ const AddLessonCompletion = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          {/* <Grid item xs={12} sm={6}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -409,7 +425,7 @@ const AddLessonCompletion = () => {
                 )}
               </FormControl>
             </Box>
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} container justifyContent='flex-end'>
             <Button
