@@ -59,7 +59,7 @@ const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailIn
               onClick={handleClose}
             />
             <div className='container max-w-[1690px] mx-auto mt-6'>
-              <table className='w-full border-collapse'>
+              {/* <table className='w-full border-collapse'>
                 <thead>
                   <tr className='font-bold' style={{ backgroundColor: '#E5E7EB' }}>
                     <th className='border py-2'>Serial No</th>
@@ -107,7 +107,58 @@ const PaymentHistory = ({ open, handleClose, singleInstructorPay }: ViewDetailIn
                 </tbody>
               </table>
               <div className='flex justify-end items-center  font-bold mt-[27px] mr-[28px]'>
-                Total: ${singleInstructorPay?.totalCompensation}
+                Total Paid: ${singleInstructorPay?.totalCompensation}
+              </div> */}
+              <table className='w-full border-collapse'>
+                <thead>
+                  <tr className='font-bold' style={{ backgroundColor: '#E5E7EB' }}>
+                    <th className='border py-2'>Serial No</th>
+                    {/* <th className='border py-2'>Type</th> */}
+                    <th className='border py-2'>Date</th>
+                    {/* <th className='border py-2'>Issue Date</th> */}
+                    {/* <th className='border py-2'>Cheque No</th> */}
+
+                    <th className='border py-2'>Rate</th>
+                    <th className='border py-2'>Tax</th>
+                    <th className='border py-2'>No of Lesson</th>
+                    <th className='border py-2'>Dr</th>
+                    <th className='border py-2'>Cr</th>
+                    <th className='border py-2'>Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {singleInstructorPay?.InstructorPayment?.map((payment: any) => {
+                    const date = new Date(payment?.issueDate)
+                    const formattedDate = date.toLocaleDateString('en-GB')
+                    return (
+                      <>
+                        <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
+                          <td className='border py-2 text-center'>{serialNumber++}</td>
+                          {/* <td className='border py-2 text-center'>Cheque</td> */}
+                          <td className='border py-2 text-center'>{formattedDate}</td>
+                          {/* <td className='border py-2 text-center'>{payment?.chaqueNo}</td> */}
+
+                          <td className='border py-2 text-center'>${payment?.rate}</td>
+                          <td className='border py-2 text-center'>{payment?.tax}%</td>
+                          <td className='border py-2 text-center'>{payment?.noOfLessonToPay}</td>
+                          <td className='border py-2 text-center'>
+                            {payment?.Dr ? `$${payment?.Dr}` : payment?.Dr}
+                          </td>
+                          <td className='border py-2 text-center'>
+                            {payment?.Cr ? `$${payment?.Cr}` : payment?.Cr}
+                          </td>
+                          <td className='border py-2 text-center'>${payment?.Balance}</td>
+                        </tr>
+                      </>
+                    )
+                  })}
+                </tbody>
+              </table>
+              <div className='flex justify-end mt-4'>
+                <Typography style={{ fontWeight: 'bold' }}>
+                  {' '}
+                  Total Paid: ${singleInstructorPay?.totalCompensation}
+                </Typography>
               </div>
             </div>
           </Box>

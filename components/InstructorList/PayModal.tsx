@@ -65,9 +65,13 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
-      console.log(values)
       const compensationValue = parseFloat(compensation.replace('$', ''))
-      const rateValue = parseFloat(values.rate.replace('$', ''))
+
+      const tax = (compensationValue * rate?.tax) / 100 // 25% tax
+      // const tax = totalBeforeTax * 0.25 // 25% tax
+      // const totalWithTax = totalBeforeTax - tax
+      const totalWithTax = compensationValue + tax
+
       const noOfLessonToPayValue = parseFloat(values.noOfLessonToPay)
       const data = {
         chaqueNo: values.ChequeNo,
@@ -75,9 +79,11 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
         noOfLessonToPay: noOfLessonToPayValue,
         instruct_id: rowData[0],
         issueDate: values.issueDate,
-        tax: '25%',
-        compensation: compensationValue,
+        tax: rate.tax,
+        Dr: compensationValue,
       }
+      console.log('The changed get called', data)
+
       try {
         const res = await addInstructorPayment(data)
         console.log('Add Instructor payment api response', res)
@@ -95,13 +101,6 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
         })
         handleClose()
         formik.resetForm()
-
-        // setTimeout(() => {
-        //   // router.push('/report')
-        //   // router.push('/instructors')
-        //   handleClose()
-        //    formik.resetForm()
-        // }, 2000)
       } catch (error: any) {
         toast.error('Error while paying', {
           position: 'top-right',

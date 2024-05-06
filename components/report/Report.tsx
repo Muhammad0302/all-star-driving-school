@@ -240,7 +240,7 @@ const Report = () => {
                       // setId(tableMeta.rowData[0])
                     }}
                   >
-                    <PrintIcon /> Print
+                    <PrintIcon /> Print Invoice
                   </MenuItem>
                 </Menu>
               ) : (

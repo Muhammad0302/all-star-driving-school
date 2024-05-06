@@ -33,14 +33,17 @@ const Print5 = forwardRef(({ data }: any, ref) => {
           <thead>
             <tr className='font-bold' style={{ backgroundColor: '#E5E7EB' }}>
               <th className='border py-2'>Serial No</th>
-              <th className='border py-2'>Type</th>
-              <th className='border py-2'>Issue Date</th>
-              <th className='border py-2'>Cheque No</th>
+              {/* <th className='border py-2'>Type</th> */}
+              <th className='border py-2'>Date</th>
+              {/* <th className='border py-2'>Issue Date</th> */}
+              {/* <th className='border py-2'>Cheque No</th> */}
 
               <th className='border py-2'>Rate</th>
               <th className='border py-2'>Tax</th>
               <th className='border py-2'>No of Lesson</th>
-              <th className='border py-2'>Amount</th>
+              <th className='border py-2'>Dr</th>
+              <th className='border py-2'>Cr</th>
+              <th className='border py-2'>Balance</th>
             </tr>
           </thead>
           <tbody>
@@ -51,14 +54,20 @@ const Print5 = forwardRef(({ data }: any, ref) => {
                 <>
                   <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
                     <td className='border py-2 text-center'>{serialNumber++}</td>
-                    <td className='border py-2 text-center'>Cheque</td>
+                    {/* <td className='border py-2 text-center'>Cheque</td> */}
                     <td className='border py-2 text-center'>{formattedDate}</td>
-                    <td className='border py-2 text-center'>{payment?.chaqueNo}</td>
+                    {/* <td className='border py-2 text-center'>{payment?.chaqueNo}</td> */}
 
                     <td className='border py-2 text-center'>${payment?.rate}</td>
-                    <td className='border py-2 text-center'>{payment?.tax}</td>
+                    <td className='border py-2 text-center'>{payment?.tax}%</td>
                     <td className='border py-2 text-center'>{payment?.noOfLessonToPay}</td>
-                    <td className='border py-2 text-center'>${payment?.compensation}</td>
+                    <td className='border py-2 text-center'>
+                      {payment?.Dr ? `$${payment?.Dr}` : payment?.Dr}
+                    </td>
+                    <td className='border py-2 text-center'>
+                      {payment?.Cr ? `$${payment?.Cr}` : payment?.Cr}
+                    </td>
+                    <td className='border py-2 text-center'>${payment?.Balance}</td>
                   </tr>
                 </>
               )
@@ -66,7 +75,10 @@ const Print5 = forwardRef(({ data }: any, ref) => {
           </tbody>
         </table>
         <div className='flex justify-end mt-4'>
-          <Typography style={{ fontWeight: 'bold' }}> Total: ${data?.totalCompensation}</Typography>
+          <Typography style={{ fontWeight: 'bold' }}>
+            {' '}
+            Total Paid: ${data?.totalCompensation}
+          </Typography>
         </div>
         <div className='flex justify-end mt-1'>
           <Typography>Date: {currentDate}</Typography>
