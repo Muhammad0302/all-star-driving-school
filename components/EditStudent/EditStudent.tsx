@@ -110,6 +110,7 @@ const EditStudent = ({ params }: any) => {
         const parselicence_issue_date = dayjs(student.licence_issue_date)
         const parselicence_expiry_date = dayjs(student.licence_expiry_date)
         const parsecourse_start_date = dayjs(student.courseStartDate)
+        student.registration_for = student.supportive_id
         student.firstName = student.firstName
         student.lastName = student.lastName
         student.email = student.email
@@ -149,21 +150,25 @@ const EditStudent = ({ params }: any) => {
           sx={{ marginTop: '5px !important', paddingLeft: '6rem', paddingRight: '6rem' }}
         >
           <Grid item xs={12} sm={6}>
-            <FormControl fullWidth>
-              <InputLabel id='registration-for-label'>Register For</InputLabel>
-              <Select
-                labelId='registration-for-label'
-                id='registration-for'
-                value={formik.values.registration_for}
-                onChange={(e) => {
-                  formik.setFieldValue('registration_for', e.target.value)
-                }}
-                error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
-              >
-                <MenuItem value='online'>Online</MenuItem>
-                <MenuItem value='onsite'>Onsite</MenuItem>
-              </Select>
-            </FormControl>
+            <TextField
+              id='registration_for'
+              name='registration_for'
+              label='Student ID'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              value={formik.values.registration_for}
+              onChange={formik.handleChange}
+              error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
+              helperText={
+                formik.touched.registration_for && (formik.errors.registration_for as any)
+              }
+            />
           </Grid>
 
           <Grid item xs={12} sm={6}>
@@ -243,6 +248,19 @@ const EditStudent = ({ params }: any) => {
               onChange={formik.handleChange}
               error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
               helperText={formik.touched.phoneNumber && (formik.errors.phoneNumber as any)}
+              inputProps={{
+                inputMode: 'numeric',
+                onKeyDown: (event) => {
+                  const numericKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+                  if (
+                    !numericKeys.includes(event.key) &&
+                    event.key !== 'Backspace' &&
+                    event.key !== 'Delete'
+                  ) {
+                    event.preventDefault() // Prevent input of non-numeric characters
+                  }
+                },
+              }}
             />
           </Grid>
 

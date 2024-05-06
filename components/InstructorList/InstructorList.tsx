@@ -11,14 +11,18 @@ import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getAllInstructors, deletInstructor } from 'services/room'
+import { getAllInstructors, deletInstructor, getRate } from 'services/room'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
 import './styles.css'
 import PayModal from './PayModal'
+interface Rate {
+  _id: string
+}
 const InstructorList = () => {
   const [counter, setCounter] = useState(0)
+  const [rate, setRate] = useState<Rate | null>(null)
   const [openModal, setOpenModal] = useState(false)
   const [instructorData, setInstructorData] = useState([])
   const [selectedRowData, setSelectedRowData] = useState(null)
@@ -26,7 +30,6 @@ const InstructorList = () => {
   const handleCloseFunc = () => setOpenModal(false)
   const router = useRouter()
   const [anchorEl, setAnchorEl] = useState(null)
-
   const open = Boolean(anchorEl)
   const [activeRow, setActiveRow] = useState(null)
   const handleClick = (event: any, index: any) => {
@@ -57,6 +60,22 @@ const InstructorList = () => {
       console.error('Error fetching instructor data:', error.message)
     }
   }
+
+  useEffect(() => {
+    const fetchRateData = async () => {
+      try {
+        const res = await getRate()
+        console.log('The rate is:', res)
+        const rate = res.Rate[0]
+        setRate(rate)
+        // formik.setFieldValue('priceperlesson', rate.price_per_lesson)
+        // formik.setFieldValue('tax', rate.tax)
+      } catch (error) {
+        console.error('Error fetching students data:', error)
+      }
+    }
+    fetchRateData()
+  }, [])
   useEffect(() => {
     fetchRoomsData()
   }, [counter])
@@ -305,7 +324,12 @@ const InstructorList = () => {
           Instructors list
         </div>
         <MUIDataTable title={''} data={instructorData} columns={columns} options={options} />
-        <PayModal rowData={selectedRowData} open={openModal} handleClose={handleCloseFunc} />
+        <PayModal
+          rate={rate}
+          rowData={selectedRowData}
+          open={openModal}
+          handleClose={handleCloseFunc}
+        />
       </Box>
       <ToastContainer
         position='top-right'
