@@ -21,7 +21,7 @@ const validationSchema = yup.object({
   gender: yup.string().required('Gender is required'),
   drivingLicenseNo: yup.string().required('Driving License No is required'),
   diNumber: yup.string().required('DI Number is required'),
-  hiring: yup.string().required('Hiring is required'),
+  hiring: yup.string(),
 })
 
 const EditInstructor = ({ params }: any) => {
