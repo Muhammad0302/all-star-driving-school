@@ -70,7 +70,7 @@ const AssignLesson = () => {
           StudentName: `${student?.student?.firstName} ${student?.student?.lastName}`,
           nooflesson: student?.no_of_lesson,
           roadTest: student?.road_test,
-          lessoncompleted: student.lesson_completed,
+          lessoncompleted: student?.no_of_lesson ? student.lesson_completed : '',
           // totalPrice: student?.package_id.price,
           // advancePayment: student?.advance,
           // remainingprice: student?.remainingAmount,

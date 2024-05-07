@@ -43,6 +43,7 @@ interface ViewDetailInput {
   open: boolean
   handleClose: () => void
   rowData: any
+  rate: any
 }
 const validationSchema = yup.object({
   ChequeNo: yup.string().required('Cheque no is required'),
@@ -51,7 +52,7 @@ const validationSchema = yup.object({
   noOfLessonToPay: yup.string().required('No of lesson to pay is required'),
 })
 
-const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
+const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
   const router = useRouter()
   const [totalCompensation, setTotalCompensation] = useState('')
   const [compensation, setCompensation] = useState('')
@@ -64,9 +65,13 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
-      console.log(values)
       const compensationValue = parseFloat(compensation.replace('$', ''))
-      const rateValue = parseFloat(values.rate.replace('$', ''))
+
+      const tax = (compensationValue * rate?.tax) / 100 // 25% tax
+      // const tax = totalBeforeTax * 0.25 // 25% tax
+      // const totalWithTax = totalBeforeTax - tax
+      const totalWithTax = compensationValue + tax
+
       const noOfLessonToPayValue = parseFloat(values.noOfLessonToPay)
       const data = {
         chaqueNo: values.ChequeNo,
@@ -74,9 +79,11 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
         noOfLessonToPay: noOfLessonToPayValue,
         instruct_id: rowData[0],
         issueDate: values.issueDate,
-        tax: '25%',
-        compensation: compensationValue,
+        tax: rate.tax,
+        Dr: compensationValue,
       }
+      console.log('The changed get called', data)
+
       try {
         const res = await addInstructorPayment(data)
         console.log('Add Instructor payment api response', res)
@@ -94,13 +101,6 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
         })
         handleClose()
         formik.resetForm()
-
-        // setTimeout(() => {
-        //   // router.push('/report')
-        //   // router.push('/instructors')
-        //   handleClose()
-        //    formik.resetForm()
-        // }, 2000)
       } catch (error: any) {
         toast.error('Error while paying', {
           position: 'top-right',
@@ -116,18 +116,22 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
       }
     },
   })
+  useEffect(() => {
+    if (rate && rate?.price_per_lesson) {
+      formik.setFieldValue('rate', rate?.price_per_lesson)
+    }
+  }, [rate])
 
   useEffect(() => {
-    if (formik.values.rate) {
+    if (formik.values.rate && rowData && rowData[1] != null) {
       const totalBeforeTax = parseFloat(formik.values.rate) * rowData[1]
       const tax = totalBeforeTax * 0.25 // 25% tax
-      // const totalWithTax = totalBeforeTax - tax
       const totalWithTax = totalBeforeTax + tax
       setTotalCompensation(`$${totalWithTax}`)
     } else {
       setTotalCompensation('')
     }
-  }, [formik.values.rate])
+  }, [formik.values.rate, rowData])
   useEffect(() => {
     if (formik.values.rate && formik.values.noOfLessonToPay) {
       const totalBeforeTax =
@@ -187,8 +191,8 @@ const PayModal = ({ open, handleClose, rowData }: ViewDetailInput) => {
                         <td className='border py-2 text-center'>{rowData[3]}</td>
                         <td className='border py-2 text-center'>{rowData[5]}</td>
                         {/* <td className='border py-2 text-center'>{rowData[7]}</td> */}
-                        <td className='border py-2 text-center'>{rowData[1]}</td>
-                        <td className='border py-2 text-center'>25%</td>
+                        <td className='border py-2 text-center'>{rowData[1] ? rowData[1] : '0'}</td>
+                        <td className='border py-2 text-center'>{rate?.tax}%</td>
                         <td className='border py-2 text-center'>{totalCompensation}</td>
                       </tr>
                     </>

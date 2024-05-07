@@ -14,6 +14,7 @@ import {
   getPackageByStdId,
   addLessonCompletion,
   getStudentsByInstructorId,
+  getRate,
 } from 'services/room'
 import FormHelperText from '@mui/material/FormHelperText'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
@@ -28,7 +29,13 @@ const validationSchema = yup.object({
   totalLesson: yup.string(),
 })
 
+interface Rate {
+  price_per_lesson: number
+  tax: number
+}
+
 const AddLessonCompletion = () => {
+  const [rate, setRate] = useState<Rate | null>(null)
   const [formDisabled, setFormDisabled] = useState(false)
   const [disabled, setDisabled] = useState(false)
   const [roadTest, setRoadTest] = React.useState('')
@@ -53,15 +60,26 @@ const AddLessonCompletion = () => {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log(values)
-      // router.push('/stdsintrslssncompleted')
+      const currentDate = new Date().toLocaleDateString()
+      // @ts-ignore
+      const totalBeforeTax = rate?.price_per_lesson * parseFloat(values.noOfLessonsCompleted)
+      // @ts-ignore
+      const tax = (totalBeforeTax * rate?.tax) / 100 // 25% tax
+      // const tax = totalBeforeTax * 0.25 // 25% tax
+      // const totalWithTax = totalBeforeTax - tax
+      const totalWithTax = totalBeforeTax + tax
 
+      console.log(values)
       const data = {
         instruct_id: instructorId,
         std_id: studentId,
         no_of_lesson_compeleted: parseInt(values.noOfLessonsCompleted),
         road_test_completion: values.roadTestCompleted,
         total_lesson: values.totalLesson,
+        Cr: totalWithTax,
+        rate: rate?.price_per_lesson,
+        tax: rate?.tax,
+        issueDate: currentDate,
       }
       try {
         const res = await addLessonCompletion(data)
@@ -146,17 +164,6 @@ const AddLessonCompletion = () => {
   }, [studentId])
 
   useEffect(() => {
-    if (studentId) {
-      // setLessonCompleted('8')
-      // setRemainingLesson('9')
-      // formik.setFieldValue('totalLesson', '17')
-    } else {
-      setLessonCompleted('')
-      setRemainingLesson('')
-    }
-  }, [studentId])
-
-  useEffect(() => {
     // Update formDisabled state based on the validation result
     setFormDisabled(!formik.isValid)
   }, [formik.isValid])
@@ -173,9 +180,22 @@ const AddLessonCompletion = () => {
     }
   }, [formik.values.noOfLessonsCompleted, remainingLesson])
 
-  // added here ..
+  useEffect(() => {
+    const fetchRateData = async () => {
+      try {
+        const res = await getRate()
+        console.log('The rate is:', res)
+        const rate = res.Rate[0]
+        setRate(rate)
+        // formik.setFieldValue('priceperlesson', rate.price_per_lesson)
+        // formik.setFieldValue('tax', rate.tax)
+      } catch (error) {
+        console.error('Error fetching students data:', error)
+      }
+    }
+    fetchRateData()
+  }, [])
 
-  console.log('The form disable vlaue is:', formDisabled, disabled)
   return (
     <div className='mt-[3.5rem]'>
       <form onSubmit={formik.handleSubmit}>

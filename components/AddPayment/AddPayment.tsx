@@ -151,7 +151,7 @@ const AddPayment = () => {
   }, [amountPaid, totalAmount])
 
   useEffect(() => {
-    if (formik.values.amount > remainingAmount) {
+    if (parseInt(formik.values.amount) > parseInt(remainingAmount)) {
       setFormDisabled(true)
       setDisabled(true)
     } else {
@@ -161,6 +161,7 @@ const AddPayment = () => {
   }, [formik.values.amount, remainingAmount])
 
   console.log('the formik values is:', formik.values)
+  console.log('The amount paid is:', formDisabled, disabled)
   return (
     <div className='mt-[3.5rem]'>
       <form onSubmit={formik.handleSubmit}>
@@ -233,6 +234,9 @@ const AddPayment = () => {
               InputLabelProps={{
                 focused: false,
               }}
+              inputProps={{
+                readOnly: true,
+              }}
               type='text'
               value={totalAmount ? `$${totalAmount}` : ''}
               onChange={(event: any) => setTotalAmount(event.target.value)}
@@ -248,6 +252,9 @@ const AddPayment = () => {
               label='Amount Paid'
               variant='outlined'
               fullWidth
+              inputProps={{
+                readOnly: true,
+              }}
               sx={{
                 '& fieldset': { borderColor: '#f23d4d !important' },
               }}
@@ -255,7 +262,8 @@ const AddPayment = () => {
                 focused: false,
               }}
               type='text'
-              value={amountPaid ? `$${amountPaid}` : ''}
+              // @ts-ignore
+              value={amountPaid ? `$${amountPaid}` : amountPaid === 0 ? `$0` : ''}
               onChange={(event: any) => setAmountPaid(event.target.value)}
               onKeyDown={(event) => {
                 event.stopPropagation()
@@ -269,6 +277,9 @@ const AddPayment = () => {
               label='Remaining Amount'
               variant='outlined'
               fullWidth
+              inputProps={{
+                readOnly: true,
+              }}
               sx={{
                 '& fieldset': { borderColor: '#f23d4d !important' },
               }}
@@ -276,7 +287,12 @@ const AddPayment = () => {
                 focused: false,
               }}
               type='text'
-              value={remainingAmount ? `$${remainingAmount}` : ''}
+              // value={amountPaid ? `$${amountPaid}` : amountPaid === 0 ? `$0` : ''}
+
+              value={
+                // @ts-ignore
+                amountPaid === 0 ? `$${totalAmount}` : remainingAmount ? `$${remainingAmount}` : ''
+              }
               onChange={(event: any) => setRemainingAmount(event.target.value)}
               onKeyDown={(event) => {
                 event.stopPropagation()

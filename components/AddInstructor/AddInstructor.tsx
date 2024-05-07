@@ -21,7 +21,7 @@ const validationSchema = yup.object({
   gender: yup.string().required('Gender is required'),
   drivingLicenseNo: yup.string().required('Driving License No is required'),
   diNumber: yup.string().required('DI Number is required'),
-  hiring: yup.string().required('Hiring is required'),
+  hiring: yup.string(),
 })
 
 const AddInstructor = () => {
@@ -159,6 +159,19 @@ const AddInstructor = () => {
               helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
               sx={{ '& fieldset': { borderColor: '#f23d4d !important' } }}
               InputLabelProps={{ focused: false }}
+              inputProps={{
+                inputMode: 'numeric',
+                onKeyDown: (event) => {
+                  const numericKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+                  if (
+                    !numericKeys.includes(event.key) &&
+                    event.key !== 'Backspace' &&
+                    event.key !== 'Delete'
+                  ) {
+                    event.preventDefault() // Prevent input of non-numeric characters
+                  }
+                },
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6}>

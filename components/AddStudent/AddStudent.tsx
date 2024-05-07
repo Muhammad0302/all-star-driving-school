@@ -209,6 +209,19 @@ const AddStudent = () => {
               onChange={formik.handleChange}
               error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
               helperText={formik.touched.phoneNumber && (formik.errors.phoneNumber as any)}
+              inputProps={{
+                inputMode: 'numeric',
+                onKeyDown: (event) => {
+                  const numericKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+                  if (
+                    !numericKeys.includes(event.key) &&
+                    event.key !== 'Backspace' &&
+                    event.key !== 'Delete'
+                  ) {
+                    event.preventDefault() // Prevent input of non-numeric characters
+                  }
+                },
+              }}
             />
           </Grid>
 
