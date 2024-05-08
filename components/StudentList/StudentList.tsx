@@ -52,15 +52,20 @@ const StudentList = () => {
       console.log('The response of get all student is', response)
       const students: any = response.students
       const AllStudents: any = students.map((student: any) => {
+        console.log('The student in loop:', student)
         return {
-          ID: student?._id,
-          Name: `${student?.firstName} ${student?.lastName}`,
-          PhoneNumber: student?.phone_number,
-          Email: student?.email,
-          Address: student?.address,
-          Dob: student?.dob,
-          LicenseNumber: student?.licence_no,
-          StudentID: student?.supportive_id,
+          ID: student?.std_id?._id,
+          Name: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
+          PhoneNumber: student?.std_id?.phone_number,
+          Email: student?.std_id?.email,
+          Address: student?.std_id?.address,
+          Dob: student?.std_id?.dob,
+          LicenseNumber: student?.std_id?.licence_no,
+          StudentID: student?.std_id?.supportive_id,
+
+          NoOfLesson: student?.no_of_lesson,
+          TotalPrice: student?.price_per_lesson,
+          Instructor: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
         }
       })
       setStudentData(AllStudents)
@@ -483,25 +488,34 @@ const StudentList = () => {
         sort: false,
       },
     },
-    {
-      name: 'Email',
-      label: 'Email',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
-    {
-      name: 'Dob',
-      label: 'Dob',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+
     {
       name: 'LicenseNumber',
       label: 'License Number',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'NoOfLesson',
+      label: 'No Of Lesson',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'TotalPrice',
+      label: 'Total Price',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'Instructor',
+      label: 'Instructor',
       options: {
         filter: true,
         sort: false,

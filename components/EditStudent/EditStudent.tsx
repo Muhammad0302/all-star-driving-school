@@ -79,6 +79,10 @@ const EditStudent = ({ params }: any) => {
         licence_issue_date: values.licenseIssueDate,
         licence_expiry_date: values.licenseExpiryDate,
         course_start_date: values.courseStartDate,
+        instructor_id: instructorId,
+        no_of_lesson: parseInt(values.no_of_lesson),
+        price_per_lesson: parseInt(values.price),
+        road_test: values.road_test,
       }
       try {
         const res = await editStudent(data, params.studentid)

@@ -81,7 +81,7 @@ const AddStudent = () => {
         price_per_lesson: parseInt(values.price),
         road_test: values.road_test,
       }
-      console.log('The sending data is:', data)
+
       try {
         const res = await addStudent(data)
         console.log('Add Student api response', res)
