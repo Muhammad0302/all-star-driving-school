@@ -94,7 +94,7 @@ const Sidebar = () => {
               </ListItem>
             </Link>
 
-            <Link href='/stdsasigndtoinstrs' style={{ textDecoration: 'none', color: 'inherit' }}>
+            {/* <Link href='/stdsasigndtoinstrs' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='assignpackage'
                 disablePadding
@@ -107,9 +107,9 @@ const Sidebar = () => {
                   <ListItemText primary='Assign Instructor' />
                 </ListItemButton>
               </ListItem>
-            </Link>
+            </Link> */}
 
-            <Link href='/assignlesson' style={{ textDecoration: 'none', color: 'inherit' }}>
+            {/* <Link href='/assignlesson' style={{ textDecoration: 'none', color: 'inherit' }}>
               <ListItem
                 key='assignlesson'
                 disablePadding
@@ -122,7 +122,7 @@ const Sidebar = () => {
                   <ListItemText primary='Assign Lesson' />
                 </ListItemButton>
               </ListItem>
-            </Link>
+            </Link> */}
 
             <Link
               href='/stdsintrslssncompleted'
