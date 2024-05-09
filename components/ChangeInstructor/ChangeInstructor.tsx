@@ -51,7 +51,7 @@ const ChangeInstructor = ({ params }: any) => {
           transition: Bounce,
         })
         setTimeout(() => {
-          router.push('/stdsasigndtoinstrs')
+          router.push('/students')
         }, 2000)
       } catch (error: any) {
         toast.error('Error while changing instructor', {

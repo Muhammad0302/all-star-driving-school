@@ -14,6 +14,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import { getAllStudents, deletStudent } from 'services/room'
 import HistoryIcon from '@mui/icons-material/History'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
+import PersonIcon from '@mui/icons-material/Person'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
@@ -52,9 +53,9 @@ const StudentList = () => {
       console.log('The response of get all student is', response)
       const students: any = response.students
       const AllStudents: any = students.map((student: any) => {
-        console.log('The student in loop:', student)
         return {
           ID: student?.std_id?._id,
+          AssignID: student?._id,
           Name: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
           PhoneNumber: student?.std_id?.phone_number,
           Email: student?.std_id?.email,
@@ -81,7 +82,7 @@ const StudentList = () => {
     handleClose()
     console.log('The data is:', data)
     try {
-      const res = await deletStudent(data)
+      const res = await deletStudent(data[0], data[1])
       console.log('Delete api response', res)
       toast.success('Student deleted Successfully', {
         position: 'top-right',
@@ -446,10 +447,24 @@ const StudentList = () => {
     router.push(`/studentinstructor/${data}`)
   }
 
+  const changeInstructor = (data: any) => {
+    handleClose()
+    router.push(`/changeinstructor/${data}`)
+  }
+
   const columns = [
     {
       name: 'ID',
       label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
+    {
+      name: 'AssignID',
+      label: 'AssignID',
       options: {
         filter: true,
         sort: true,
@@ -549,11 +564,15 @@ const StudentList = () => {
                   <MenuItem onClick={() => handleEditStudent(tableMeta.rowData[0])}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem onClick={() => handleDelete(tableMeta.rowData[0])}>
+                  <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
                   <MenuItem onClick={() => handleViewInstructor(tableMeta.rowData[0])}>
                     <PeopleAltIcon /> View instructors
+                  </MenuItem>
+                  <MenuItem onClick={() => changeInstructor(tableMeta.rowData[1])}>
+                    <PersonIcon />
+                    Change Instructor
                   </MenuItem>
                   {/* <MenuItem
                     onClick={() => {

@@ -135,10 +135,10 @@ const getAllAssignStudents = async (): Promise<any> => {
   }
 }
 
-const deletStudent = async (id: any): Promise<any> => {
+const deletStudent = async (std_id: any, assign_id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.delete(
-      `${getBaseUrl()}/student/deleteStudent/${id}`,
+      `${getBaseUrl()}/student/deleteStudent?std_id=${std_id}&assign_id=${assign_id}`,
       config,
     )
     return response.data // Return the response data
