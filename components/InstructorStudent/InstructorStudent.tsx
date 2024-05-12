@@ -369,6 +369,7 @@ const InstructorStudent = ({ params }: any) => {
     //   },
     // },
   ]
+  // changes added
 
   const handleStudentStatus = (event: any) => {
     setStudentStatus(event.target.value)
