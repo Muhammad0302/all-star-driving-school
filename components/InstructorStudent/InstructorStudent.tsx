@@ -84,7 +84,7 @@ const InstructorStudent = ({ params }: any) => {
     handleClose()
     console.log('The data is:', data)
     try {
-      const res = await deletStudent(data)
+      const res = await deletStudent(data, 8)
       console.log('Delete api response', res)
       toast.success('Student deleted Successfully', {
         position: 'top-right',
