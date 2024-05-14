@@ -13,7 +13,7 @@ import PaymentHistory from './PaymentHistory'
 import HistoryIcon from '@mui/icons-material/History'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getAllPayment, deletePayment } from 'services/room'
+import { getAllPayment, deletePayment, getSinglePay } from 'services/room'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 import ViewDetail from './ViewDetail'
@@ -21,6 +21,7 @@ const PaymentList = () => {
   const router = useRouter()
   const [counter, setCounter] = useState(0)
   const [paymentData, setPaymentData] = useState([])
+  const [singlePayment, setSinglePayment] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [openModalPmntHstry, setOpenModalPmntHstry] = useState(false)
   const handleCloseFuncPmntHstry = () => setOpenModalPmntHstry(false)
@@ -411,11 +412,12 @@ const PaymentList = () => {
       const AllPayments: any = payments.map((payment: any) => {
         return {
           ID: payment?._id,
-          StudentID: payment?.std_id?.supportive_id,
-          StudentName: `${payment?.std_id?.firstName} ${payment?.std_id?.lastName}`,
-          TotalPayments: payment?.amount,
-          phoneNumber: payment?.std_id?.phone_number,
-          PaymentPlan: 4,
+          StudentID: payment?.supportive_id,
+          StudentName: `${payment?.firstName} ${payment?.lastName}`,
+          Address: payment?.address,
+          TotalPayments: payment?.total_payment,
+          phoneNumber: payment?.phone_number,
+          // PaymentPlan: 4,
         }
       })
       setPaymentData(AllPayments)
@@ -460,6 +462,16 @@ const PaymentList = () => {
     }
   }
 
+  const getSinglePaymentDetail = async (id: any) => {
+    try {
+      const response = await getSinglePay(id)
+      console.log('The response of get all instructor is', response)
+      setSinglePayment(response.studentPayment)
+    } catch (error: any) {
+      console.error('Error fetching instructor data:', error.message)
+    }
+  }
+
   const columns = [
     {
       name: 'ID',
@@ -481,6 +493,14 @@ const PaymentList = () => {
     {
       name: 'StudentName',
       label: 'Student Name',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'Address',
+      label: 'Address',
       options: {
         filter: true,
         sort: false,
@@ -599,14 +619,14 @@ const PaymentList = () => {
     //     sort: false,
     //   },
     // },
-    {
-      name: 'PaymentPlan',
-      label: 'Payment Plan',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: 'PaymentPlan',
+    //   label: 'Payment Plan',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     {
       name: 'TotalPayments',
       label: 'Total Payments',
@@ -658,6 +678,7 @@ const PaymentList = () => {
                     onClick={() => {
                       handleOpenPmntHstry()
                       handleClose()
+                      getSinglePaymentDetail(tableMeta.rowData[0])
                     }}
                   >
                     <HistoryIcon /> Payment History
@@ -705,7 +726,11 @@ const PaymentList = () => {
         </div>
         <MUIDataTable title={''} data={paymentData} columns={columns} options={options} />
         <ViewDetail open={openModal} handleClose={handleCloseFunc} />
-        <PaymentHistory open={openModalPmntHstry} handleClose={handleCloseFuncPmntHstry} />
+        <PaymentHistory
+          singlePayment={singlePayment}
+          open={openModalPmntHstry}
+          handleClose={handleCloseFuncPmntHstry}
+        />
       </Box>
       <ToastContainer
         position='top-right'

@@ -32,9 +32,13 @@ const style = {
 interface ViewDetailInput {
   open: boolean
   handleClose: () => void
+  singlePayment: any
 }
-// changes added
-const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
+
+const PaymentHistory = ({ open, handleClose, singlePayment }: ViewDetailInput) => {
+  let serialNumber = 1
+
+  const totalPayment = singlePayment.reduce((total: any, payment: any) => total + payment.amount, 0)
   return (
     <div>
       <Modal
@@ -68,38 +72,25 @@ const PaymentHistory = ({ open, handleClose }: ViewDetailInput) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
-                    <td className='border py-2 text-center'>1</td>
-                    <td className='border py-2 text-center'>Cash</td>
-                    <td className='border py-2 text-center'>$300</td>
-                    <td className='border py-2 text-center'>21/2/2024</td>
-                    <td className='border py-2 text-center'>4:45pm</td>
-                  </tr>
-                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
-                    <td className='border py-2 text-center'>2</td>
-                    <td className='border py-2 text-center'>Credit Card</td>
-                    <td className='border py-2 text-center'>$250</td>
-                    <td className='border py-2 text-center'>15/5/2024</td>
-                    <td className='border py-2 text-center'>10:30am</td>
-                  </tr>
-                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
-                    <td className='border py-2 text-center'>3</td>
-                    <td className='border py-2 text-center'>Debit Card</td>
-                    <td className='border py-2 text-center'>$400</td>
-                    <td className='border py-2 text-center'>8/8/2024</td>
-                    <td className='border py-2 text-center'>2:15pm</td>
-                  </tr>
-                  <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
-                    <td className='border py-2 text-center'>4</td>
-                    <td className='border py-2 text-center'>Bank Transfer</td>
-                    <td className='border py-2 text-center'>$350</td>
-                    <td className='border py-2 text-center'>12/11/2024</td>
-                    <td className='border py-2 text-center'>6:00pm</td>
-                  </tr>
+                  {singlePayment?.map((payment: any) => {
+                    const date = new Date(payment?.createdAt)
+                    const formattedDate = date.toLocaleDateString('en-GB')
+                    return (
+                      <>
+                        <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
+                          <td className='border py-2 text-center'>{serialNumber++}</td>
+                          <td className='border py-2 text-center'>{payment.payment_method}</td>
+                          <td className='border py-2 text-center'>{payment.amount}</td>
+                          <td className='border py-2 text-center'>{formattedDate}</td>
+                          <td className='border py-2 text-center'>4:45pm</td>
+                        </tr>
+                      </>
+                    )
+                  })}
                 </tbody>
               </table>
               <div className='flex justify-end items-center mr-6 font-bold mt-[27px]'>
-                Total: $1300
+                Total: ${totalPayment}
               </div>
             </div>
           </Box>
