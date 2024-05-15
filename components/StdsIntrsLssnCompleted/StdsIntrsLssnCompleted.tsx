@@ -6,13 +6,19 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
-import { getAllCompletedLesson, deleteCompletedLesson } from 'services/room'
+import { getAllCompletedLesson, deleteCompletedLesson, getSingleLesson } from 'services/room'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
+import HistoryIcon from '@mui/icons-material/History'
+import LessonHistory from './LessonHistory'
 import 'react-toastify/dist/ReactToastify.css'
 import { useRouter } from 'next/navigation'
 import './styles.css'
 const StdsIntrsLssnCompleted = () => {
+  const [singleLessonData, setSingleLessonData] = useState([])
+  const [openModalPmntHstry, setOpenModalPmntHstry] = useState(false)
+  const handleCloseFuncPmntHstry = () => setOpenModalPmntHstry(false)
+  const handleOpenPmntHstry = () => setOpenModalPmntHstry(true)
   const router = useRouter()
   const [anchorEl, setAnchorEl] = useState(null)
   const [lessons, setLessons] = useState([])
@@ -52,11 +58,20 @@ const StdsIntrsLssnCompleted = () => {
     ['Instructor 20', 'E24/12/20', 'Samuel Lee', '$19.50', '$19.75', '$20.00', '55', 'No'],
   ]
 
+  const getSingleLessonDetail = async (id: any) => {
+    try {
+      const response = await getSingleLesson(id)
+      setSingleLessonData(response.lesson)
+    } catch (error: any) {
+      console.error('Error fetching data:', error.message)
+    }
+  }
+
   const handleDelete = async (data: any) => {
     handleClose()
     console.log('The data is:', data)
     try {
-      const res = await deleteCompletedLesson(data[0])
+      const res = await deleteCompletedLesson(data[1])
       console.log('Delete api response', res)
       toast.success('Lesson deleted Successfully', {
         position: 'top-right',
@@ -88,12 +103,12 @@ const StdsIntrsLssnCompleted = () => {
   const fetchLeesonData = async () => {
     try {
       const response = await getAllCompletedLesson()
-      console.log('The response of get all lesson is', response)
       const lessons: any = response.lessons
 
       const AllLessons: any = lessons.map((lesson: any) => {
         return {
-          ID: lesson?.lesson_id,
+          ID: lesson?._id,
+          lessonId: lesson?.lesson_id,
           StudentID: lesson?.supportive_id,
           StudentName: `${lesson?.firstName} ${lesson?.lastName}`,
           Address: `${lesson?.address} `,
@@ -114,6 +129,15 @@ const StdsIntrsLssnCompleted = () => {
     {
       name: 'ID',
       label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
+    {
+      name: 'lessonId',
+      label: 'lessonId',
       options: {
         filter: true,
         sort: true,
@@ -193,6 +217,15 @@ const StdsIntrsLssnCompleted = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
+                  <MenuItem
+                    onClick={() => {
+                      handleOpenPmntHstry()
+                      handleClose()
+                      getSingleLessonDetail(tableMeta.rowData[0])
+                    }}
+                  >
+                    <HistoryIcon /> Lesson History
+                  </MenuItem>
                   <MenuItem onClick={handleAddLessonCompletion}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
@@ -238,6 +271,11 @@ const StdsIntrsLssnCompleted = () => {
         </div>
         <MUIDataTable title={''} data={lessons} columns={columns} options={options} />
       </Box>
+      <LessonHistory
+        singleLesson={singleLessonData}
+        open={openModalPmntHstry}
+        handleClose={handleCloseFuncPmntHstry}
+      />
       <ToastContainer
         position='top-right'
         autoClose={5000}

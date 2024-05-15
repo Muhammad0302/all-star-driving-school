@@ -623,6 +623,20 @@ const getSinglePay = async (id: any): Promise<any> => {
   }
 }
 
+const getSingleLesson = async (id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/lesson/getLessonById/${id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 export {
   addInstructor,
   getAllInstructors,
@@ -670,4 +684,5 @@ export {
   getPaymentByStdId,
   getAssignedStudent,
   getSinglePay,
+  getSingleLesson,
 }
