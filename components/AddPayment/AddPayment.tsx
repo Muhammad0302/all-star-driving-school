@@ -115,7 +115,8 @@ const AddPayment = () => {
           const res = await getPackageByStdId(studentId)
           const assignInfo: any = res.packageAssigToStud
 
-          const totalAmount: any = assignInfo.no_of_lesson * assignInfo.price_per_lesson
+          // const totalAmount: any = assignInfo.no_of_lesson * assignInfo.price_per_lesson
+          const totalAmount: any = assignInfo.price_per_lesson
           setTotalAmount(totalAmount)
           // formik.setFieldValue('amount', assignInfo.no_of_lesson * assignInfo.price_per_lesson)
           // setLessonCompleted(assignInfo.no_of_lesson_completed)

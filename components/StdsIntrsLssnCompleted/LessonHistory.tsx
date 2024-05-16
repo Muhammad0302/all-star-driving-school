@@ -22,7 +22,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '40%',
+  width: '53%',
   minHeight: '25%',
   bgcolor: 'background.paper',
   border: 'none',
@@ -32,13 +32,17 @@ const style = {
 interface ViewDetailInput {
   open: boolean
   handleClose: () => void
-  singlePayment: any
+  singleLesson: any
 }
+// changes added
+const LessonHistory = ({ open, handleClose, singleLesson }: ViewDetailInput) => {
+  const totalLessonCompleted = singleLesson.reduce(
+    (total: any, lesson: any) => total + lesson.no_of_lesson_compeleted,
+    0,
+  )
 
-const PaymentHistory = ({ open, handleClose, singlePayment }: ViewDetailInput) => {
   let serialNumber = 1
 
-  const totalPayment = singlePayment.reduce((total: any, payment: any) => total + payment.amount, 0)
   return (
     <div>
       <Modal
@@ -60,37 +64,54 @@ const PaymentHistory = ({ open, handleClose, singlePayment }: ViewDetailInput) =
               sx={{ cursor: 'pointer', position: 'absolute', top: 15, right: 20 }}
               onClick={handleClose}
             />
-            <div className='container max-w-[1690px] mx-auto  mt-6'>
+            <div className='container max-w-[1690px] mx-auto mt-6'>
               <table className='w-full border-collapse'>
                 <thead>
                   <tr className='font-bold' style={{ backgroundColor: '#E5E7EB' }}>
-                    <th className='border  py-2'>Payment No</th>
-                    <th className='border  py-2'>Type</th>
-                    <th className='border  py-2'>Amount</th>
-                    <th className='border  py-2'>Date</th>
-                    <th className='border  py-2'>Time</th>
+                    <th className='border py-2'>Serial No</th>
+
+                    <th className='border py-2'>Student ID</th>
+
+                    <th className='border py-2'>Student Name</th>
+                    <th className='border py-2'>Instructor Name</th>
+                    <th className='border py-2'>Total Lesson</th>
+                    <th className='border py-2'>Lesson Completed</th>
+                    <th className='border py-2'>Date</th>
+                    <th className='border py-2'>Road test</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {singlePayment?.map((payment: any) => {
-                    const date = new Date(payment?.createdAt)
+                  {singleLesson?.map((lesson: any) => {
+                    const date = new Date(lesson?.createdAt)
                     const formattedDate = date.toLocaleDateString('en-GB')
                     return (
                       <>
                         <tr className='font-medium' style={{ borderBottom: '1px solid #E5E7EB' }}>
                           <td className='border py-2 text-center'>{serialNumber++}</td>
-                          <td className='border py-2 text-center'>{payment.payment_method}</td>
-                          <td className='border py-2 text-center'>{payment.amount}</td>
+                          <td className='border py-2 text-center'>
+                            {lesson?.std_id?.supportive_id}
+                          </td>
+                          <td className='border py-2 text-center'>
+                            {`${lesson?.std_id?.firstName} ${lesson?.std_id?.lastName}`}
+                          </td>
+                          <td className='border py-2 text-center'>{`${lesson?.instruct_id?.firstName} ${lesson?.instruct_id?.lastName}`}</td>
+                          <td className='border py-2 text-center'>{lesson?.total_lesson}</td>
+                          <td className='border py-2 text-center'>
+                            {lesson?.no_of_lesson_compeleted}
+                          </td>
                           <td className='border py-2 text-center'>{formattedDate}</td>
-                          <td className='border py-2 text-center'>4:45pm</td>
+                          <td className='border py-2 text-center'>Yes</td>
                         </tr>
                       </>
                     )
                   })}
                 </tbody>
               </table>
-              <div className='flex justify-end items-center mr-6 font-bold mt-[27px]'>
-                Total: ${totalPayment}
+              <div className='flex justify-end mt-4'>
+                <Typography style={{ fontWeight: 'bold' }}>
+                  {' '}
+                  Total Lesson Completed: {totalLessonCompleted}
+                </Typography>
               </div>
             </div>
           </Box>
@@ -100,4 +121,4 @@ const PaymentHistory = ({ open, handleClose, singlePayment }: ViewDetailInput) =
   )
 }
 
-export default PaymentHistory
+export default LessonHistory

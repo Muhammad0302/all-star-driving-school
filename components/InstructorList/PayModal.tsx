@@ -50,6 +50,7 @@ const validationSchema = yup.object({
   issueDate: yup.string().required('Issue Date is required'),
   rate: yup.string().required('Rate is required'),
   noOfLessonToPay: yup.string().required('No of lesson to pay is required'),
+  commission: yup.number(),
 })
 
 const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
@@ -62,16 +63,19 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
       rate: '',
       noOfLessonToPay: '',
       issueDate: null,
+      commission: 0,
     },
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
       const compensationValue = parseFloat(compensation.replace('$', ''))
 
-      const tax = (compensationValue * rate?.tax) / 100 // 25% tax
+      // const tax = (compensationValue * rate?.tax) / 100 // 25% tax
       // const tax = totalBeforeTax * 0.25 // 25% tax
       // const totalWithTax = totalBeforeTax - tax
-      const totalWithTax = compensationValue + tax
-
+      // const totalWithTax = compensationValue + tax
+      const newCompensation: any =
+        parseFloat(compensation.replace('$', '')) - formik.values.commission
+      console.log('The new compensation is:', newCompensation)
       const noOfLessonToPayValue = parseFloat(values.noOfLessonToPay)
       const data = {
         chaqueNo: values.ChequeNo,
@@ -80,10 +84,8 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
         instruct_id: rowData[0],
         issueDate: values.issueDate,
         tax: rate.tax,
-        Dr: compensationValue,
+        Dr: newCompensation,
       }
-      console.log('The changed get called', data)
-
       try {
         const res = await addInstructorPayment(data)
         console.log('Add Instructor payment api response', res)
@@ -121,7 +123,15 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
       formik.setFieldValue('rate', rate?.price_per_lesson)
     }
   }, [rate])
-
+  // useEffect(() => {
+  //   if (formik.values.commission && compensation) {
+  //     console.log('the compensationa dn commingtion is', compensation, formik.values.commission)
+  //     const amount = parseFloat(compensation.replace('$', '')) - formik.values.commission
+  //     console.log('The amount is:', amount)
+  //     setCompensation(`$${amount}`)
+  //   }
+  // }, [formik.values.commission])
+  console.log('THe compensation is:', compensation)
   useEffect(() => {
     if (formik.values.rate && rowData && rowData[1] != null) {
       const totalBeforeTax = parseFloat(formik.values.rate) * rowData[1]
@@ -278,6 +288,7 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                       helperText={formik.touched.ChequeNo && (formik.errors.ChequeNo as any)}
                     />
                   </Grid>
+
                   <Grid item xs={12} sm={3} sx={{ marginTop: '0px' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                       <DemoContainer components={['DatePicker']}>
@@ -294,6 +305,29 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                       </DemoContainer>
                     </LocalizationProvider>
                   </Grid>
+                  <Grid item xs={12} sm={3} sx={{ marginTop: '8px !important' }}>
+                    <TextField
+                      id='commission'
+                      name='commission'
+                      label='Commission($)'
+                      variant='outlined'
+                      fullWidth
+                      sx={{
+                        '& fieldset': { borderColor: '#f23d4d !important' },
+                      }}
+                      InputLabelProps={{
+                        focused: false,
+                      }}
+                      type='text'
+                      value={formik.values.commission}
+                      onChange={formik.handleChange}
+                      onKeyDown={(event) => {
+                        event.stopPropagation()
+                      }}
+                      error={formik.touched.commission && Boolean(formik.errors.commission)}
+                      helperText={formik.touched.commission && (formik.errors.commission as any)}
+                    />
+                  </Grid>
                   <Grid item xs={12} sm={4} sx={{ marginTop: '24px' }}>
                     <Typography>
                       {' '}
@@ -301,11 +335,11 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                       {compensation}
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={6} sx={{ marginTop: '0px' }}></Grid>
+                  {/* <Grid item xs={12} sm={6} sx={{ marginTop: '0px' }}></Grid> */}
                   <Grid
                     item
-                    xs={2}
-                    sm={2}
+                    xs={5}
+                    sm={5}
                     sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}
                   >
                     <Button
