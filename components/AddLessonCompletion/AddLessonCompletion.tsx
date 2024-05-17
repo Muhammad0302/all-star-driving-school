@@ -220,12 +220,8 @@ const AddLessonCompletion = () => {
                   label='Instructor Name'
                   onChange={(e) => {
                     formik.setFieldValue('instructorName', e.target.value)
-                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
-
                     const selectedInstructor: any = instructors.find(
-                      (instructor: any) =>
-                        instructor.firstName === selectedFirstName &&
-                        instructor.lastName === selectedLastName,
+                      (instructor: any) => instructor._id === e.target.value,
                     )
                     if (selectedInstructor) {
                       setInstructorId(selectedInstructor._id)
@@ -233,7 +229,7 @@ const AddLessonCompletion = () => {
                   }}
                 >
                   {instructors?.map((instructor: any, index) => (
-                    <MenuItem key={index} value={`${instructor.firstName} ${instructor.lastName}`}>
+                    <MenuItem key={index} value={instructor._id}>
                       {`${instructor.firstName} ${instructor.lastName}`}
                     </MenuItem>
                   ))}
@@ -263,23 +259,18 @@ const AddLessonCompletion = () => {
                   label='Student Name'
                   onChange={(e) => {
                     formik.setFieldValue('studentName', e.target.value)
-                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
 
                     const selectedStudent: any = students.find(
-                      (student: any) =>
-                        student?.std_id?.firstName === selectedFirstName &&
-                        student?.std_id?.lastName === selectedLastName,
+                      (student: any) => student?.std_id?._id === e.target.value,
                     )
+
                     if (selectedStudent) {
                       setStudentId(selectedStudent.std_id?._id)
                     }
                   }}
                 >
                   {students?.map((student: any, index) => (
-                    <MenuItem
-                      key={index}
-                      value={`${student?.std_id?.firstName} ${student?.std_id?.lastName}`}
-                    >
+                    <MenuItem key={index} value={student?.std_id?._id}>
                       {`${student?.std_id?.firstName} ${student?.std_id?.lastName}`}
                     </MenuItem>
                   ))}

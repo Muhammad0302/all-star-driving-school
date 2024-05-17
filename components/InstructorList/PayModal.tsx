@@ -12,6 +12,7 @@ import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
+import FormHelperText from '@mui/material/FormHelperText'
 import { useRouter } from 'next/navigation'
 import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
@@ -55,8 +56,10 @@ const validationSchema = yup.object({
 
 const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
   const router = useRouter()
+  const [formDisabled, setFormDisabled] = useState(false)
   const [totalCompensation, setTotalCompensation] = useState('')
   const [compensation, setCompensation] = useState('')
+  const [compensationState, setCompensationState] = useState('')
   const formik = useFormik({
     initialValues: {
       ChequeNo: '',
@@ -68,23 +71,16 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
       const compensationValue = parseFloat(compensation.replace('$', ''))
-
-      // const tax = (compensationValue * rate?.tax) / 100 // 25% tax
-      // const tax = totalBeforeTax * 0.25 // 25% tax
-      // const totalWithTax = totalBeforeTax - tax
-      // const totalWithTax = compensationValue + tax
-      const newCompensation: any =
-        parseFloat(compensation.replace('$', '')) - formik.values.commission
-      console.log('The new compensation is:', newCompensation)
       const noOfLessonToPayValue = parseFloat(values.noOfLessonToPay)
       const data = {
         chaqueNo: values.ChequeNo,
         rate: values.rate,
         noOfLessonToPay: noOfLessonToPayValue,
+        commission: values.commission,
         instruct_id: rowData[0],
         issueDate: values.issueDate,
         tax: rate.tax,
-        Dr: newCompensation,
+        Dr: compensationValue,
       }
       try {
         const res = await addInstructorPayment(data)
@@ -118,24 +114,37 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
       }
     },
   })
+  // useEffect(() => {
+  //   setFormDisabled(!formik.isValid)
+  // }, [formik.isValid])
+  useEffect(() => {
+    if (rowData && rowData[1] != null && formik.values.noOfLessonToPay) {
+      if (rowData[1] >= parseInt(formik.values.noOfLessonToPay)) {
+        setFormDisabled(false)
+      } else {
+        setFormDisabled(true)
+      }
+    }
+  }, [rowData, formik.values.noOfLessonToPay])
+  useEffect(() => {
+    if (compensation) {
+      const newCompensation =
+        parseFloat(compensationState.replace('$', '')) - formik.values.commission
+      setCompensation(`$${newCompensation}`)
+    }
+  }, [formik.values.commission])
+
   useEffect(() => {
     if (rate && rate?.price_per_lesson) {
       formik.setFieldValue('rate', rate?.price_per_lesson)
     }
   }, [rate])
-  // useEffect(() => {
-  //   if (formik.values.commission && compensation) {
-  //     console.log('the compensationa dn commingtion is', compensation, formik.values.commission)
-  //     const amount = parseFloat(compensation.replace('$', '')) - formik.values.commission
-  //     console.log('The amount is:', amount)
-  //     setCompensation(`$${amount}`)
-  //   }
-  // }, [formik.values.commission])
+
   console.log('THe compensation is:', compensation)
   useEffect(() => {
     if (formik.values.rate && rowData && rowData[1] != null) {
       const totalBeforeTax = parseFloat(formik.values.rate) * rowData[1]
-      const tax = totalBeforeTax * 0.25 // 25% tax
+      const tax = (totalBeforeTax * rate?.tax) / 100 // 25% tax
       const totalWithTax = totalBeforeTax + tax
       setTotalCompensation(`$${totalWithTax}`)
     } else {
@@ -146,17 +155,20 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
     if (formik.values.rate && formik.values.noOfLessonToPay) {
       const totalBeforeTax =
         parseFloat(formik.values.rate) * parseFloat(formik.values.noOfLessonToPay)
-      const tax = totalBeforeTax * 0.25 // 25% tax
+      const tax = (totalBeforeTax * rate?.tax) / 100 // 25% tax
       // const totalWithTax = totalBeforeTax - tax
       const totalWithTax = totalBeforeTax + tax
       setCompensation(`$${totalWithTax}`)
+      setCompensationState(`$${totalWithTax}`)
     } else {
       setCompensation('')
+      setCompensationState('')
     }
   }, [formik.values.rate, formik.values.noOfLessonToPay])
 
   console.log('the formik values is:', formik.values)
   console.log('The row data in paymodal:', rowData)
+  console.log('The form disable value is:', formDisabled)
   return (
     <div>
       <Modal
@@ -264,6 +276,13 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                         formik.touched.noOfLessonToPay && (formik.errors.noOfLessonToPay as any)
                       }
                     />
+                    {formDisabled && (
+                      <>
+                        <FormHelperText sx={{ color: '#d32f2f' }}>
+                          No of lesson to pay should be less then none_paid lesson
+                        </FormHelperText>
+                      </>
+                    )}
                   </Grid>
                   <Grid item xs={12} sm={3} sx={{ marginTop: '8px !important' }}>
                     <TextField
@@ -345,7 +364,7 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                     <Button
                       type='submit'
                       variant='contained'
-                      // onClick={handleClose}
+                      disabled={formDisabled}
                       color='primary'
                       sx={{
                         marginLeft: 'auto',
