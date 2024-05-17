@@ -110,6 +110,7 @@ const ChangeInstructor = ({ params }: any) => {
                   label='Instructor Name'
                   onChange={(e) => {
                     formik.setFieldValue('instructorName', e.target.value)
+                    console.log('The instructor selected is:', e.target.value)
                     const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
 
                     const selectedInstructor: any = instructors.find(
