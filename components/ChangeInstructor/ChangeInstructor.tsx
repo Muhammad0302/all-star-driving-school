@@ -111,12 +111,9 @@ const ChangeInstructor = ({ params }: any) => {
                   onChange={(e) => {
                     formik.setFieldValue('instructorName', e.target.value)
                     console.log('The instructor selected is:', e.target.value)
-                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
 
                     const selectedInstructor: any = instructors.find(
-                      (instructor: any) =>
-                        instructor.firstName === selectedFirstName &&
-                        instructor.lastName === selectedLastName,
+                      (instructor: any) => instructor._id === e.target.value,
                     )
                     if (selectedInstructor) {
                       setInstructorId(selectedInstructor._id)
@@ -124,7 +121,7 @@ const ChangeInstructor = ({ params }: any) => {
                   }}
                 >
                   {instructors?.map((instructor: any, index) => (
-                    <MenuItem key={index} value={`${instructor.firstName} ${instructor.lastName}`}>
+                    <MenuItem key={index} value={instructor._id}>
                       {`${instructor.firstName} ${instructor.lastName}`}
                     </MenuItem>
                   ))}
