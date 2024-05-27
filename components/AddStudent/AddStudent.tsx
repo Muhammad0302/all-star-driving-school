@@ -100,7 +100,7 @@ const AddStudent = () => {
           router.push('/students')
         }, 2000)
       } catch (error: any) {
-        toast.error('Error while registering student', {
+        toast.error('Email or phone number already exist', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,

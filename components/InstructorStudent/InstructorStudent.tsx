@@ -66,7 +66,7 @@ const InstructorStudent = ({ params }: any) => {
           PhoneNumber: student?.std_id?.phone_number,
           Email: student?.std_id?.email,
           Address: student?.std_id?.address,
-          nooflesson: student.package_id.no_of_lesson,
+          // nooflesson: student.package_id.no_of_lesson,
           startdate: formattedDate,
           enddate: 'present',
         }
@@ -287,14 +287,14 @@ const InstructorStudent = ({ params }: any) => {
         sort: false,
       },
     },
-    {
-      name: 'nooflesson',
-      label: 'No of Lesson',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: 'nooflesson',
+    //   label: 'No of Lesson',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     {
       name: 'startdate',
       label: 'Start Date',
