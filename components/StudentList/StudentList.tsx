@@ -447,9 +447,9 @@ const StudentList = () => {
     router.push(`/studentinstructor/${data}`)
   }
 
-  const changeInstructor = (data: any) => {
+  const changeInstructor = (data: any, studentId: any) => {
     handleClose()
-    router.push(`/changeinstructor/${data}`)
+    router.push(`/changeinstructor/${data}/${studentId}`)
   }
 
   const columns = [
@@ -570,7 +570,9 @@ const StudentList = () => {
                   <MenuItem onClick={() => handleViewInstructor(tableMeta.rowData[0])}>
                     <PeopleAltIcon /> View instructors
                   </MenuItem>
-                  <MenuItem onClick={() => changeInstructor(tableMeta.rowData[1])}>
+                  <MenuItem
+                    onClick={() => changeInstructor(tableMeta.rowData[1], tableMeta.rowData[0])}
+                  >
                     <PersonIcon />
                     Change Instructor
                   </MenuItem>
