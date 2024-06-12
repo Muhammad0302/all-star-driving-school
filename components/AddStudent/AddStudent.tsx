@@ -159,7 +159,7 @@ const AddStudent = () => {
                 error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
               >
                 <MenuItem value='Online'>Online</MenuItem>
-                <MenuItem value='Onsite'>Onsite</MenuItem>
+                <MenuItem value='Onsite'>InHouse</MenuItem>
               </Select>
               {formik.touched.registration_for && Boolean(formik.errors.registration_for) && (
                 <FormHelperText sx={{ color: '#d32f2f' }}>

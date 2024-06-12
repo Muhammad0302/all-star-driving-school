@@ -47,10 +47,11 @@ const StudentInstructor = ({ params }: any) => {
         const formattedDate = date.toLocaleDateString('en-GB')
         return {
           ID: instructor?._id,
-          Name: `${instructor?.instructor_id?.firstName} ${instructor?.instructor_id?.lastName}`,
-          PhoneNumber: instructor?.instructor_id?.phone_number,
-          Address: instructor?.instructor_id?.address,
-          // nooflesson: instructor.package_id.no_of_lesson,
+          studentID: instructor?.student?.supportive_id,
+          studentName: `${instructor?.student?.firstName} ${instructor?.student?.lastName}`,
+          lessonCompleted: instructor?.student?.supportive_id,
+          remainingLesson: instructor?.student?.supportive_id,
+          instructorName: `${instructor?.instructor_id?.firstName} ${instructor?.instructor_id?.lastName}`,
           startdate: formattedDate,
           enddate: 'present',
         }
@@ -198,37 +199,45 @@ const StudentInstructor = ({ params }: any) => {
       },
     },
     {
-      name: 'Name',
-      label: 'Name',
+      name: 'studentID',
+      label: 'Student ID',
       options: {
         filter: true,
         sort: false,
       },
     },
     {
-      name: 'Address',
-      label: 'Address',
+      name: 'studentName',
+      label: 'Student Name',
       options: {
         filter: true,
         sort: false,
       },
     },
     {
-      name: 'PhoneNumber',
-      label: 'Phone Number',
+      name: 'lessonCompleted',
+      label: 'Lesson Completed',
       options: {
         filter: true,
         sort: false,
       },
     },
-    // {
-    //   name: 'nooflesson',
-    //   label: 'No of Lesson',
-    //   options: {
-    //     filter: true,
-    //     sort: false,
-    //   },
-    // },
+    {
+      name: 'remainingLesson',
+      label: 'Remaining Lesson',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'instructorName',
+      label: 'Instructor Name',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
     {
       name: 'startdate',
       label: 'Start Date',

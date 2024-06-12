@@ -666,7 +666,7 @@ const StudentList = () => {
       return (
         <React.Fragment>
           <HeaderElements />
-          <FilterElements />
+          {/* <FilterElements /> */}
         </React.Fragment>
       )
     },
