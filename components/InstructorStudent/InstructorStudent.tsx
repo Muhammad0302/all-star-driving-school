@@ -61,12 +61,13 @@ const InstructorStudent = ({ params }: any) => {
         const formattedDate = date.toLocaleDateString('en-GB')
         return {
           ID: student?._id,
-          StudentID: student?.std_id?.supportive_id,
-          Name: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
-          PhoneNumber: student?.std_id?.phone_number,
-          Email: student?.std_id?.email,
-          Address: student?.std_id?.address,
-          // nooflesson: student.package_id.no_of_lesson,
+          studentID: student?.std_id?.supportive_id,
+          studentName: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
+
+          totalLesson: student?.no_of_lesson + student?.no_of_lesson_completed,
+          lessonCompleted: student?.no_of_lesson_completed,
+          remainingLesson: student?.no_of_lesson,
+          instructorName: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
           startdate: formattedDate,
           enddate: 'present',
         }
@@ -246,17 +247,17 @@ const InstructorStudent = ({ params }: any) => {
   ]
 
   const columns = [
-    // {
-    //   name: 'ID',
-    //   label: 'ID',
-    //   options: {
-    //     filter: true,
-    //     sort: true,
-    //     display: false,
-    //   },
-    // },
     {
-      name: 'StudentID',
+      name: 'ID',
+      label: 'ID',
+      options: {
+        filter: true,
+        sort: true,
+        display: false,
+      },
+    },
+    {
+      name: 'studentID',
       label: 'Student ID',
       options: {
         filter: true,
@@ -264,37 +265,46 @@ const InstructorStudent = ({ params }: any) => {
       },
     },
     {
-      name: 'Name',
-      label: 'Name',
+      name: 'studentName',
+      label: 'Student Name',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+
+    {
+      name: 'totalLesson',
+      label: 'Total Lesson',
       options: {
         filter: true,
         sort: false,
       },
     },
     {
-      name: 'Address',
-      label: 'Address',
+      name: 'lessonCompleted',
+      label: 'Lesson Completed',
       options: {
         filter: true,
         sort: false,
       },
     },
     {
-      name: 'PhoneNumber',
-      label: 'Phone Number',
+      name: 'remainingLesson',
+      label: 'Remaining Lesson',
       options: {
         filter: true,
         sort: false,
       },
     },
-    // {
-    //   name: 'nooflesson',
-    //   label: 'No of Lesson',
-    //   options: {
-    //     filter: true,
-    //     sort: false,
-    //   },
-    // },
+    {
+      name: 'instructorName',
+      label: 'Instructor Name',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
     {
       name: 'startdate',
       label: 'Start Date',

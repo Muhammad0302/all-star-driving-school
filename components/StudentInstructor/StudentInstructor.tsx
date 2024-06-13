@@ -47,10 +47,12 @@ const StudentInstructor = ({ params }: any) => {
         const formattedDate = date.toLocaleDateString('en-GB')
         return {
           ID: instructor?._id,
-          studentID: instructor?.student?.supportive_id,
-          studentName: `${instructor?.student?.firstName} ${instructor?.student?.lastName}`,
-          lessonCompleted: instructor?.student?.supportive_id,
-          remainingLesson: instructor?.student?.supportive_id,
+          studentID: instructor?.std_id?.supportive_id,
+          studentName: `${instructor?.std_id?.firstName} ${instructor?.std_id?.lastName}`,
+
+          totalLesson: instructor?.no_of_lesson + instructor?.no_of_lesson_completed,
+          lessonCompleted: instructor?.no_of_lesson_completed,
+          remainingLesson: instructor?.no_of_lesson,
           instructorName: `${instructor?.instructor_id?.firstName} ${instructor?.instructor_id?.lastName}`,
           startdate: formattedDate,
           enddate: 'present',
@@ -209,6 +211,15 @@ const StudentInstructor = ({ params }: any) => {
     {
       name: 'studentName',
       label: 'Student Name',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+
+    {
+      name: 'totalLesson',
+      label: 'Total Lesson',
       options: {
         filter: true,
         sort: false,
