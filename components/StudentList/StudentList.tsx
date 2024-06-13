@@ -23,6 +23,7 @@ import './styles.css'
 import ViewDetail from './ViewDetail'
 import PaymentHistory from './PaymentHistory'
 const StudentList = () => {
+  const [selectedIds, setSelectedIds] = useState<string[][]>([])
   const [studentData, setStudentData] = useState([])
   const [counter, setCounter] = useState(0)
   const [studentStatus, setStudentStatus] = useState('')
@@ -98,6 +99,38 @@ const StudentList = () => {
       setCounter(counter + 1)
     } catch (error: any) {
       toast.error('Error while deleting student', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
+  const handleMultiple = async () => {
+    console.log('The delete button get called')
+    try {
+      const res = await Promise.all(selectedIds.map((id) => deletStudent(id[0], id[1])))
+      console.log('Delete API responses:', res)
+      toast.success('Students deleted successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error) {
+      toast.error('Error while deleting students', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -651,11 +684,26 @@ const StudentList = () => {
     )
   }
 
+  const handleRowSelection = (currentRowsSelected: any, allRowsSelected: { index: number }[]) => {
+    const selectedIds = allRowsSelected.map((row: any) => [
+      // @ts-ignore
+      studentData[row.index]?.ID,
+      // @ts-ignore
+      studentData[row.index]?.AssignID,
+    ])
+    setSelectedIds(selectedIds)
+  }
+
+  console.log('The selected id is:', selectedIds)
+
   const options = {
     filterType: 'checkbox' as const,
     // customToolbar: HeaderElements,
     print: false,
     filter: false,
+    onRowsDelete: () => {
+      handleMultiple()
+    },
     headCells: {
       style: {
         fontWeight: 'bold !important',
@@ -670,6 +718,7 @@ const StudentList = () => {
         </React.Fragment>
       )
     },
+    onRowsSelect: handleRowSelection,
   }
   return (
     <>

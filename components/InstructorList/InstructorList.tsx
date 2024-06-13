@@ -22,6 +22,7 @@ interface Rate {
 }
 const InstructorList = () => {
   const [counter, setCounter] = useState(0)
+  const [selectedIds, setSelectedIds] = useState<string[][]>([])
   const [rate, setRate] = useState<Rate | null>(null)
   const [openModal, setOpenModal] = useState(false)
   const [instructorData, setInstructorData] = useState([])
@@ -153,6 +154,50 @@ const InstructorList = () => {
     [19, 'Grace Robinson', '111-222-3333', 'G7231-45532-25122', 'DI-09876'],
     [20, 'Elijah Clark', '555-123-4567', 'G7231-45532-25122', 'DI-23456'],
   ]
+
+  const handleRowSelection = (currentRowsSelected: any, allRowsSelected: { index: number }[]) => {
+    const selectedIds = allRowsSelected.map((row: any) => [
+      // @ts-ignore
+      instructorData[row.index]?.ID,
+      // @ts-ignore
+      instructorData[row.index]?.Name,
+    ])
+    setSelectedIds(selectedIds)
+  }
+
+  console.log('The selected ID is:', selectedIds)
+
+  const handleMultiple = async () => {
+    console.log('The delete button get called')
+    try {
+      const res = await Promise.all(selectedIds.map((id) => deletInstructor(id[0])))
+      console.log('Delete API responses:', res)
+      toast.success('Students deleted successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error) {
+      toast.error('Error while deleting students', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
 
   const columns = [
     {
@@ -314,6 +359,10 @@ const InstructorList = () => {
     },
     print: false,
     filter: false,
+    onRowsSelect: handleRowSelection,
+    onRowsDelete: () => {
+      handleMultiple()
+    },
   }
 
   return (
