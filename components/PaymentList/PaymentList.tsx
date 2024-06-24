@@ -411,7 +411,7 @@ const PaymentList = () => {
       const payments: any = response.studentPayments
       const AllPayments: any = payments.map((payment: any) => {
         return {
-          ID: payment?._id,
+          ID: payment?.payment_id,
           StudentID: payment?.supportive_id,
           StudentName: `${payment?.firstName} ${payment?.lastName}`,
           Address: payment?.address,
