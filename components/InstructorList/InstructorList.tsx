@@ -14,7 +14,7 @@ import InputLabel from '@mui/material/InputLabel'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getAllInstructors, deletInstructor, getRate } from 'services/room'
+import { getAllSoftInstructors, deletInstructor, getRate } from 'services/room'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
@@ -54,10 +54,11 @@ const InstructorList = () => {
         isDeleted = 'NA'
       }
 
-      const response = await getAllInstructors(isDeleted)
+      const response = await getAllSoftInstructors(isDeleted)
       console.log('The response of get all instructor is', response)
       const instructors: any = response.instructors
       const AllInstructors: any = instructors.map((instructor: any) => {
+        console.log('The deleted value is:', instructor?.isDeleted)
         return {
           ID: instructor?._id,
           Name: `${instructor?.firstName} ${instructor?.lastName}`,
@@ -67,7 +68,11 @@ const InstructorList = () => {
           // hire_as: instructor?.hired_as,
           DriverLicense: instructor?.driver_licence_number,
           DILicense: instructor?.DI_number,
-          no_of_lesson: instructor.no_of_lesson,
+          Status: instructor?.isDeleted ? (
+            <div style={{ color: 'red' }}>Deleted</div>
+          ) : (
+            <div style={{ color: 'green' }}>Active</div>
+          ),
         }
       })
       setInstructorData(AllInstructors)
@@ -285,6 +290,14 @@ const InstructorList = () => {
     {
       name: 'DILicense',
       label: 'DI License No',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'Status',
+      label: 'Status',
       options: {
         filter: true,
         sort: false,

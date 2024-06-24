@@ -4,3 +4,5 @@ module.exports = {
     autoprefixer: {},
   },
 }
+
+// "dev": "next dev -p 9000",
