@@ -8,6 +8,9 @@ import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import FormControl from '@mui/material/FormControl'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -22,6 +25,7 @@ interface Rate {
 }
 const InstructorList = () => {
   const [counter, setCounter] = useState(0)
+  const [instructorStatus, setInstructorStatus] = useState('false')
   const [selectedIds, setSelectedIds] = useState<string[][]>([])
   const [rate, setRate] = useState<Rate | null>(null)
   const [openModal, setOpenModal] = useState(false)
@@ -40,7 +44,17 @@ const InstructorList = () => {
 
   const fetchRoomsData = async () => {
     try {
-      const response = await getAllInstructors()
+      let isDeleted
+      if (instructorStatus === 'false') {
+        isDeleted = false
+      } else if (instructorStatus === 'true') {
+        isDeleted = true
+      } else {
+        // @ts-ignore
+        isDeleted = 'NA'
+      }
+
+      const response = await getAllInstructors(isDeleted)
       console.log('The response of get all instructor is', response)
       const instructors: any = response.instructors
       const AllInstructors: any = instructors.map((instructor: any) => {
@@ -79,7 +93,7 @@ const InstructorList = () => {
   }, [])
   useEffect(() => {
     fetchRoomsData()
-  }, [counter])
+  }, [counter, instructorStatus])
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -342,15 +356,42 @@ const InstructorList = () => {
       </Link>
     )
   }
+  const handleInstructorStatus = (event: any) => {
+    setInstructorStatus(event.target.value)
+  }
+  console.log('The instructor status is:', instructorStatus)
+  const FilterElements = () => {
+    return (
+      <React.Fragment>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'left',
+            marginRight: '148px',
+          }}
+        >
+          <FormControl sx={{ m: 1, width: '218px' }} size='small'>
+            <InputLabel id='demo-select-small'>Filter Instructors</InputLabel>
+            <Select
+              labelId='demo-select-small'
+              id='demo-select-small'
+              value={instructorStatus}
+              label='Select Student Status'
+              onChange={handleInstructorStatus}
+              MenuProps={{ PaperProps: { style: { maxHeight: '400px' } } }}
+            >
+              <MenuItem value={'NA'}>All instructors</MenuItem>
+              <MenuItem value={'false'}>Active Instructors</MenuItem>
+              <MenuItem value={'true'}>Deleted Instructors</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      </React.Fragment>
+    )
+  }
 
   const options = {
     filterType: 'checkbox' as const,
-    customToolbar: () => (
-      <>
-        <PricePerLessonAndTax />
-        <HeaderElements />
-      </>
-    ),
     headCells: {
       style: {
         fontWeight: 'bold !important',
@@ -359,6 +400,15 @@ const InstructorList = () => {
     },
     print: false,
     filter: false,
+    customToolbar: () => {
+      return (
+        <React.Fragment>
+          <HeaderElements />
+          <PricePerLessonAndTax />
+          <FilterElements />
+        </React.Fragment>
+      )
+    },
     onRowsSelect: handleRowSelection,
     onRowsDelete: () => {
       handleMultiple()

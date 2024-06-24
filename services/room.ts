@@ -22,10 +22,10 @@ const addInstructor = async (data: any): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
-const getAllInstructors = async (): Promise<any> => {
+const getAllInstructors = async (isDeleted: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/instructor/getallinstructors`,
+      `${getBaseUrl()}/instructor/getallinstructors?isDeleted=${isDeleted}`,
       config,
     )
     return response.data // Return the response data
