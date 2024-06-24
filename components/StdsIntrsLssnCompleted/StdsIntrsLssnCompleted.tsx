@@ -226,9 +226,9 @@ const StdsIntrsLssnCompleted = () => {
                   >
                     <HistoryIcon /> Lesson History
                   </MenuItem>
-                  <MenuItem onClick={handleAddLessonCompletion}>
+                  {/* <MenuItem onClick={handleAddLessonCompletion}>
                     <ModeEditOutlineOutlinedIcon /> Edit
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>

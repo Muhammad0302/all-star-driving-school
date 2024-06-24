@@ -660,9 +660,9 @@ const PaymentList = () => {
                     'aria-labelledby': 'basic-button',
                   }}
                 >
-                  <MenuItem onClick={handleAddIssueBook}>
+                  {/* <MenuItem onClick={handleAddIssueBook}>
                     <ModeEditOutlineOutlinedIcon /> Edit
-                  </MenuItem>
+                  </MenuItem> */}
                   <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
                     <DeleteOutlineOutlinedIcon /> Delete
                   </MenuItem>
