@@ -100,7 +100,9 @@ const LessonHistory = ({ open, handleClose, singleLesson }: ViewDetailInput) => 
                             {lesson?.no_of_lesson_compeleted}
                           </td>
                           <td className='border py-2 text-center'>{formattedDate}</td>
-                          <td className='border py-2 text-center'>Yes</td>
+                          <td className='border py-2 text-center'>
+                            {lesson?.road_test_completion}
+                          </td>
                         </tr>
                       </>
                     )

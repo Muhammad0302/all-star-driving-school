@@ -218,6 +218,9 @@ const EditStudent = ({ params }: any) => {
               InputLabelProps={{
                 focused: false,
               }}
+              inputProps={{
+                readOnly: true,
+              }}
               value={formik.values.registration_for}
               onChange={formik.handleChange}
               error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}

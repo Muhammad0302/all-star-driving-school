@@ -100,7 +100,7 @@ const AddStudent = () => {
           router.push('/students')
         }, 2000)
       } catch (error: any) {
-        toast.error('Error while registering student', {
+        toast.error('Email or phone number already exist', {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
@@ -159,7 +159,7 @@ const AddStudent = () => {
                 error={formik.touched.registration_for && Boolean(formik.errors.registration_for)}
               >
                 <MenuItem value='Online'>Online</MenuItem>
-                <MenuItem value='Onsite'>Onsite</MenuItem>
+                <MenuItem value='Onsite'>InHouse</MenuItem>
               </Select>
               {formik.touched.registration_for && Boolean(formik.errors.registration_for) && (
                 <FormHelperText sx={{ color: '#d32f2f' }}>
@@ -408,12 +408,9 @@ const AddStudent = () => {
                   label='Instructor Name'
                   onChange={(e) => {
                     formik.setFieldValue('instructorName', e.target.value)
-                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
 
                     const selectedInstructor: any = instructors.find(
-                      (instructor: any) =>
-                        instructor.firstName === selectedFirstName &&
-                        instructor.lastName === selectedLastName,
+                      (instructor: any) => instructor?._id === e.target.value,
                     )
                     if (selectedInstructor) {
                       setInstructorId(selectedInstructor._id)
@@ -421,7 +418,7 @@ const AddStudent = () => {
                   }}
                 >
                   {instructors?.map((instructor: any, index) => (
-                    <MenuItem key={index} value={`${instructor.firstName} ${instructor.lastName}`}>
+                    <MenuItem key={index} value={instructor._id}>
                       {`${instructor.firstName} ${instructor.lastName}`}
                     </MenuItem>
                   ))}

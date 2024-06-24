@@ -187,28 +187,22 @@ const AddPayment = () => {
                   label='Student Name'
                   onChange={(e) => {
                     formik.setFieldValue('studentName', e.target.value)
-                    const [selectedFirstName, selectedLastName] = e.target.value.split(' ')
 
                     const selectedStudent: any = students.find(
-                      (student: any) =>
-                        student.student.firstName === selectedFirstName &&
-                        student.student.lastName === selectedLastName,
+                      (student: any) => student?.student?._id === e.target.value,
                     )
-
                     console.log('The selected student id is:', selectedStudent)
                     if (selectedStudent) {
-                      setStudentId(selectedStudent.student._id)
+                      setStudentId(selectedStudent.student?._id)
                     }
+
                     setTotalAmount('')
                     setAmountPaid('')
                     setRemainingAmount('')
                   }}
                 >
                   {students?.map((student: any, index) => (
-                    <MenuItem
-                      key={index}
-                      value={`${student.student.firstName} ${student.student.lastName}`}
-                    >
+                    <MenuItem key={index} value={student?.student?._id}>
                       {`${student.student.firstName} ${student.student.lastName}`}
                     </MenuItem>
                   ))}

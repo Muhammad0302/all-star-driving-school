@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useEffect, useState } from 'react'
 import * as yup from 'yup'
 import { useFormik } from 'formik'
@@ -11,16 +12,23 @@ import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
 import { getAllInstructors, getAllStudents, getAllPackages } from 'services/room'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
-import { changeInstructor } from 'services/room'
+import { changeInstructor, getStudentById } from 'services/room'
 import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 const validationSchema = yup.object({
   instructorName: yup.string().required('Instructor is required'),
 })
+interface StudentDetail {
+  supportive_id: string // or the appropriate type
+  firstName: string
+  lastName: string
+  // add other properties as needed
+}
 const ChangeInstructor = ({ params }: any) => {
-  console.log('The change instructor id', params.assigninstructorId)
+  console.log('The change instructor id', params.assigninstructorId, params.studentId)
 
   const [instructors, setInstructors] = useState([])
+  const [studentDetail, setStudentDetail] = useState<StudentDetail | null>(null)
   const [instructorId, setInstructorId] = useState(null)
 
   const router = useRouter()
@@ -81,7 +89,19 @@ const ChangeInstructor = ({ params }: any) => {
       }
     }
 
+    const fetchStudentDetail = async () => {
+      try {
+        const res = await getStudentById(params?.studentId)
+        console.log('The student detail is:', res)
+        const student = res.student
+        setStudentDetail(student)
+      } catch (error) {
+        console.error('Error fetching instructor data:', error)
+      }
+    }
+
     fetchInstructorData()
+    fetchStudentDetail()
   }, [])
 
   console.log('the formik values is:', formik.values)
@@ -94,7 +114,54 @@ const ChangeInstructor = ({ params }: any) => {
           spacing={3}
           sx={{ marginTop: '5px !important', paddingLeft: '6rem', paddingRight: '6rem' }}
         >
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={12} sm={3} className='flex items-center'>
+            <TextField
+              id='StudentID'
+              name='StudentID'
+              label='Student ID'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+                shrink: true,
+              }}
+              inputProps={{
+                readOnly: true,
+              }}
+              type='text'
+              value={studentDetail?.supportive_id}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3} className='flex items-center'>
+            <TextField
+              id='StudentName'
+              name='StudentName'
+              label='Student Name'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              inputProps={{
+                readOnly: true,
+              }}
+              type='text'
+              value={`${studentDetail?.firstName} ${studentDetail?.lastName}`}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
                 <InputLabel
@@ -135,7 +202,7 @@ const ChangeInstructor = ({ params }: any) => {
             </Box>
           </Grid>
 
-          <Grid item xs={6} container justifyContent='flex-end'>
+          <Grid item xs={3} container justifyContent='flex-end'>
             <Button
               type='submit'
               variant='contained'

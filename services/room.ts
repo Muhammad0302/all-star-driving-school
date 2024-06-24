@@ -36,6 +36,20 @@ const getAllInstructors = async (): Promise<any> => {
   }
 }
 
+const getAllSoftInstructors = async (isDeleted: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/instructor/getallsoftinstructors?isDeleted=${isDeleted}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 const deletInstructor = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.delete(
@@ -106,6 +120,21 @@ const getAllStudents = async (): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
+
+const getAllSoftStudents = async (isDeleted: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/student/getAllSoftStudents?isDeleted=${isDeleted}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting student error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 const getAllUnAssignStudents = async (): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
@@ -685,4 +714,6 @@ export {
   getAssignedStudent,
   getSinglePay,
   getSingleLesson,
+  getAllSoftInstructors,
+  getAllSoftStudents,
 }

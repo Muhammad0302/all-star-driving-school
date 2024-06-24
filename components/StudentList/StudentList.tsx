@@ -11,7 +11,7 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { getAllStudents, deletStudent } from 'services/room'
+import { getAllSoftStudents, deletStudent } from 'services/room'
 import HistoryIcon from '@mui/icons-material/History'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import PersonIcon from '@mui/icons-material/Person'
@@ -23,9 +23,10 @@ import './styles.css'
 import ViewDetail from './ViewDetail'
 import PaymentHistory from './PaymentHistory'
 const StudentList = () => {
+  const [selectedIds, setSelectedIds] = useState<string[][]>([])
   const [studentData, setStudentData] = useState([])
   const [counter, setCounter] = useState(0)
-  const [studentStatus, setStudentStatus] = useState('')
+  const [studentStatus, setStudentStatus] = useState('false')
   const [anchorEl, setAnchorEl] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [openModalPmntHstry, setOpenModalPmntHstry] = useState(false)
@@ -49,7 +50,16 @@ const StudentList = () => {
 
   const fetchStudentsData = async () => {
     try {
-      const response = await getAllStudents()
+      let isDeleted
+      if (studentStatus === 'false') {
+        isDeleted = false
+      } else if (studentStatus === 'true') {
+        isDeleted = true
+      } else {
+        // @ts-ignore
+        isDeleted = 'NA'
+      }
+      const response = await getAllSoftStudents(isDeleted)
       console.log('The response of get all student is', response)
       const students: any = response.students
       const AllStudents: any = students.map((student: any) => {
@@ -67,6 +77,11 @@ const StudentList = () => {
           NoOfLesson: student?.no_of_lesson,
           TotalPrice: student?.price_per_lesson,
           Instructor: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
+          Status: student?.isDeleted ? (
+            <div style={{ color: 'red' }}>Deleted</div>
+          ) : (
+            <div style={{ color: 'green' }}>Active</div>
+          ),
         }
       })
       setStudentData(AllStudents)
@@ -76,7 +91,7 @@ const StudentList = () => {
   }
   useEffect(() => {
     fetchStudentsData()
-  }, [counter])
+  }, [counter, studentStatus])
 
   const handleDelete = async (data: any) => {
     handleClose()
@@ -98,6 +113,38 @@ const StudentList = () => {
       setCounter(counter + 1)
     } catch (error: any) {
       toast.error('Error while deleting student', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
+  const handleMultiple = async () => {
+    console.log('The delete button get called')
+    try {
+      const res = await Promise.all(selectedIds.map((id) => deletStudent(id[0], id[1])))
+      console.log('Delete API responses:', res)
+      toast.success('Students deleted successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error) {
+      toast.error('Error while deleting students', {
         position: 'top-right',
         autoClose: 5000,
         hideProgressBar: false,
@@ -447,9 +494,9 @@ const StudentList = () => {
     router.push(`/studentinstructor/${data}`)
   }
 
-  const changeInstructor = (data: any) => {
+  const changeInstructor = (data: any, studentId: any) => {
     handleClose()
-    router.push(`/changeinstructor/${data}`)
+    router.push(`/changeinstructor/${data}/${studentId}`)
   }
 
   const columns = [
@@ -484,7 +531,7 @@ const StudentList = () => {
       label: 'Name',
       options: {
         filter: true,
-        sort: false,
+        sort: true,
       },
     },
     {
@@ -537,6 +584,14 @@ const StudentList = () => {
       },
     },
     {
+      name: 'Status',
+      label: 'Status',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
       name: 'Actions',
       options: {
         sort: false,
@@ -570,7 +625,9 @@ const StudentList = () => {
                   <MenuItem onClick={() => handleViewInstructor(tableMeta.rowData[0])}>
                     <PeopleAltIcon /> View instructors
                   </MenuItem>
-                  <MenuItem onClick={() => changeInstructor(tableMeta.rowData[1])}>
+                  <MenuItem
+                    onClick={() => changeInstructor(tableMeta.rowData[1], tableMeta.rowData[0])}
+                  >
                     <PersonIcon />
                     Change Instructor
                   </MenuItem>
@@ -635,13 +692,9 @@ const StudentList = () => {
               onChange={handleStudentStatus}
               MenuProps={{ PaperProps: { style: { maxHeight: '400px' } } }}
             >
-              <MenuItem value=''>
-                <em>None</em>
-              </MenuItem>
-
-              <MenuItem value={'Completed Courses'}>Completed Courses</MenuItem>
-              <MenuItem value={'Expired Students'}>Expired Students</MenuItem>
-              <MenuItem value={'All Students'}>All Students</MenuItem>
+              <MenuItem value={'NA'}>All students</MenuItem>
+              <MenuItem value={'false'}>Active students</MenuItem>
+              <MenuItem value={'true'}>Deleted students</MenuItem>
             </Select>
           </FormControl>
         </div>
@@ -649,11 +702,26 @@ const StudentList = () => {
     )
   }
 
+  const handleRowSelection = (currentRowsSelected: any, allRowsSelected: { index: number }[]) => {
+    const selectedIds = allRowsSelected.map((row: any) => [
+      // @ts-ignore
+      studentData[row.index]?.ID,
+      // @ts-ignore
+      studentData[row.index]?.AssignID,
+    ])
+    setSelectedIds(selectedIds)
+  }
+
+  console.log('The selected id is:', selectedIds)
+
   const options = {
     filterType: 'checkbox' as const,
     // customToolbar: HeaderElements,
     print: false,
     filter: false,
+    onRowsDelete: () => {
+      handleMultiple()
+    },
     headCells: {
       style: {
         fontWeight: 'bold !important',
@@ -668,6 +736,7 @@ const StudentList = () => {
         </React.Fragment>
       )
     },
+    onRowsSelect: handleRowSelection,
   }
   return (
     <>

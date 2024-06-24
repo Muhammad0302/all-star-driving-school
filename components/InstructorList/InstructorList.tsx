@@ -8,10 +8,13 @@ import MenuItem from '@mui/material/MenuItem'
 import ModeEditOutlineOutlinedIcon from '@mui/icons-material/ModeEditOutlineOutlined'
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined'
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined'
+import FormControl from '@mui/material/FormControl'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { getAllInstructors, deletInstructor, getRate } from 'services/room'
+import { getAllSoftInstructors, deletInstructor, getRate } from 'services/room'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
@@ -22,6 +25,8 @@ interface Rate {
 }
 const InstructorList = () => {
   const [counter, setCounter] = useState(0)
+  const [instructorStatus, setInstructorStatus] = useState('false')
+  const [selectedIds, setSelectedIds] = useState<string[][]>([])
   const [rate, setRate] = useState<Rate | null>(null)
   const [openModal, setOpenModal] = useState(false)
   const [instructorData, setInstructorData] = useState([])
@@ -39,10 +44,21 @@ const InstructorList = () => {
 
   const fetchRoomsData = async () => {
     try {
-      const response = await getAllInstructors()
+      let isDeleted
+      if (instructorStatus === 'false') {
+        isDeleted = false
+      } else if (instructorStatus === 'true') {
+        isDeleted = true
+      } else {
+        // @ts-ignore
+        isDeleted = 'NA'
+      }
+
+      const response = await getAllSoftInstructors(isDeleted)
       console.log('The response of get all instructor is', response)
       const instructors: any = response.instructors
       const AllInstructors: any = instructors.map((instructor: any) => {
+        console.log('The deleted value is:', instructor?.isDeleted)
         return {
           ID: instructor?._id,
           Name: `${instructor?.firstName} ${instructor?.lastName}`,
@@ -52,7 +68,11 @@ const InstructorList = () => {
           // hire_as: instructor?.hired_as,
           DriverLicense: instructor?.driver_licence_number,
           DILicense: instructor?.DI_number,
-          no_of_lesson: instructor.no_of_lesson,
+          Status: instructor?.isDeleted ? (
+            <div style={{ color: 'red' }}>Deleted</div>
+          ) : (
+            <div style={{ color: 'green' }}>Active</div>
+          ),
         }
       })
       setInstructorData(AllInstructors)
@@ -78,7 +98,7 @@ const InstructorList = () => {
   }, [])
   useEffect(() => {
     fetchRoomsData()
-  }, [counter])
+  }, [counter, instructorStatus])
 
   const handleClose = () => {
     setAnchorEl(null)
@@ -153,6 +173,50 @@ const InstructorList = () => {
     [19, 'Grace Robinson', '111-222-3333', 'G7231-45532-25122', 'DI-09876'],
     [20, 'Elijah Clark', '555-123-4567', 'G7231-45532-25122', 'DI-23456'],
   ]
+
+  const handleRowSelection = (currentRowsSelected: any, allRowsSelected: { index: number }[]) => {
+    const selectedIds = allRowsSelected.map((row: any) => [
+      // @ts-ignore
+      instructorData[row.index]?.ID,
+      // @ts-ignore
+      instructorData[row.index]?.Name,
+    ])
+    setSelectedIds(selectedIds)
+  }
+
+  console.log('The selected ID is:', selectedIds)
+
+  const handleMultiple = async () => {
+    console.log('The delete button get called')
+    try {
+      const res = await Promise.all(selectedIds.map((id) => deletInstructor(id[0])))
+      console.log('Delete API responses:', res)
+      toast.success('Students deleted successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error) {
+      toast.error('Error while deleting students', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
 
   const columns = [
     {
@@ -232,6 +296,14 @@ const InstructorList = () => {
       },
     },
     {
+      name: 'Status',
+      label: 'Status',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
       name: 'Actions',
       options: {
         sort: false,
@@ -297,15 +369,42 @@ const InstructorList = () => {
       </Link>
     )
   }
+  const handleInstructorStatus = (event: any) => {
+    setInstructorStatus(event.target.value)
+  }
+  console.log('The instructor status is:', instructorStatus)
+  const FilterElements = () => {
+    return (
+      <React.Fragment>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'left',
+            marginRight: '148px',
+          }}
+        >
+          <FormControl sx={{ m: 1, width: '218px' }} size='small'>
+            <InputLabel id='demo-select-small'>Filter Instructors</InputLabel>
+            <Select
+              labelId='demo-select-small'
+              id='demo-select-small'
+              value={instructorStatus}
+              label='Select Student Status'
+              onChange={handleInstructorStatus}
+              MenuProps={{ PaperProps: { style: { maxHeight: '400px' } } }}
+            >
+              <MenuItem value={'NA'}>All instructors</MenuItem>
+              <MenuItem value={'false'}>Active Instructors</MenuItem>
+              <MenuItem value={'true'}>Deleted Instructors</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      </React.Fragment>
+    )
+  }
 
   const options = {
     filterType: 'checkbox' as const,
-    customToolbar: () => (
-      <>
-        <PricePerLessonAndTax />
-        <HeaderElements />
-      </>
-    ),
     headCells: {
       style: {
         fontWeight: 'bold !important',
@@ -314,6 +413,19 @@ const InstructorList = () => {
     },
     print: false,
     filter: false,
+    customToolbar: () => {
+      return (
+        <React.Fragment>
+          <HeaderElements />
+          <PricePerLessonAndTax />
+          <FilterElements />
+        </React.Fragment>
+      )
+    },
+    onRowsSelect: handleRowSelection,
+    onRowsDelete: () => {
+      handleMultiple()
+    },
   }
 
   return (

@@ -1,6 +1,5 @@
 export const getBaseUrl = () => {
   // return 'http://localhost:7000'
-  // return 'https://all-start-driving-school-backend.vercel.app'
-  return 'https://backend1-copy.vercel.app'
-  // return 'https://all-start-driving-school-backend-production.up.railway.app'
+  // return 'https://drivingbackend-omega.vercel.app'
+  return 'https://backend1-olive.vercel.app'
 }
