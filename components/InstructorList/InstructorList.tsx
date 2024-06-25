@@ -61,6 +61,7 @@ const InstructorList = () => {
         console.log('The deleted value is:', instructor?.isDeleted)
         return {
           ID: instructor?._id,
+          no_of_lesson: instructor?.no_of_lesson,
           Name: `${instructor?.firstName} ${instructor?.lastName}`,
           Phone: instructor?.phone_number,
           Email: instructor?.email,
