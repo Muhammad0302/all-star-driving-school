@@ -279,7 +279,7 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                     {formDisabled && (
                       <>
                         <FormHelperText sx={{ color: '#d32f2f' }}>
-                          No of lesson to pay should be less then none_paid lesson
+                          No of lesson to pay should be less then completed lesson
                         </FormHelperText>
                       </>
                     )}
@@ -350,8 +350,8 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                   <Grid item xs={12} sm={4} sx={{ marginTop: '24px' }}>
                     <Typography>
                       {' '}
-                      <span style={{ fontWeight: 'bolder' }}>Compensation:</span> &nbsp; &nbsp;{' '}
-                      {compensation}
+                      <span style={{ fontWeight: 'bolder' }}>Compensation Payout:</span> &nbsp;
+                      &nbsp; {compensation}
                     </Typography>
                   </Grid>
                   {/* <Grid item xs={12} sm={6} sx={{ marginTop: '0px' }}></Grid> */}
