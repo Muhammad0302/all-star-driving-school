@@ -43,19 +43,22 @@ const StudentInstructor = ({ params }: any) => {
       setStudentData(studentName)
       const instructors: any = response.instructors
       const AllInstructors: any = instructors.map((instructor: any) => {
-        const date = new Date(instructor?.instructor_id?.createdAt)
+        const date = new Date(instructor?.createdAt)
         const formattedDate = date.toLocaleDateString('en-GB')
+        const endDate = new Date(instructor?.endDate)
+
+        const formattedEndDate = endDate.toLocaleDateString('en-GB')
         return {
           ID: instructor?._id,
           studentID: instructor?.std_id?.supportive_id,
           studentName: `${instructor?.std_id?.firstName} ${instructor?.std_id?.lastName}`,
 
-          totalLesson: instructor?.no_of_lesson + instructor?.no_of_lesson_completed,
+          totalLesson: instructor?.no_of_lesson,
           lessonCompleted: instructor?.no_of_lesson_completed,
-          remainingLesson: instructor?.no_of_lesson,
+          remainingLesson: instructor?.no_of_lesson - instructor?.no_of_lesson_completed,
           instructorName: `${instructor?.instructor_id?.firstName} ${instructor?.instructor_id?.lastName}`,
           startdate: formattedDate,
-          enddate: 'present',
+          enddate: instructor?.endDate === null ? 'present' : formattedEndDate,
         }
       })
       setInstructorData(AllInstructors)

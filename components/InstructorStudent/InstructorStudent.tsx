@@ -59,17 +59,22 @@ const InstructorStudent = ({ params }: any) => {
       const AllStudents: any = students.map((student: any) => {
         const date = new Date(student?.std_id?.createdAt)
         const formattedDate = date.toLocaleDateString('en-GB')
+
+        const endDate = new Date(student?.endDate)
+
+        const formattedEndDate = endDate.toLocaleDateString('en-GB')
+
         return {
           ID: student?._id,
           studentID: student?.std_id?.supportive_id,
           studentName: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
 
-          totalLesson: student?.no_of_lesson + student?.no_of_lesson_completed,
+          totalLesson: student?.no_of_lesson,
           lessonCompleted: student?.no_of_lesson_completed,
-          remainingLesson: student?.no_of_lesson,
+          remainingLesson: student?.no_of_lesson - student?.no_of_lesson_completed,
           instructorName: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
           startdate: formattedDate,
-          enddate: 'present',
+          enddate: student?.endDate === null ? 'present' : formattedEndDate,
         }
       })
       setStudentData(AllStudents)

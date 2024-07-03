@@ -27,6 +27,8 @@ const StudentList = () => {
   const [studentData, setStudentData] = useState([])
   const [counter, setCounter] = useState(0)
   const [studentStatus, setStudentStatus] = useState('false')
+  const [isLessonCompleted, setIsLessonCompleted] = useState('false')
+
   const [anchorEl, setAnchorEl] = useState(null)
   const [openModal, setOpenModal] = useState(false)
   const [openModalPmntHstry, setOpenModalPmntHstry] = useState(false)
@@ -50,16 +52,26 @@ const StudentList = () => {
 
   const fetchStudentsData = async () => {
     try {
-      let isDeleted
+      let isDeleted,
+        isLessonComplete: boolean = false
+      let isOld: boolean = false
+
       if (studentStatus === 'false') {
         isDeleted = false
       } else if (studentStatus === 'true') {
         isDeleted = true
+      } else if (studentStatus === 'completedStudent') {
+        // @ts-ignore
+        isDeleted = 'NA'
+        isLessonComplete = true
       } else {
         // @ts-ignore
         isDeleted = 'NA'
+        // @ts-ignore
+        isLessonComplete = 'NA'
       }
-      const response = await getAllSoftStudents(isDeleted)
+
+      const response = await getAllSoftStudents(isDeleted, isOld, isLessonComplete)
       console.log('The response of get all student is', response)
       const students: any = response.students
       const AllStudents: any = students.map((student: any) => {
@@ -77,7 +89,9 @@ const StudentList = () => {
           NoOfLesson: student?.no_of_lesson,
           TotalPrice: student?.price_per_lesson,
           Instructor: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
-          Status: student?.isDeleted ? (
+          Status: student.isLessonCompleted ? (
+            <div style={{ color: 'green' }}>Completed</div>
+          ) : student?.isDeleted ? (
             <div style={{ color: 'red' }}>Deleted</div>
           ) : (
             <div style={{ color: 'green' }}>Active</div>
@@ -91,7 +105,7 @@ const StudentList = () => {
   }
   useEffect(() => {
     fetchStudentsData()
-  }, [counter, studentStatus])
+  }, [counter, studentStatus, isLessonCompleted])
 
   const handleDelete = async (data: any) => {
     handleClose()
@@ -659,7 +673,11 @@ const StudentList = () => {
   ]
 
   const handleStudentStatus = (event: any) => {
+    // if (event.target.value === 'completedStudent') {
+    //   setIsLessonCompleted('true')
+    // } else {
     setStudentStatus(event.target.value)
+    // }
   }
   const HeaderElements = () => {
     return (
@@ -695,6 +713,7 @@ const StudentList = () => {
               <MenuItem value={'NA'}>All students</MenuItem>
               <MenuItem value={'false'}>Active students</MenuItem>
               <MenuItem value={'true'}>Deleted students</MenuItem>
+              <MenuItem value={'completedStudent'}>Completed students</MenuItem>
             </Select>
           </FormControl>
         </div>

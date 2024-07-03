@@ -121,10 +121,14 @@ const getAllStudents = async (): Promise<any> => {
   }
 }
 
-const getAllSoftStudents = async (isDeleted: any): Promise<any> => {
+const getAllSoftStudents = async (
+  isDeleted: any,
+  isOld: any,
+  isLessonComplete: any,
+): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
-      `${getBaseUrl()}/student/getAllSoftStudents?isDeleted=${isDeleted}`,
+      `${getBaseUrl()}/student/getAllSoftStudents?isDeleted=${isDeleted}&isOld=${isOld}&isLessonCompleted=${isLessonComplete}`,
       config,
     )
     return response.data // Return the response data

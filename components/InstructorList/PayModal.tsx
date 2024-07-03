@@ -198,8 +198,8 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                     <th className='border py-2'>Phone Number</th>
                     <th className='border py-2'>Address</th>
                     {/* <th className='border py-2'>Hire As</th> */}
-                    <th className='border py-2'>None-paid Lessons</th>
-                    <th className='border py-2'>Tax</th>
+                    <th className='border py-2'>Completed Lessons</th>
+                    <th className='border py-2'>HST</th>
                     <th className='border py-2'>Total Compensation</th>
                   </tr>
                 </thead>

@@ -77,7 +77,7 @@ const AddInstructor = () => {
           router.push('/instructors')
         }, 2000)
       } catch (error: any) {
-        toast.error('Email or phone number already exist', {
+        toast.error(error.response.data.message, {
           position: 'top-right',
           autoClose: 5000,
           hideProgressBar: false,
