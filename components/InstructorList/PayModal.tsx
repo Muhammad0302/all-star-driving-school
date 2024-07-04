@@ -18,6 +18,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { FormControl, InputLabel, Select } from '@mui/material'
+
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import { addInstructorPayment } from 'services/room'
@@ -67,6 +69,7 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
       noOfLessonToPay: '',
       issueDate: null,
       commission: 0,
+      adjustmentType: 'Addition',
     },
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
@@ -128,11 +131,23 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
   }, [rowData, formik.values.noOfLessonToPay])
   useEffect(() => {
     if (compensation) {
-      const newCompensation =
-        parseFloat(compensationState.replace('$', '')) - formik.values.commission
-      setCompensation(`$${newCompensation}`)
+      // @ts-ignore
+      const commissionValue = parseFloat(formik.values.commission)
+      const baseCompensation = parseFloat(compensationState.replace('$', ''))
+      let newCompensation = baseCompensation
+
+      if (!isNaN(commissionValue)) {
+        if (formik.values.adjustmentType === 'Subtraction') {
+          newCompensation -= commissionValue
+        } else {
+          newCompensation += commissionValue
+        }
+      }
+
+      console.log('The new calculated compensation is:', newCompensation)
+      setCompensation(`$${newCompensation.toFixed(2)}`)
     }
-  }, [formik.values.commission])
+  }, [formik.values.commission, formik.values.adjustmentType, compensation, compensationState])
 
   useEffect(() => {
     if (rate && rate?.price_per_lesson) {
@@ -328,7 +343,7 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                     <TextField
                       id='commission'
                       name='commission'
-                      label='Commission($)'
+                      label='Adjustment($)'
                       variant='outlined'
                       fullWidth
                       sx={{
@@ -346,6 +361,20 @@ const PayModal = ({ open, rate, handleClose, rowData }: ViewDetailInput) => {
                       error={formik.touched.commission && Boolean(formik.errors.commission)}
                       helperText={formik.touched.commission && (formik.errors.commission as any)}
                     />
+                    <FormControl fullWidth variant='outlined' size='small'>
+                      <InputLabel id='adjustment-type-label'></InputLabel>
+                      <Select
+                        labelId='adjustment-type-label'
+                        id='adjustment-type'
+                        name='adjustmentType'
+                        value={formik.values.adjustmentType}
+                        onChange={formik.handleChange}
+                        label=''
+                      >
+                        <MenuItem value='Addition'>Addition</MenuItem>
+                        <MenuItem value='Subtraction'>Subtraction</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
                   <Grid item xs={12} sm={4} sx={{ marginTop: '24px' }}>
                     <Typography>

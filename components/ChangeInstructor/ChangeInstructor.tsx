@@ -13,10 +13,16 @@ import FormHelperText from '@mui/material/FormHelperText'
 import { getAllInstructors, getAllStudents, getAllPackages } from 'services/room'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import { changeInstructor, getStudentById } from 'services/room'
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
+import dayjs from 'dayjs'
 import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 const validationSchema = yup.object({
   instructorName: yup.string().required('Instructor is required'),
+  Date: yup.string().required('End date is required'),
 })
 interface StudentDetail {
   supportive_id: string // or the appropriate type
@@ -35,6 +41,7 @@ const ChangeInstructor = ({ params }: any) => {
   const formik = useFormik({
     initialValues: {
       instructorName: '',
+      Date: null,
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -43,6 +50,7 @@ const ChangeInstructor = ({ params }: any) => {
       const data = {
         instructor_id: instructorId,
         id: params.assigninstructorId,
+        endDate: values.Date,
       }
       try {
         const res = await changeInstructor(data)
@@ -201,7 +209,22 @@ const ChangeInstructor = ({ params }: any) => {
               </FormControl>
             </Box>
           </Grid>
+          <Grid item xs={12} sm={3} style={{ marginTop: '-8px' }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DatePicker']}>
+                <DatePicker
+                  label='End Date'
+                  format='YYYY/MM/DD'
+                  value={formik.values.Date}
+                  onChange={(newDate) => {
+                    formik.setFieldValue('Date', dayjs(newDate).format('YYYY-MM-DD'))
+                  }}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Grid>
 
+          <Grid item xs={9} container justifyContent='flex-end'></Grid>
           <Grid item xs={3} container justifyContent='flex-end'>
             <Button
               type='submit'
