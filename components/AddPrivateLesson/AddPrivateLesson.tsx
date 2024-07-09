@@ -17,6 +17,7 @@ const validationSchema = yup.object({
   studentName: yup.string().required('Student Name is required'),
   instructorName: yup.string().required('Instructor Name is required'),
   initialLessonsRequested: yup.string().required('Initial Lessons Requested is required'),
+  studentPhone: yup.string().required('Initial Lessons Requested is required'),
   roadTestRequested: yup.string(),
 })
 const AddPrivateLesson = () => {
@@ -29,6 +30,7 @@ const AddPrivateLesson = () => {
       instructorName: '',
       initialLessonsRequested: '',
       roadTestRequested: '',
+      studentPhone: '',
     },
     validationSchema: validationSchema,
     onSubmit: async (values: any) => {
@@ -36,6 +38,7 @@ const AddPrivateLesson = () => {
         instructor_id: instructorId,
         student_name: values.studentName,
         road_test_req: values.roadTestRequested,
+        student_phone: values.studentPhone,
         initial_lesson_requested: values.initialLessonsRequested,
       }
       try {
@@ -157,6 +160,29 @@ const AddPrivateLesson = () => {
               }}
               error={formik.touched.studentName && Boolean(formik.errors.studentName)}
               helperText={formik.touched.studentName && (formik.errors.studentName as any)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              id='studentPhone'
+              name='studentPhone'
+              label='Student Phone'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+              }}
+              type='text'
+              value={formik.values.studentPhone}
+              onChange={formik.handleChange}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+              error={formik.touched.studentPhone && Boolean(formik.errors.studentPhone)}
+              helperText={formik.touched.studentPhone && (formik.errors.studentPhone as any)}
             />
           </Grid>
 

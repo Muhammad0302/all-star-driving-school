@@ -63,6 +63,7 @@ const PvtLssnAsgndToInstrs = () => {
           ID: pvtlesson?._id,
           instructorName: `${pvtlesson?.instructor_id.firstName} ${pvtlesson?.instructor_id.lastName}`,
           StudentName: pvtlesson?.student_name,
+          studentPhone: pvtlesson?.student_phone,
           InitialLessonsRequested: pvtlesson?.initial_lesson_requested,
           RoadTestRequested: pvtlesson?.road_test_req,
         }
@@ -130,6 +131,14 @@ const PvtLssnAsgndToInstrs = () => {
     {
       name: 'StudentName',
       label: 'Student Name',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'studentPhone',
+      label: 'Student Phone',
       options: {
         filter: true,
         sort: false,

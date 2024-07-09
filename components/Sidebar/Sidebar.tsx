@@ -165,7 +165,7 @@ const Sidebar = () => {
                   <ListItemIcon>
                     <PaymentIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Students Payment' />
+                  <ListItemText primary='Students Payment Received' />
                 </ListItemButton>
               </ListItem>
             </Link>
@@ -179,7 +179,7 @@ const Sidebar = () => {
                   <ListItemIcon>
                     <PaymentIcon />{' '}
                   </ListItemIcon>
-                  <ListItemText primary='Instructors Payment' />
+                  <ListItemText primary='Instructors Payout' />
                 </ListItemButton>
               </ListItem>
             </Link>
