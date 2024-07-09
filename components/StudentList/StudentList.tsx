@@ -11,13 +11,13 @@ import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
-import { getAllSoftStudents, deletStudent } from 'services/room'
+import { getAllSoftStudents, deletStudent, recoverStudent } from 'services/room'
 import HistoryIcon from '@mui/icons-material/History'
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt'
 import PersonIcon from '@mui/icons-material/Person'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { ToastContainer, toast, Bounce } from 'react-toastify'
+import { ToastContainer, toast, Bounce, collapseToast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 import ViewDetail from './ViewDetail'
@@ -39,6 +39,9 @@ const StudentList = () => {
   const router = useRouter()
   const open = Boolean(anchorEl)
   const [activeRow, setActiveRow] = useState(null)
+
+  console.log('The current status is:', studentStatus)
+
   const handleClick = (event: any, index: any) => {
     setAnchorEl(event.currentTarget)
     setActiveRow(index)
@@ -74,7 +77,8 @@ const StudentList = () => {
       const response = await getAllSoftStudents(isDeleted, isOld, isLessonComplete)
       console.log('The response of get all student is', response)
       const students: any = response.students
-      const AllStudents: any = students.map((student: any) => {
+      const AllStudents: any = students?.map((student: any) => {
+        console.log('The response of deleted student is:', student.isDeleted)
         return {
           ID: student?.std_id?._id,
           AssignID: student?._id,
@@ -89,6 +93,7 @@ const StudentList = () => {
           NoOfLesson: student?.no_of_lesson,
           TotalPrice: student?.price_per_lesson,
           Instructor: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
+
           Status: student.isLessonCompleted ? (
             <div style={{ color: 'green' }}>Completed</div>
           ) : student?.isDeleted ? (
@@ -513,6 +518,37 @@ const StudentList = () => {
     router.push(`/changeinstructor/${data}/${studentId}`)
   }
 
+  const handleRecover = async (data: any) => {
+    handleClose()
+    try {
+      const res = await recoverStudent(data[0], data[1])
+      toast.success('Student recovered Successfully', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+      setCounter(counter + 1)
+    } catch (error: any) {
+      toast.error('Error while recovering student', {
+        position: 'top-right',
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: 'colored',
+        transition: Bounce,
+      })
+    }
+  }
+
   const columns = [
     {
       name: 'ID',
@@ -605,12 +641,14 @@ const StudentList = () => {
         sort: false,
       },
     },
+
     {
       name: 'Actions',
       options: {
         sort: false,
         filter: false,
         customBodyRender: (value: any, tableMeta: any, updateValue: any) => {
+          console.log('deleted student status is:', tableMeta?.rowData[10]?.props?.style?.color)
           return (
             <>
               <Button
@@ -633,9 +671,20 @@ const StudentList = () => {
                   <MenuItem onClick={() => handleEditStudent(tableMeta.rowData[0])}>
                     <ModeEditOutlineOutlinedIcon /> Edit
                   </MenuItem>
-                  <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
-                    <DeleteOutlineOutlinedIcon /> Delete
-                  </MenuItem>
+                  {tableMeta?.rowData[10]?.props?.style?.color === 'red' ? (
+                    <>
+                      <MenuItem onClick={() => handleRecover(tableMeta.rowData)}>
+                        <DeleteOutlineOutlinedIcon /> Recover
+                      </MenuItem>
+                    </>
+                  ) : (
+                    <>
+                      <MenuItem onClick={() => handleDelete(tableMeta.rowData)}>
+                        <DeleteOutlineOutlinedIcon /> Delete
+                      </MenuItem>
+                    </>
+                  )}
+
                   <MenuItem onClick={() => handleViewInstructor(tableMeta.rowData[0])}>
                     <PeopleAltIcon /> View instructors
                   </MenuItem>

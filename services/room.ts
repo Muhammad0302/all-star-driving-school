@@ -182,6 +182,20 @@ const deletStudent = async (std_id: any, assign_id: any): Promise<any> => {
   }
 }
 
+const recoverStudent = async (std_id: any, assign_id: any): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/student/recoverStudent?std_id=${std_id}&assign_id=${assign_id}`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
+
 const getStudentById = async (id: any): Promise<any> => {
   try {
     const response: AxiosResponse = await axios.get(
@@ -720,4 +734,5 @@ export {
   getSingleLesson,
   getAllSoftInstructors,
   getAllSoftStudents,
+  recoverStudent,
 }
