@@ -22,6 +22,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import './styles.css'
 const validationSchema = yup.object({
   instructorName: yup.string().required('Instructor is required'),
+  // lessonCompleted: yup.string().required('No of lesson completed is required'),
+  RemainingLessonAssign: yup.string().required('Assign Remaining lesson is required'),
   Date: yup.string().required('End date is required'),
 })
 interface StudentDetail {
@@ -35,12 +37,15 @@ const ChangeInstructor = ({ params }: any) => {
 
   const [instructors, setInstructors] = useState([])
   const [studentDetail, setStudentDetail] = useState<StudentDetail | null>(null)
+  const [assignData, setAssignData] = useState()
   const [instructorId, setInstructorId] = useState(null)
 
   const router = useRouter()
   const formik = useFormik({
     initialValues: {
       instructorName: '',
+      lessonCompleted: '',
+      RemainingLessonAssign: '',
       Date: null,
     },
     validationSchema: validationSchema,
@@ -50,6 +55,8 @@ const ChangeInstructor = ({ params }: any) => {
       const data = {
         instructor_id: instructorId,
         id: params.assigninstructorId,
+        lessonCompleted: values.lessonCompleted,
+        RemainingLessonAssign: values.RemainingLessonAssign,
         endDate: values.Date,
       }
       try {
@@ -103,6 +110,7 @@ const ChangeInstructor = ({ params }: any) => {
         console.log('The student detail is:', res)
         const student = res.student
         setStudentDetail(student)
+        setAssignData(res.assign)
       } catch (error) {
         console.error('Error fetching instructor data:', error)
       }
@@ -169,6 +177,77 @@ const ChangeInstructor = ({ params }: any) => {
               }}
             />
           </Grid>
+          <Grid item xs={12} sm={3} className='flex items-center'>
+            <TextField
+              id='oldInstructor'
+              name='oldInstructor'
+              label='Old Instructor'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+                shrink: true,
+              }}
+              inputProps={{
+                readOnly: true,
+              }}
+              type='text'
+              // @ts-ignore
+              value={`${assignData?.instructor_id?.firstName} ${assignData?.instructor_id?.lastName}`}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid>
+          {/* <Grid item xs={12} sm={3} className='flex items-center'>
+            <TextField
+              id='lessonCompleted'
+              name='lessonCompleted'
+              label='No of Lesson Completed'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+                shrink: true,
+              }}
+              // inputProps={{
+              //   readOnly: true,
+              // }}
+              type='text'
+              error={formik.touched.lessonCompleted && Boolean(formik.errors.lessonCompleted)}
+              helperText={formik.touched.lessonCompleted && formik.errors.lessonCompleted}
+              // @ts-ignore
+              value={formik.values.lessonCompleted}
+              onChange={(e) => {
+                formik.setFieldValue('lessonCompleted', e.target.value)
+              }}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
+          </Grid> */}
+          <Grid item xs={12} sm={3} style={{ marginTop: '-8px' }}>
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DemoContainer components={['DatePicker']}>
+                <DatePicker
+                  label='End Date'
+                  format='YYYY/MM/DD'
+                  value={formik.values.Date}
+                  onChange={(newDate) => {
+                    formik.setFieldValue('Date', dayjs(newDate).format('YYYY-MM-DD'))
+                  }}
+                  // error={formik.touched.Date && Boolean(formik.errors.Date)}
+                  // helperText={formik.touched.Date && formik.errors.Date}
+                />
+              </DemoContainer>
+            </LocalizationProvider>
+          </Grid>
           <Grid item xs={12} sm={3}>
             <Box sx={{ minWidth: 120 }}>
               <FormControl fullWidth>
@@ -176,7 +255,7 @@ const ChangeInstructor = ({ params }: any) => {
                   id='demo-simple-select-label'
                   error={formik.touched.instructorName && Boolean(formik.errors.instructorName)}
                 >
-                  Instructor
+                  Assign New Instructor
                 </InputLabel>
                 <Select
                   labelId='demo-simple-select-label'
@@ -209,19 +288,40 @@ const ChangeInstructor = ({ params }: any) => {
               </FormControl>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={3} style={{ marginTop: '-8px' }}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DemoContainer components={['DatePicker']}>
-                <DatePicker
-                  label='End Date'
-                  format='YYYY/MM/DD'
-                  value={formik.values.Date}
-                  onChange={(newDate) => {
-                    formik.setFieldValue('Date', dayjs(newDate).format('YYYY-MM-DD'))
-                  }}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
+
+          <Grid item xs={12} sm={3} className='flex items-center'>
+            <TextField
+              id='RemainingLessonAssign'
+              name='RemainingLessonAssign'
+              label='Assign Remaining Lesson'
+              variant='outlined'
+              fullWidth
+              sx={{
+                '& fieldset': { borderColor: '#f23d4d !important' },
+              }}
+              InputLabelProps={{
+                focused: false,
+                shrink: true,
+              }}
+              // inputProps={{
+              //   readOnly: true,
+              // }}
+              error={
+                formik.touched.RemainingLessonAssign && Boolean(formik.errors.RemainingLessonAssign)
+              }
+              helperText={
+                formik.touched.RemainingLessonAssign && formik.errors.RemainingLessonAssign
+              }
+              type='text'
+              // @ts-ignore
+              value={formik.values.RemainingLessonAssign}
+              onChange={(e) => {
+                formik.setFieldValue('RemainingLessonAssign', e.target.value)
+              }}
+              onKeyDown={(event) => {
+                event.stopPropagation()
+              }}
+            />
           </Grid>
 
           <Grid item xs={9} container justifyContent='flex-end'></Grid>
@@ -239,7 +339,7 @@ const ChangeInstructor = ({ params }: any) => {
                 },
               }}
             >
-              Submit
+              Save
             </Button>
           </Grid>
         </Grid>

@@ -85,13 +85,16 @@ const StudentList = () => {
           Name: `${student?.std_id?.firstName} ${student?.std_id?.lastName}`,
           PhoneNumber: student?.std_id?.phone_number,
           Email: student?.std_id?.email,
-          Address: student?.std_id?.address,
+          // Address: student?.std_id?.address,
           Dob: student?.std_id?.dob,
           LicenseNumber: student?.std_id?.licence_no,
           StudentID: student?.std_id?.supportive_id,
 
           NoOfLesson: student?.no_of_lesson,
+          CompletedLesson: student?.no_of_lesson_completed,
+          RemainingLesson: student?.no_of_lesson - student?.no_of_lesson_completed,
           TotalPrice: student?.price_per_lesson,
+          OutStandingPrice: student?.price_per_lesson - student?.amountPaid,
           Instructor: `${student?.instructor_id?.firstName} ${student?.instructor_id?.lastName}`,
 
           Status: student.isLessonCompleted ? (
@@ -584,14 +587,14 @@ const StudentList = () => {
         sort: true,
       },
     },
-    {
-      name: 'Address',
-      label: 'Address',
-      options: {
-        filter: true,
-        sort: false,
-      },
-    },
+    // {
+    //   name: 'Address',
+    //   label: 'Address',
+    //   options: {
+    //     filter: true,
+    //     sort: false,
+    //   },
+    // },
     {
       name: 'PhoneNumber',
       label: 'Phone Number',
@@ -618,8 +621,32 @@ const StudentList = () => {
       },
     },
     {
+      name: 'CompletedLesson',
+      label: 'Completed Lesson',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'RemainingLesson',
+      label: 'Remaining Lesson',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
       name: 'TotalPrice',
       label: 'Total Price',
+      options: {
+        filter: true,
+        sort: false,
+      },
+    },
+    {
+      name: 'OutStandingPrice',
+      label: 'Outstanding Price',
       options: {
         filter: true,
         sort: false,
