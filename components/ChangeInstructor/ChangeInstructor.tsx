@@ -10,7 +10,7 @@ import FormControl from '@mui/material/FormControl'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import Box from '@mui/material/Box'
 import FormHelperText from '@mui/material/FormHelperText'
-import { getAllInstructors, getAllStudents, getAllPackages } from 'services/room'
+import { getAllInstructors1, getAllStudents, getAllPackages } from 'services/room'
 import { ToastContainer, toast, Bounce } from 'react-toastify'
 import { changeInstructor, getStudentById } from 'services/room'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
@@ -95,7 +95,7 @@ const ChangeInstructor = ({ params }: any) => {
   useEffect(() => {
     const fetchInstructorData = async () => {
       try {
-        const res = await getAllInstructors()
+        const res = await getAllInstructors1()
         console.log('The instructor data is:', res)
         const instructor = res.instructors
         setInstructors(instructor)

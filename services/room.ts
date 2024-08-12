@@ -35,6 +35,19 @@ const getAllInstructors = async (): Promise<any> => {
     throw error // Throw the error to be caught by the caller
   }
 }
+const getAllInstructors1 = async (): Promise<any> => {
+  try {
+    const response: AxiosResponse = await axios.get(
+      `${getBaseUrl()}/instructor/getallinstructors1`,
+      config,
+    )
+    return response.data // Return the response data
+  } catch (error: any) {
+    // Handle addRoom error
+    console.error('getting room error:', error.message)
+    throw error // Throw the error to be caught by the caller
+  }
+}
 
 const getAllSoftInstructors = async (isDeleted: any): Promise<any> => {
   try {
@@ -687,6 +700,7 @@ const getSingleLesson = async (id: any): Promise<any> => {
 export {
   addInstructor,
   getAllInstructors,
+  getAllInstructors1,
   deletInstructor,
   editInstructor,
   getInstructorById,
