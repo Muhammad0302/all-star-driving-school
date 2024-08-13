@@ -24,7 +24,7 @@ const validationSchema = yup.object({
   instructorName: yup.string().required('Instructor Name is required'),
   studentName: yup.string().required('Student is required'),
   // package: yup.string().required('Package is required'),
-  noOfLessonsCompleted: yup.string().required('Lessons Completed is required'),
+  // noOfLessonsCompleted: yup.string().required('Lessons Completed is required'),
   roadTestCompleted: yup.string().required('Road test is required'),
   totalLesson: yup.string(),
 })
